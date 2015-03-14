@@ -22,6 +22,7 @@ public class MyAppConfiguration {
     private final String loginBase = "base";
     private final String passwordBase = "base";
 
+
     public static class LOG{
         public final static String Service              = "SERVICE";
         public final static String ServiceLocation      = "LOCATION";
