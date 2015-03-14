@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- MAPS ITENS  -->
+        <item name="pam_composite_background" type="color">#66FFDDDD</item>
+        <item name="pam_composite_border" type="color">#DDFF3333</item>
+        <item name="pam_base_background" type="color">#66AAFFFF</item>
+        <item name="pam_base_border" type="color">#DD33FFFF</item>
+
+    <!-- VCOM-->
+        <item name="pam_bg_vcom_list_row_signed" type="color">0x99DDDD99</item>
+        <item name="pam_bg_vcom_list_row_unsigned" type="color">0x99FFFFDD</item>
+
+    <!-- UPI-->
+        <!-- Array adapter -->
+        <item name="pam_bg_upi_list_row_even" type="color">#99DDFFFF</item>
+        <item name="pam_bg_upi_list_row_odd" type="color">#9999DDDD</item>
+        <item name="pam_text_upi_list_row_title" type="color">#FF336666</item>
+        <item name="pam_text_upi_list_row_content" type="color">#FF339999</item>
+        <!--Edit interface -->
+        <item name="pam_bg_upi_edit_title" type="color">#99DDFFFF</item>
+        <item name="pam_bg_upi_edit_text" type="color">#9999DDDD</item>
+
+
+</resources>

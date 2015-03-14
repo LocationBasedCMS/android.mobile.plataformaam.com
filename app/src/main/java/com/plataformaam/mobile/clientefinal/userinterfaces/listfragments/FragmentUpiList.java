@@ -1,0 +1,214 @@
+package com.plataformaam.mobile.clientefinal.userinterfaces.listfragments;
+
+import android.app.Activity;
+import android.app.Fragment;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.plataformaam.mobile.clientefinal.AppController;
+import com.plataformaam.mobile.clientefinal.R;
+import com.plataformaam.mobile.clientefinal.adapters.UPITextArrayAdapter;
+import com.plataformaam.mobile.clientefinal.models.User;
+import com.plataformaam.mobile.clientefinal.models.vcloc.VComComposite;
+import com.plataformaam.mobile.clientefinal.models.vcloc.upi.UPI;
+import com.plataformaam.mobile.clientefinal.userinterfaces.fragments.FragmentDeleteUpiConfirmation;
+import com.plataformaam.mobile.clientefinal.userinterfaces.fragments.FragmentEditUpi;
+import com.plataformaam.mobile.clientefinal.userinterfaces.mapsfragments.GlobalNavigateFragment;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * A fragment representing a vcom_list of Items.
+ * <p/>
+ * Large screen devices (such as tablets) are supported by replacing the ListView
+ * with a GridView.
+ * <p/>
+ * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
+ * interface.
+ */
+public class FragmentUpiList extends Fragment implements AbsListView.OnItemClickListener {
+
+    private OnFragmentInteractionListener mListener;
+    UPITextArrayAdapter mAdapter;
+    UPI selected_upi = null;
+    AbsListView listView;
+    private AbsListView mListView;
+    View view;
+
+
+    public static FragmentUpiList newInstance() {
+        FragmentUpiList fragment = new FragmentUpiList();
+        return fragment;
+    }
+
+    /**
+     * Mandatory empty constructor for the fragment manager to instantiate the
+     * fragment (e.g. upon screen orientation changes).
+     */
+    public FragmentUpiList() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_upi, container, false);
+        return view;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+
+
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (null != mListener) {
+            selected_upi = (UPI) parent.getItemAtPosition(position);
+            mListener.onFragmentInteraction( selected_upi );
+        }
+    }
+
+
+    public void setEmptyText(CharSequence emptyText) {
+        View emptyView = mListView.getEmptyView();
+        if (emptyView instanceof TextView) {
+            ((TextView) emptyView).setText(emptyText);
+        }
+    }
+
+
+    public interface OnFragmentInteractionListener {
+        public void onFragmentInteraction(UPI upi);
+    }
+
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.popup_menu_upi_list , menu);
+
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        selected_upi = mAdapter.getData().get(info.position);
+
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+
+            case R.id.popup_item_create_upi:
+                goToCreateUpiUI();
+                return true;
+
+            case R.id.popup_item_edit_upi:
+                goToEditUpiUI(selected_upi);
+                return true;
+
+
+            case R.id.popup_item_delete_upi:
+                deleteUpi(selected_upi);
+                return true;
+
+            case R.id.popup_item_publish_upi:
+                Toast.makeText(getActivity().getApplicationContext(), "Publicar", Toast.LENGTH_LONG).show();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    public void goToCreateUpiUI(){
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        android.app.Fragment frag  = FragmentEditUpi.newInstance();
+        fragmentTransaction.replace(R.id.container,frag, null).commit();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        User user = AppController.getInstance().getOnlineUser();
+        List<UPI> upis=null;
+        if( user != null ){
+            upis = user.getUpis();
+        }
+        if( upis == null ){
+            upis = new ArrayList<UPI>();
+        }
+        buildList(upis);
+
+    }
+
+    public void goToEditUpiUI(UPI upi){
+        mListener.onFragmentInteraction( upi);
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        android.app.Fragment frag  = FragmentEditUpi.newInstance(upi);
+        fragmentTransaction.replace(R.id.container,frag, null).commit();
+    }
+
+    //REFRESH LIST VIEW
+    void refreshUpiList( List<UPI> upis){
+        mAdapter.clear();
+        mAdapter.addAll(upis);
+        mAdapter.notifyDataSetChanged();
+    }
+
+
+    private void buildList(List<UPI> upis){
+        mAdapter = new UPITextArrayAdapter(
+                getActivity(),
+                R.layout.row_upitext_list ,
+                upis
+        );
+
+
+        ListView list = (ListView) view.findViewById(R.id.upi_list);
+        registerForContextMenu(list);
+        list.setOnItemClickListener(this);
+        list.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    public void deleteUpi(UPI upi){
+
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        android.app.Fragment frag  = FragmentDeleteUpiConfirmation.newInstance(upi);
+        fragmentTransaction.replace(R.id.container,frag, null).commit();
+    }
+
+}
