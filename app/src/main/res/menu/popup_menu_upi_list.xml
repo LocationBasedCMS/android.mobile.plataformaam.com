@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/popup_item_create_upi"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/menu_create"
+        android:visible="true"
+        />
+
+    <item
+        android:id="@+id/popup_item_edit_upi"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/menu_edit"
+        android:visible="true"
+        />
+
+    <item
+        android:id="@+id/popup_item_delete_upi"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/menu_delete"
+        android:visible="true"
+    />
+
+
+    <item
+        android:id="@+id/popup_item_publish_upi"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/menu_publish"
+        android:visible="true"
+        />
+
+</menu>

@@ -1,0 +1,38 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.plataformaam.mobile.clientefinal.GlobalMyVClocFragment"
+    android:id="@+id/lblVClocFragment"
+    android:background="@drawable/plano_fundo_ufes_1"
+    >
+
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Veículos de Comunicação"
+            android:id="@+id/lblFragmentVComCompositeInfo"
+            android:layout_gravity="center_horizontal|top"
+            android:textAlignment="center"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/list_all_vcom_composite"
+            android:layout_gravity="center"
+            android:layout_below="@+id/lblFragmentVComCompositeInfo"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="10.0sp"
+            android:padding="10.0sp"
+            />
+    </RelativeLayout>
+</FrameLayout>

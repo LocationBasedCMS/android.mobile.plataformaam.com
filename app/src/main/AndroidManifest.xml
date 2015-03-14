@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.plataformaam.mobile.clientefinal" >
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SET_DEBUG_APP" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <permission
+        android:name="com.plataformaam.mobile.clientefinal.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" >
+    </permission>
+
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+
+    <application
+
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher_penguim"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".StartScreen"
+            android:label="@string/title_activity_start_screen" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".UserLoginUI"
+            android:label="@string/title_activity_user_login_ui" >
+        </activity>
+        <activity
+            android:name=".RegisterUserUI"
+            android:label="@string/title_activity_register_user_ui" >
+        </activity>
+        <activity
+            android:name=".GlobalPanelUI"
+            android:label="@string/title_activity_global_panel_ui" >
+        </activity>
+        <activity
+            android:name=".SplashScreen"
+            android:label="@string/title_activity_splash_screen" >
+        </activity>
+        <activity
+            android:name=".CreateUpiUI"
+            android:label="@string/title_activity_create_upi_ui" >
+        </activity>
+
+        <receiver android:name=".broadcastreceivers.LoginDoneBroadcastReceiver" >
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="LOGIN_DONE" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".broadcastreceivers.JoinVClocBroadCastReceiver" >
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="JOIN_VCLOC" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".broadcastreceivers.LeaveVClocBroadCastReceiver" >
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="LEAVE_VCLOC" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".broadcastreceivers.ReadyServiceBroadcastReceiver" >
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="SERVICE_READY" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".services.VCLocClientService"
+            android:enabled="true"
+            android:exported="true"
+            android:label="VCLOC_CLIENT_SERVICE" >
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="VCLOC_CLIENT_SERVICE" />
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyDtvQzJ3RAF7DC2dwrrIQwl2lATHM6BG8Q" />
+
+        <activity
+            android:name=".LogoutUI"
+            android:label="@string/title_activity_logout_ui" >
+        </activity>
+
+    </application>
+
+</manifest>

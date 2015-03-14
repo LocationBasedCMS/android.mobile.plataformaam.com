@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/popup_item_navigate"
+        android:title="@string/menu_navigate"
+        android:visible="true"
+        />
+
+    <item
+        android:id="@+id/popup_item_subscribe"
+        android:title="@string/menu_subscribe"
+        android:visible="true"
+        />
+
+</menu>

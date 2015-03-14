@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ClienteFinal</string>
+    <string name="title_activity_start_screen">StartScreen</string>
+    <string name="hello_world">Plataforma Aprendizagem em Movimento \n Protótipo ! </string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Títulos das Interfaces -->
+    <string name="title_activity_user_login_ui">Login do Usuário</string>
+    <string name="title_activity_create_new_user_ui">CreateNewUserUI</string>
+    <string name="title_activity_dashboard_v1">DashboardV1</string>
+
+    <!-- Label/Dica de Formulários -->
+    <string name="lblLogin">Login:</string>
+    <string name="hntLogin">Digite o Login:</string>
+    <string name="lblPassword">Senha:</string>
+    <string name="hntPassword">Digite a Senha:</string>
+    <!-- Do Login -->
+
+
+    <!-- Create New User -->
+    <string name="lblName">Nome:</string>
+    <string name="hntName">Digite o Nome:</string>
+    <string name="lblEmail">E-mail:</string>
+    <string name="hntEmail">Digite o E-mail:</string>
+
+    <!-- Botões -->
+    <string name="btnDoLogin">Logar!</string>
+    <string name="btnDoLogout">Logout!</string>
+    <string name="btnDoRegister">Registrar!</string>
+    <string name="btnCreate">Criar!</string>
+    <string name="btnOK">OK!</string>
+    <string name="btnSave">Salvar!</string>
+    <string name="btnEdit">Editar!</string>
+    <string name="btnCancel">Cancelar!</string>
+
+    <string name="btnJoin">Entrar!</string>
+    <string name="btnBack">Voltar!</string>
+    <string name="btnGoOut">Sair!</string>
+
+    <string name="btnResponse">Responder!</string>
+    <string name="btnPublish">Publicar!</string>
+
+    <!-- MENSAGENS DE SUCESSO -->
+    <string name="successLoginDone">Login efetuado com sucesso !</string>
+    <string name="successLogoutDone">Logout efetuado com sucesso</string>
+
+    <!-- MENSAGENS DE ERRO -->
+    <string name="errorGPSDisable">GPS ou Serviço de Localização desabilitado! </string>
+    <string name="errorLoginFail">Falha na Operação: Favor verificar Login/Senha</string>
+    <string name="errorInternetConnectionFail">Falha na conexão na Internet</string>
+    <string name="errorNoDataReceived">Falha: nenhum dado recebido.</string>
+    <string name="errorOperationNotAllwed">Operação não Permitida</string>
+
+    <!-- TEXTO DE DIALOG -->
+    <string name="dialogEnableGPS">Para continuar é necessário habilitar o GPS! </string>
+
+    <!-- Mensagens Ao Usuário -->
+    <string name="msgLogoutWarningInfo">
+        \n
+        O logout desconectará você deste aparelho.  \n
+        Seus regristros serão mantidos nos servidores da aplicação plataformaAM  \n \n
+    </string>
+
+
+
+    <!-- Interface de Login -->
+    <string name="msgLoginGreeting">Efetue seu Login</string>
+    <string name="msgLoginRegisterOption"> Primeira vez aqui? </string>
+    <string name="title_activity_register_user_ui">RegisterUserUI</string>
+    <string name="title_activity_main_panel">MainPanel</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_main_panel_ui">MainPanelUI</string>
+    <string name="title_activity_global_panel">Plataforma AM</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
+    <string name="title_activity_global_panel_ui">GlobalPanelUI</string>
+
+    <!-- <string name=""></string> -->
+
+    <!-- Top Menu -->
+    <string name="menu_logout">Logout</string>
+    <string name="menu_refresh">Atualizar</string>
+
+    <!-- popup Menus -->
+    <string name="menu_edit">Editar</string>
+    <string name="menu_delete">Deletar</string>
+    <string name="menu_publish">Publicar</string>
+    <string name="menu_create">Criar</string>
+    <string name="menu_subscribe">Inscrever</string>
+    <string name="menu_navigate">Navegar</string>
+
+
+
+
+
+    <string-array name="navigation_drawer_items_array">
+        <item>Produção Pessoal</item>
+        <item>Inscrições</item>
+        <item>Veículos</item>
+        <item>Navegar</item>
+        <item>Publicar</item>
+    </string-array>
+
+    <!-- GlobalPanel - FragmentMenu -->
+    <string name="sidemenu_upi">Minhas UPI</string>
+    <string name="sidemenu_vcloc">Veículos de Comunicação</string>
+    <string name="sidemenu_navigate">Navegar</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- item name="menu_navigation_drawer" type="id" / -->
+    <string name="title_section1">Conteúdo</string>
+    <string name="title_section2">Veículos de Comunicação</string>
+    <string name="title_section3">Navegação</string>
+    <string name="title_section4">Outro</string>
+    <string name="side_menu_upi">Produção Pessoal</string>
+    <string name="side_menu_vcloc">Veículos de Comunicação</string>
+    <string name="side_menu_navigate">Navegar</string>
+    <string name="title_activity_create_upi_ui">Criar Publicações</string>
+
+    <!-- UPI -->
+    <string name="lblUPITitle">Título</string>
+    <string name="hntUPITitle">Digite o título!</string>
+    <string name="lblUPIContent">Conteúdo</string>
+    <string name="hntUPIContent">Digite algum texto.</string>
+    <string name="lblUPIDescription">Descrição</string>
+    <string name="hntUPIDescription">Descreva o conteúdo.</string>
+    <string name="lblUPIType">Tipo de Conteúdo</string>
+    <string name="hntUPIType">Escolha o tipo de conteúdo!</string>
+    <string name="title_activity_splash_screen">SplashScreen</string>
+    <string name="title_activity_logout_ui">LogoutUI</string>
+
+
+
+</resources>
