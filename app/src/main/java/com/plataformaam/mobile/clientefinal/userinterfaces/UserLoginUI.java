@@ -36,10 +36,8 @@ public class UserLoginUI extends ActionBarActivity {
         SharedPreferences sharedpreferences = getSharedPreferences(MyAppConfiguration.Preferences.PREFERENCE_AUTO_LOGIN, Context.MODE_PRIVATE);
         if (sharedpreferences.contains(MyAppConfiguration.Preferences.HTTP_X_REST_USERNAME)) {
             ((EditText) findViewById(R.id.etxLoginUserLoginUI)).setText(sharedpreferences.getString(MyAppConfiguration.Preferences.HTTP_X_REST_USERNAME, ""));
-            ;
             if (sharedpreferences.contains(MyAppConfiguration.Preferences.HTTP_X_REST_PASSWORD)) {
                 ((EditText) findViewById(R.id.etxPasswordUserLoginUI)).setText(sharedpreferences.getString(MyAppConfiguration.Preferences.HTTP_X_REST_PASSWORD, ""));
-                ;
             }
         }
 
