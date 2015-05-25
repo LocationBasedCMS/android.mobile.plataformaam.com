@@ -194,7 +194,7 @@ public class FragmentEditUpi extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction(UPI upi);
+        void onFragmentInteraction(UPI upi);
     }
 
 
