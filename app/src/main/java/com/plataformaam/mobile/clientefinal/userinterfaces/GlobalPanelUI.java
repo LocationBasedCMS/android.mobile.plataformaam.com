@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.plataformaam.mobile.clientefinal.userinterfaces.fragments.FragmentEditImageUpi;
 import com.plataformaam.mobile.clientefinal.userinterfaces.mapsfragments.GlobalNavigateFragment;
 import com.plataformaam.mobile.clientefinal.R;
 import com.plataformaam.mobile.clientefinal.models.vcloc.VComComposite;
@@ -31,6 +32,7 @@ public class GlobalPanelUI extends ActionBarActivity
         GlobalNavigateFragment.OnFragmentInteractionListener,
         FragmentVComCompositeList.OnFragmentInteractionListener,
         FragmentEditUpi.OnFragmentInteractionListener,
+        FragmentEditImageUpi.OnFragmentInteractionListener,
         FragmentDeleteUpiConfirmation.OnFragmentInteractionListener
     {
 
@@ -203,5 +205,59 @@ public class GlobalPanelUI extends ActionBarActivity
         android.app.Fragment frag = FragmentUpiList.newInstance();
         fragmentTransaction.replace(R.id.container,frag, null).commit();
     }
+
+
+
+
+
+    //FUNCIONALIDADES PARA A CAMERA
+    // Storage for camera image URI components
+    private final static String CAPTURED_PHOTO_PATH_KEY = "mCurrentPhotoPath";
+    private final static String CAPTURED_PHOTO_URI_KEY = "mCapturedImageURI";
+
+    // Required for camera operations in order to save the image file on resume.
+    private String mCurrentPhotoPath = null;
+    private Uri mCapturedImageURI = null;
+
+
+        @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState.containsKey(CAPTURED_PHOTO_PATH_KEY)) {
+            mCurrentPhotoPath = savedInstanceState.getString(CAPTURED_PHOTO_PATH_KEY);
+        }
+        if (savedInstanceState.containsKey(CAPTURED_PHOTO_URI_KEY)) {
+            mCapturedImageURI = Uri.parse(savedInstanceState.getString(CAPTURED_PHOTO_URI_KEY));
+        }
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        if (mCurrentPhotoPath != null) {
+            savedInstanceState.putString(CAPTURED_PHOTO_PATH_KEY, mCurrentPhotoPath);
+        }
+        if (mCapturedImageURI != null) {
+            savedInstanceState.putString(CAPTURED_PHOTO_URI_KEY, mCapturedImageURI.toString());
+        }
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    public String getCurrentPhotoPath() {
+        return mCurrentPhotoPath;
+    }
+
+    public void setCurrentPhotoPath(String mCurrentPhotoPath) {
+        this.mCurrentPhotoPath = mCurrentPhotoPath;
+    }
+
+    public Uri getCapturedImageURI() {
+        return mCapturedImageURI;
+    }
+
+    public void setCapturedImageURI(Uri mCapturedImageURI) {
+        this.mCapturedImageURI = mCapturedImageURI;
+    }
+
+
 
 }
