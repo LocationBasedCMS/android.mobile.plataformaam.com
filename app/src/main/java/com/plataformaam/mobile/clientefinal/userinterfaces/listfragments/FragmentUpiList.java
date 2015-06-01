@@ -2,7 +2,6 @@ package com.plataformaam.mobile.clientefinal.userinterfaces.listfragments;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -20,11 +19,10 @@ import com.plataformaam.mobile.clientefinal.AppController;
 import com.plataformaam.mobile.clientefinal.R;
 import com.plataformaam.mobile.clientefinal.adapters.UPITextArrayAdapter;
 import com.plataformaam.mobile.clientefinal.models.User;
-import com.plataformaam.mobile.clientefinal.models.vcloc.VComComposite;
 import com.plataformaam.mobile.clientefinal.models.vcloc.upi.UPI;
 import com.plataformaam.mobile.clientefinal.userinterfaces.fragments.FragmentDeleteUpiConfirmation;
+import com.plataformaam.mobile.clientefinal.userinterfaces.fragments.FragmentEditImageUpi;
 import com.plataformaam.mobile.clientefinal.userinterfaces.fragments.FragmentEditUpi;
-import com.plataformaam.mobile.clientefinal.userinterfaces.mapsfragments.GlobalNavigateFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,7 +107,7 @@ public class FragmentUpiList extends Fragment implements AbsListView.OnItemClick
 
 
     public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction(UPI upi);
+        void onFragmentInteraction(UPI upi);
     }
 
 
@@ -133,6 +131,11 @@ public class FragmentUpiList extends Fragment implements AbsListView.OnItemClick
                 goToCreateUpiUI();
                 return true;
 
+            case R.id.popup_item_create_image_upi:
+                goToCreateImageUpiUI();
+                return true;
+
+
             case R.id.popup_item_edit_upi:
                 goToEditUpiUI(selected_upi);
                 return true;
@@ -148,6 +151,13 @@ public class FragmentUpiList extends Fragment implements AbsListView.OnItemClick
             default:
                 return super.onContextItemSelected(item);
         }
+    }
+
+    public void goToCreateImageUpiUI(){
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        android.app.Fragment frag  = FragmentEditImageUpi.newInstance();
+        fragmentTransaction.replace(R.id.container,frag, null).commit();
     }
 
     public void goToCreateUpiUI(){

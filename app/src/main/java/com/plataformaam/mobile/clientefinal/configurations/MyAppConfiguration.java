@@ -1,5 +1,7 @@
 package com.plataformaam.mobile.clientefinal.configurations;
 
+import android.os.AsyncTask;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -30,7 +32,7 @@ public class MyAppConfiguration {
         public final static String Runnable             = "RUNNABLE";
         public final static String Application          = "APPLICATION";
         public final static String Model                = "MODEL";
-
+        public final  static String AsyncTask           = "ASYNCTASK";
     }
 
 
@@ -167,6 +169,8 @@ public class MyAppConfiguration {
 
 
     private String  webService = "http://api.plataformaam.com/v1/index.php/api/";
+    private String  uploadWebService = "http://api.plataformaam.com/images/upload.image.php";
+
     /**
      * @return the webService
      */
@@ -210,7 +214,9 @@ public class MyAppConfiguration {
         return request_url;
     }
 
-
+    public String getUploadWebService() {
+        return uploadWebService;
+    }
 }
 
 

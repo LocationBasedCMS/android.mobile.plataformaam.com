@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import com.plataformaam.mobile.clientefinal.userinterfaces.fragments.FragmentEditImageUpi;
+import com.plataformaam.mobile.clientefinal.userinterfaces.fragments.FragmentUploadImage;
 import com.plataformaam.mobile.clientefinal.userinterfaces.mapsfragments.GlobalNavigateFragment;
 import com.plataformaam.mobile.clientefinal.R;
 import com.plataformaam.mobile.clientefinal.models.vcloc.VComComposite;
@@ -33,6 +34,7 @@ public class GlobalPanelUI extends ActionBarActivity
         FragmentVComCompositeList.OnFragmentInteractionListener,
         FragmentEditUpi.OnFragmentInteractionListener,
         FragmentEditImageUpi.OnFragmentInteractionListener,
+        FragmentUploadImage.OnFragmentInteractionListener,
         FragmentDeleteUpiConfirmation.OnFragmentInteractionListener
     {
 
@@ -159,7 +161,7 @@ public class GlobalPanelUI extends ActionBarActivity
         }
     }
 
-        @Override
+   @Override
     public void onFragmentInteraction(UPI upi) {
         if (upi != null) {
             mTitle = upi.getTitle();

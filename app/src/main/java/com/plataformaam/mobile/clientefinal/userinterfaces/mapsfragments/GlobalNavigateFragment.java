@@ -69,7 +69,7 @@ public class GlobalNavigateFragment extends Fragment
         }
         GlobalNavigateFragment fragment = new GlobalNavigateFragment();
         Bundle args = new Bundle();
-        args.putSerializable(SELECTED_VCOM, (VComComposite) param1);
+        args.putSerializable(SELECTED_VCOM, param1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -126,7 +126,7 @@ public class GlobalNavigateFragment extends Fragment
     }
 
     public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(Uri uri);
     }
 
 

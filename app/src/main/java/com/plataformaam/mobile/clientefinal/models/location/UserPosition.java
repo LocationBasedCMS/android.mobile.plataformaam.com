@@ -5,6 +5,9 @@ import com.google.gson.annotations.SerializedName;
 import com.plataformaam.mobile.clientefinal.exceptions.InvalidCoordinatesException;
 import com.plataformaam.mobile.clientefinal.helpers.volley.IObjectToPost;
 import com.plataformaam.mobile.clientefinal.models.User;
+import com.plataformaam.mobile.clientefinal.models.vcloc.VComBase;
+import com.plataformaam.mobile.clientefinal.models.vcloc.VComComposite;
+import com.plataformaam.mobile.clientefinal.models.vcloc.upi.UPI;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -25,6 +28,16 @@ public class UserPosition implements Serializable, IObjectToPost{
 
     double latitude;
     double longitude;
+
+    @SerializedName("vcomcomposite")
+    Integer composite;
+    @SerializedName("vcombase")
+    Integer base;
+    @SerializedName("upi")
+    Integer upi;
+
+
+
 
     public UserPosition() {
     }
@@ -139,21 +152,59 @@ public class UserPosition implements Serializable, IObjectToPost{
         }
     }
 
+    public Integer getComposite() {
+        return composite;
+    }
+
+    public void setComposite(Integer composite) {
+        this.composite = composite;
+    }
+
+    public Integer getBase() {
+        return base;
+    }
+
+    public void setBase(Integer base) {
+        this.base = base;
+    }
+
+    public Integer getUpi() {
+        return upi;
+    }
+
+    public void setUpi(Integer upi) {
+        this.upi = upi;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         java.text.SimpleDateFormat sdf =
                 new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         String formattedCurrentTime = sdf.format(currentTime);
-
-        return "{" +
+        String post_data ="{" +
                 "longitude:" + longitude +
                 ", latitude:" + latitude +
                 ", content:'" + content + '\'' +
                 ", currentTime:'" + formattedCurrentTime + '\'' +
-                ", user:" + user.getId() +
-                ", id:" + id +
+                ", user:" + user.getId();
+
+        if( composite != null ){
+            post_data += ", vcomcomposite:" + composite.toString();
+        }
+        if( base != null ){
+            post_data += ", vcombase:" + base.toString();
+        }
+        if( upi != null ){
+            post_data += ", upi:" + upi.toString();
+        }
+        post_data +=", id:" + id +
                 '}';
+        return post_data;
     }
 
     @Override
@@ -162,13 +213,28 @@ public class UserPosition implements Serializable, IObjectToPost{
                 new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         String formattedCurrentTime = sdf.format(currentTime);
-
-        return "{" +
+        String post_data ="{" +
                 "longitude:" + longitude +
                 ", latitude:" + latitude +
                 ", content:'" + content + '\'' +
-                ", currentTime:'" + formattedCurrentTime + '\'' +
-                ", user:" + user.getId() +
+                ", currentTime:'" + formattedCurrentTime + '\'' ;
+        if( composite != null ){
+            post_data += ", vcomcomposite:" + composite.toString();
+        }
+        if( base != null ){
+            post_data += ", vcombase:" + base.toString();
+        }
+        if( upi != null ){
+            post_data += ", upi:" + upi.toString();
+        }
+        post_data +=", user:" + user.getId() +
                 '}';
+        return post_data;
+
+
     }
+
+
+
+
 }

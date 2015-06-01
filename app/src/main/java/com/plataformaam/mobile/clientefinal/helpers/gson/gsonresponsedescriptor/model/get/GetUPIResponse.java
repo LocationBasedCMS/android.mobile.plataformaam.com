@@ -7,5 +7,5 @@ import com.plataformaam.mobile.clientefinal.models.vcloc.upi.UPI;
 
 import java.util.List;
 
-public class GetUPIResponse extends GsonResponseDescriptor<UPIDescriptor< List<UPI> >> {};
+public class GetUPIResponse extends GsonResponseDescriptor<UPIDescriptor< List<UPI> >> {}
 

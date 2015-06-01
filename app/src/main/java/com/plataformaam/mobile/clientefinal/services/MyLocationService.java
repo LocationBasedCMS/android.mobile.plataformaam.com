@@ -211,6 +211,7 @@ public class MyLocationService extends Service implements
     //THE OPERATION FAIL ISN'T A PROBLEM
     //EXCEPTION IS A PROBLEM TO PERFORMANCE
     private synchronized void saveUserPosition(final String userPositionContent){
+
         User user = AppController.getInstance().getOnlineUser();
         if( user != null ){
             if( user.getUserPositions() != null && user.getUserPositions().size()>0 ){

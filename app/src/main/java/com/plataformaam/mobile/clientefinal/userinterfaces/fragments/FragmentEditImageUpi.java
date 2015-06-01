@@ -78,7 +78,8 @@ public class FragmentEditImageUpi extends Fragment {
     Button btnOpenCamera;
     Button btnOpenFile;
     Button btnSave;
-
+    //
+    Uri mImageUri = null;
 
 
 
@@ -337,6 +338,7 @@ public class FragmentEditImageUpi extends Fragment {
 
 
     public void onActivityCameraResult(int requestCode, int resultCode, Intent data) {
+        mImageUri = data.getData();
         GlobalPanelUI activity = (GlobalPanelUI)getActivity();
         setFullImageFromFilePath(activity.getCurrentPhotoPath(), imgUpiContent);
     }
@@ -346,10 +348,9 @@ public class FragmentEditImageUpi extends Fragment {
         if (data.getBooleanExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false)) {
             Log.e(MyAppConfiguration.LOG.Activity,"FilePickerActivity.EXTRA_ALLOW_MULTIPLE");
         } else {
-            Uri uri = data.getData();
+            mImageUri = data.getData();
             imgUpiContent.setImageURI(null);
-            imgUpiContent.setImageURI(uri);
-
+            imgUpiContent.setImageURI(mImageUri);
         }
     }
 
@@ -398,6 +399,8 @@ public class FragmentEditImageUpi extends Fragment {
 
     public void openFile(View v){
         // This always works
+
+
         Intent i = new Intent(getActivity(), FilePickerActivity.class);
         // This works if you defined the intent filter
         // Intent i = new Intent(Intent.ACTION_GET_CONTENT);
@@ -417,12 +420,21 @@ public class FragmentEditImageUpi extends Fragment {
 
 
     public void saveUPI(View v){
-        changeButtonState(false);
+        if( mImageUri != null ) {
+
+            changeButtonState(false);
+            android.app.FragmentManager fragmentManager = getFragmentManager();
+            android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            android.app.Fragment frag = FragmentUploadImage.newInstance(mImageUri);
+            fragmentTransaction.replace(R.id.container, frag, null).commit();
+        }
+        /*
 
         MyMessage message = new MyMessage(FragmentEditImageUpi.class.getSimpleName(),MyAppConfiguration.EVENT_BUS_MESSAGE.SAVE_UPI);
         message.setUpi(upi);
         message.setUser(AppController.getInstance().getOnlineUser());
         EventBus.getDefault().post(message);
+        */
 
     }
 

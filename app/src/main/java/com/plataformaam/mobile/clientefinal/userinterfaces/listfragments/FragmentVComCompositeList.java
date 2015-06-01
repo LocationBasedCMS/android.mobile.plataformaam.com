@@ -216,7 +216,7 @@ public class FragmentVComCompositeList extends Fragment implements AbsListView.O
     }
 
     public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction(VComComposite composite);
+        void onFragmentInteraction(VComComposite composite);
     }
 
 
