@@ -18,7 +18,7 @@ public class MyAppData {
 
     //DADOS DO SISTEMA
     private static Map<Integer,VComComposite> allVComComposite = new HashMap<Integer, VComComposite>();    //VEÍCULOS DE COMUNICAÇÂO DISPONÍVEIS PARA ESCOLHA
-    private static final List<UPIType> upiTypes = MyAppConfiguration.loadUpiTypes();
+    private static final List<UPIType> upiTypes = MyAppConfig.loadUpiTypes();
     public List<UPIType> getUpiTypes() {
         return upiTypes;
     }

@@ -9,8 +9,6 @@ import org.apache.http.client.ClientProtocolException;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -34,7 +32,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.plataformaam.mobile.clientefinal.R;
-import com.plataformaam.mobile.clientefinal.configurations.MyAppConfiguration;
+import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
 import com.plataformaam.mobile.clientefinal.helpers.multipart.AndroidMultiPartEntity;
 import com.plataformaam.mobile.clientefinal.userinterfaces.listfragments.FragmentUpiList;
 
@@ -94,7 +92,7 @@ public class FragmentUploadImage extends Fragment {
                 new UploadFileToServer().execute();
 
             } catch (IOException e) {
-                Log.e(MyAppConfiguration.LOG.Activity,mImageUri.toString()+"  "+e.getMessage());
+                Log.e(MyAppConfig.LOG.Activity,mImageUri.toString()+"  "+e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -181,7 +179,7 @@ public class FragmentUploadImage extends Fragment {
 
         @Override
         protected void onPostExecute(String result) {
-            Log.i(MyAppConfiguration.LOG.Activity, "Response from server: " + result);
+            Log.i(MyAppConfig.LOG.Activity, "Response from server: " + result);
             // showing the server response in an alert dialog
             showAlert(result);
 
@@ -210,7 +208,7 @@ public class FragmentUploadImage extends Fragment {
             android.os.Debug.waitForDebugger();
 
             HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost( MyAppConfiguration.getInstance().getUploadWebService() );
+            HttpPost httpPost = new HttpPost( MyAppConfig.getInstance().getUploadWebService() );
             httpPost.addHeader("HTTP_X_REST_USERNAME", "bernauuudo");
             httpPost.addHeader("HTTP_X_REST_PASSWORD", "qw");
             httpPost.addHeader("Accept", "application/json");
@@ -262,7 +260,7 @@ public class FragmentUploadImage extends Fragment {
 
 
 
-            Log.d(MyAppConfiguration.LOG.AsyncTask, responseString);
+            Log.d(MyAppConfig.LOG.AsyncTask, responseString);
             return responseString;
         }
 

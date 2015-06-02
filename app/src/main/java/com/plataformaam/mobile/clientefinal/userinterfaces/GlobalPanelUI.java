@@ -137,9 +137,20 @@ public class GlobalPanelUI extends ActionBarActivity
             case R.id.action_goToLogoutUI:
                 goToLogout();
                 return true;
+
+            case R.id.action_goToEditImageUpiUI:
+                goToCreateImageUPI();
+                return true;
+
+
             case R.id.action_goToEditUpiUI:
                 goToCreateUPI();
                 return true;
+
+            case R.id.action_goToListUpiUI:
+                goToListUPI();
+                return true;
+
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -193,13 +204,6 @@ public class GlobalPanelUI extends ActionBarActivity
         startActivity(intent);
     }
 
-    public void goToCreateUPI(){
-        android.app.FragmentManager fragmentManager = getFragmentManager();
-        android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        android.app.Fragment frag = FragmentEditUpi.newInstance();
-        fragmentTransaction.replace(R.id.container,frag, null).commit();
-    }
-
 
     public void goToListUPI(){
         android.app.FragmentManager fragmentManager = getFragmentManager();
@@ -207,6 +211,23 @@ public class GlobalPanelUI extends ActionBarActivity
         android.app.Fragment frag = FragmentUpiList.newInstance();
         fragmentTransaction.replace(R.id.container,frag, null).commit();
     }
+
+    public void goToCreateUPI(){
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        android.app.Fragment frag = FragmentEditUpi.newInstance();
+        fragmentTransaction.replace(R.id.container,frag, null).commit();
+    }
+
+    public void goToCreateImageUPI(){
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        android.app.Fragment frag = FragmentEditImageUpi.newInstance();
+        fragmentTransaction.replace(R.id.container,frag, null).commit();
+    }
+
+
+
 
 
 

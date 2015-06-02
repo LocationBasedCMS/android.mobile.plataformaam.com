@@ -1,7 +1,5 @@
 package com.plataformaam.mobile.clientefinal.configurations;
 
-import android.os.AsyncTask;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -19,7 +17,7 @@ import java.util.List;
  * Created by bernard on 04/01/2015.
  */
 
-public class MyAppConfiguration {
+public class MyAppConfig {
     //GAMBIARRA :: LOGIN PARA CRIACAO DE USUÀRIO VIA API
     private final String loginBase = "base";
     private final String passwordBase = "base";
@@ -43,40 +41,26 @@ public class MyAppConfiguration {
 
     }
 
-    public static class BroadCastMessage{
-        public final static String LOGIN_DONE               =   "LOGIN_DONE";
-        public final static String AUTO_LOGIN_DONE          =   "AUTO_LOGIN_DONE";
-        public final static String SERVICE_READY            =   "SERVICE_READY";
-        public final static String JOIN_VCLOC               =   "JOIN_VCLOC";
-        public final static String LEAVE_VCLOC              =   "LEAVE_VCLOC";
-    }
-
-
     public static class UserPositionContent{
-
         public final static String INSIDE_VCLOC             =   "inside_vcloc";
         public final static String JOIN_VCLOC               =   "join_vcloc";
         public final static String LEAVE_VCLOC              =   "leave_vcloc";
-
         public final static String LOGIN_POSITION           =   "login_position";
         public final static String NAVIGATE                 =   "navigate";
         public final static String PUBLISH                  =   "publish";
         public static final String SUBSCRIBE_VCOM           =   "subscribe_vcloc";
     }
 
-
-
-    private static MyAppConfiguration globalConfiguration;
-
-    public MyAppConfiguration() {
+    private static MyAppConfig globalConfiguration;
+    public MyAppConfig() {
     }
 
 
-    public static MyAppConfiguration getInstance(){
-        if( MyAppConfiguration.globalConfiguration == null ){
-            MyAppConfiguration.globalConfiguration  = new MyAppConfiguration();
+    public static MyAppConfig getInstance(){
+        if( MyAppConfig.globalConfiguration == null ){
+            MyAppConfig.globalConfiguration  = new MyAppConfig();
         }
-        return MyAppConfiguration.globalConfiguration;
+        return MyAppConfig.globalConfiguration;
     }
 
 
@@ -104,11 +88,11 @@ public class MyAppConfiguration {
 
     public static List<UPIType> loadUpiTypes(){
         List<UPIType> upiTypes = new ArrayList<UPIType>();
-        upiTypes.add(MyAppConfiguration.UpiType_Data_Code.UPI_TEXT,    new UPIType(1,"UPIText"));
-        upiTypes.add(MyAppConfiguration.UpiType_Data_Code.UPI_IMAGE,   new UPIType(2,"UPIImage"));
-        upiTypes.add(MyAppConfiguration.UpiType_Data_Code.UPI_VIDEO,   new UPIType(3,"UPIVideo"));
-        upiTypes.add(MyAppConfiguration.UpiType_Data_Code.UPI_AUDIO,   new UPIType(4,"UPIAudio"));
-        upiTypes.add(MyAppConfiguration.UpiType_Data_Code.UPI_LINK,    new UPIType(5,"UPILink"));
+        upiTypes.add(MyAppConfig.UpiType_Data_Code.UPI_TEXT,    new UPIType(1,"UPIText"));
+        upiTypes.add(MyAppConfig.UpiType_Data_Code.UPI_IMAGE,   new UPIType(2,"UPIImage"));
+        upiTypes.add(MyAppConfig.UpiType_Data_Code.UPI_VIDEO,   new UPIType(3,"UPIVideo"));
+        upiTypes.add(MyAppConfig.UpiType_Data_Code.UPI_AUDIO,   new UPIType(4,"UPIAudio"));
+        upiTypes.add(MyAppConfig.UpiType_Data_Code.UPI_LINK,    new UPIType(5,"UPILink"));
         return upiTypes;
     }
 
@@ -121,11 +105,8 @@ public class MyAppConfiguration {
         public final static String TRY_LOGIN                = "TRY_LOGIN";
         public final static String LOGIN_DONE               = "LOGIN_DONE";
         public final static String LOGIN_FAIL               = "LOGIN_FAIL";
-
         public static final String TRY_LOGOUT               = "TRY_LOGOUT";
         public final static String LOGOUT_DONE              = "LOGOUT_DONE";
-
-
         public final static String UPI_RELOADED             = "UPI_RELOADED";
         public final static String UPI_RELOADED_FAIL        = "UPI_RELOADED_FAIL";
         public final static String SAVE_UPI                 = "SAVE_UPI";
@@ -168,8 +149,9 @@ public class MyAppConfiguration {
 
 
 
-    private String  webService = "http://api.plataformaam.com/v1/index.php/api/";
+    private String  webService = "http://api.plataformaam.com/v3/index.php/api/";
     private String  uploadWebService = "http://api.plataformaam.com/images/upload.image.php";
+
 
     /**
      * @return the webService

@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.plataformaam.mobile.clientefinal.R;
-import com.plataformaam.mobile.clientefinal.configurations.MyAppConfiguration;
+import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
 import com.plataformaam.mobile.clientefinal.models.vcloc.VComComposite;
 
 import java.util.List;
@@ -78,7 +78,7 @@ public class VComCompositeArrayAdapter  extends ArrayAdapter<VComComposite> {
         if( myComposites != null ) {
             this.myComposites = myComposites;
         }else{
-            Log.e(MyAppConfiguration.LOG.Activity,"Erro: myComposiutes == null ");
+            Log.e(MyAppConfig.LOG.Activity,"Erro: myComposiutes == null ");
         }
 
     }

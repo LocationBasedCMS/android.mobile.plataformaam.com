@@ -3,7 +3,6 @@ package com.plataformaam.mobile.clientefinal.userinterfaces.fragments;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -26,7 +25,7 @@ import android.widget.Toast;
 import com.nononsenseapps.filepicker.FilePickerActivity;
 import com.plataformaam.mobile.clientefinal.AppController;
 import com.plataformaam.mobile.clientefinal.R;
-import com.plataformaam.mobile.clientefinal.configurations.MyAppConfiguration;
+import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
 import com.plataformaam.mobile.clientefinal.configurations.MyAppData;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyMessage;
 import com.plataformaam.mobile.clientefinal.models.location.UserPosition;
@@ -41,7 +40,6 @@ import com.plataformaam.mobile.clientefinal.userinterfaces.listfragments.Fragmen
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 import de.greenrobot.event.EventBus;
@@ -245,7 +243,7 @@ public class FragmentEditImageUpi extends Fragment {
         //CRIA AS UPI
         if(this.upi == null ){
             this.upi = new UPI();
-            this.upi.setUpiType(MyAppData.getInstance().getUpiType(MyAppConfiguration.UpiType_Data_Code.UPI_IMAGE));
+            this.upi.setUpiType(MyAppData.getInstance().getUpiType(MyAppConfig.UpiType_Data_Code.UPI_IMAGE));
         }
 
     }
@@ -260,8 +258,8 @@ public class FragmentEditImageUpi extends Fragment {
 
     public void onEvent(MyMessage message){
         if( message.getSender().equals(MyService.class.getSimpleName())){
-            Log.i(MyAppConfiguration.LOG.Activity,"onEvent(MyMessage "+message.getSender()+"/"+message.getMessage()+")");
-            if( message.getMessage().equals(MyAppConfiguration.EVENT_BUS_MESSAGE.UPI_OPERATION_SUCCESS)){
+            Log.i(MyAppConfig.LOG.Activity,"onEvent(MyMessage "+message.getSender()+"/"+message.getMessage()+")");
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_SUCCESS)){
                 Toast.makeText(getActivity(), getString(R.string.operation_upi_save_success) ,Toast.LENGTH_LONG).show();
                 UPI savedUpi = message.getUpi();
                 if( savedUpi != null ){
@@ -271,7 +269,7 @@ public class FragmentEditImageUpi extends Fragment {
                 goToUpiList();
 
             }
-            if( message.getMessage().equals(MyAppConfiguration.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL)){
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL)){
                 Toast.makeText(getActivity(),getString(R.string.operation_upi_save_fail) ,Toast.LENGTH_LONG).show();
                 changeButtonState(true);
             }
@@ -346,7 +344,7 @@ public class FragmentEditImageUpi extends Fragment {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void onActivityOpenFileResult(int requestCode, int resultCode, Intent data) {
         if (data.getBooleanExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false)) {
-            Log.e(MyAppConfiguration.LOG.Activity,"FilePickerActivity.EXTRA_ALLOW_MULTIPLE");
+            Log.e(MyAppConfig.LOG.Activity,"FilePickerActivity.EXTRA_ALLOW_MULTIPLE");
         } else {
             mImageUri = data.getData();
             imgUpiContent.setImageURI(null);

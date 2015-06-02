@@ -3,7 +3,6 @@ package com.plataformaam.mobile.clientefinal.services;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.Debug;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -15,11 +14,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.plataformaam.mobile.clientefinal.AppController;
-import com.plataformaam.mobile.clientefinal.configurations.MyAppConfiguration;
+import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyMessage;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyPublishMessage;
 import com.plataformaam.mobile.clientefinal.helpers.gson.adapters.GSonBooleanAsIntAdapter;
-import com.plataformaam.mobile.clientefinal.helpers.gson.gsonresponsedescriptor.model.get.GetUPIResponse;
 import com.plataformaam.mobile.clientefinal.helpers.gson.gsonresponsedescriptor.model.get.GetVComBaseResponse;
 import com.plataformaam.mobile.clientefinal.helpers.gson.gsonresponsedescriptor.model.get.GetVComCompositeResponse;
 import com.plataformaam.mobile.clientefinal.helpers.gson.gsonresponsedescriptor.model.get.GetVComUPIPublicationResponse;
@@ -72,13 +70,13 @@ public class MyVComService extends Service {
 
     public void onEvent(MyMessage message) {
         if (message.getSender().equals(MyService.class.getSimpleName())) {
-            if (message.getMessage().equals(MyAppConfiguration.EVENT_BUS_MESSAGE.LOGIN_DONE)) {
+            if (message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_DONE)) {
                 detectUserComposite();
             }
         }
 
         if( message.getSender().equals(FragmentVComCompositeList.class.getSimpleName())){
-            if(message.getMessage().equals(MyAppConfiguration.EVENT_BUS_MESSAGE.SUBSCRIBE_COMPOSITE)){
+            if(message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.SUBSCRIBE_COMPOSITE)){
                 if(message.getRole() != null  ){
                     subsbribeComposite(message.getRole());
                 }
@@ -86,7 +84,7 @@ public class MyVComService extends Service {
 
         }
 
-        if( message.getMessage().equals(MyAppConfiguration.EVENT_BUS_MESSAGE.RELOAD_BASE)){
+        if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_BASE)){
            loadBases();
         }
 
@@ -94,7 +92,7 @@ public class MyVComService extends Service {
 
 
     public void onEvent(MyPublishMessage message){
-        if( message.getMessage().equals(MyAppConfiguration.EVENT_BUS_MESSAGE.PUBLISH_UPI )){
+        if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.PUBLISH_UPI )){
             if(message.getPublishRule() != null ){
                 //TODO - Remover excesso de parâmetros - Usar somente o publication
                 createPublication(
@@ -114,14 +112,14 @@ public class MyVComService extends Service {
         }
 
         //GET_PUBLICATIONS
-        if( message.getMessage().equals(MyAppConfiguration.EVENT_BUS_MESSAGE.GET_PUBLICATIONS)){
+        if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.GET_PUBLICATIONS)){
             reloadPublication();
         }
     }
 
 
     public void sendEventBusMessage(String strMessage,boolean isPostSticky, User user){
-        Log.i(MyAppConfiguration.LOG.Service, "sendEventBusMessage(String " + strMessage + ")");
+        Log.i(MyAppConfig.LOG.Service, "sendEventBusMessage(String " + strMessage + ")");
         MyMessage message = new MyMessage();
         message.setMessage(strMessage);
         if( user != null ){
@@ -155,7 +153,7 @@ public class MyVComService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i(MyAppConfiguration.LOG.Service,"MyVComService.onStartCommand ");
+        Log.i(MyAppConfig.LOG.Service,"MyVComService.onStartCommand ");
         new Thread(
                 new Runnable() {
                     @Override
@@ -171,9 +169,9 @@ public class MyVComService extends Service {
     public void LoadVComComposite(){
         //CRIA USUÁRIO PARA OBTER OS DADOS
         User user = new User();
-        user.setLogin(MyAppConfiguration.getInstance().getLoginBase());
-        user.setPassword(MyAppConfiguration.getInstance().getPasswordBase());
-        String request_url = MyAppConfiguration.getInstance().prepareWebService("VComComposite");
+        user.setLogin(MyAppConfig.getInstance().getLoginBase());
+        user.setPassword(MyAppConfig.getInstance().getPasswordBase());
+        String request_url = MyAppConfig.getInstance().prepareWebService("VComComposite");
 
         StringRequest stringRequest = new MyStringRequestV2(
                 Request.Method.GET,
@@ -194,7 +192,7 @@ public class MyVComService extends Service {
                         }else{
                             AppController.getInstance().setAllComposites(new ArrayList<VComComposite>());
                         }
-                        sendEventBusMessage(MyAppConfiguration.EVENT_BUS_MESSAGE.LOAD_COMPOSITE,true, null);
+                        sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOAD_COMPOSITE,true, null);
                         loadBases();
                     }
                 }
@@ -202,11 +200,11 @@ public class MyVComService extends Service {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        sendEventBusMessage(MyAppConfiguration.EVENT_BUS_MESSAGE.LOAD_COMPOSITE,true,null);
+                        sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOAD_COMPOSITE,true,null);
                     }
                 }
         );
-        AppController.getInstance().addToRequestQueue(stringRequest,MyAppConfiguration.VOLLEY_TAG.MANIPULATE_VCOM );
+        AppController.getInstance().addToRequestQueue(stringRequest, MyAppConfig.VOLLEY_TAG.MANIPULATE_VCOM );
 
     }
 
@@ -230,7 +228,7 @@ public class MyVComService extends Service {
         }
 
         AppController.getInstance().setMyComposite(myComposites);
-        sendEventBusMessage(MyAppConfiguration.EVENT_BUS_MESSAGE.LOAD_COMPOSITE, true, AppController.getInstance().getOnlineUser());
+        sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOAD_COMPOSITE, true, AppController.getInstance().getOnlineUser());
 
     }
 
@@ -243,9 +241,9 @@ public class MyVComService extends Service {
 
             loadedBase = true;
             User user = new User();
-            user.setLogin(MyAppConfiguration.getInstance().getLoginBase());
-            user.setPassword(MyAppConfiguration.getInstance().getPasswordBase());
-            String request_url = MyAppConfiguration.getInstance().prepareWebService("VComBase");
+            user.setLogin(MyAppConfig.getInstance().getLoginBase());
+            user.setPassword(MyAppConfig.getInstance().getPasswordBase());
+            String request_url = MyAppConfig.getInstance().prepareWebService("VComBase");
 
             StringRequest stringRequest = new MyStringRequestV2(
                     Request.Method.GET,
@@ -278,19 +276,19 @@ public class MyVComService extends Service {
                             }else{
                                 loadedBase = false;
                             }
-                            sendEventBusMessage(MyAppConfiguration.EVENT_BUS_MESSAGE.LOAD_BASE,true,null);
+                            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOAD_BASE,true,null);
                         }
                     }
                     ,
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            sendEventBusMessage(MyAppConfiguration.EVENT_BUS_MESSAGE.LOAD_COMPOSITE,true,null);
+                            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOAD_COMPOSITE,true,null);
                             loadedBase = false;
                         }
                     }
             );
-            AppController.getInstance().addToRequestQueue(stringRequest,MyAppConfiguration.VOLLEY_TAG.MANIPULATE_VCOM );
+            AppController.getInstance().addToRequestQueue(stringRequest, MyAppConfig.VOLLEY_TAG.MANIPULATE_VCOM );
         }
 
     }
@@ -298,7 +296,7 @@ public class MyVComService extends Service {
 
     //CONNECT TO WEBSERVICE FOR REGISTER THE PUBLICATION
     private void savePublication(final VComUPIPublication publication) {
-        String request_url = MyAppConfiguration.getInstance().prepareWebService("VComUPIPublication");
+        String request_url = MyAppConfig.getInstance().prepareWebService("VComUPIPublication");
         StringRequest stringRequest = new MyPostStringRequest(
                 request_url,
                 publication,
@@ -319,11 +317,11 @@ public class MyVComService extends Service {
                             savedPublication.setResponseRule(publication.getResponseRule());
                             AppController.getInstance().getOnlineUser().getPublications().add(savedPublication);
                             //TODO - implementar saída
-                            Log.i(MyAppConfiguration.LOG.Service, "createPublication: Sucesso -> " + savedPublication.toString());
+                            Log.i(MyAppConfig.LOG.Service, "createPublication: Sucesso -> " + savedPublication.toString());
                             reloadPublication();
                         }else{
                             //TODO - implementar saída de erro
-                            Log.i(MyAppConfiguration.LOG.Service,"createPublication: Falha ");
+                            Log.i(MyAppConfig.LOG.Service,"createPublication: Falha ");
                             //sendEventBusMessage( MyAppConfiguration.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL,false,AppController.getInstance().getOnlineUser(),null, null);
                         }
 
@@ -334,12 +332,12 @@ public class MyVComService extends Service {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         //TODO - implementar saída de erro
-                        Log.i(MyAppConfiguration.LOG.Service,"createPublication: Falha na reuiqsição");
-                        Log.i(MyAppConfiguration.LOG.Service,"\n"+error.getMessage() );
+                        Log.i(MyAppConfig.LOG.Service,"createPublication: Falha na reuiqsição");
+                        Log.i(MyAppConfig.LOG.Service,"\n"+error.getMessage() );
                     }
                 }
         );
-        AppController.getInstance().addToRequestQueue(stringRequest,MyAppConfiguration.VOLLEY_TAG.MANIPULATE_UPI);
+        AppController.getInstance().addToRequestQueue(stringRequest, MyAppConfig.VOLLEY_TAG.MANIPULATE_UPI);
     }
 
 
@@ -372,7 +370,7 @@ public class MyVComService extends Service {
                         "]";
 
 
-                String request_url = MyAppConfiguration.getInstance().prepareWebService("VComUPIPublication", filter);
+                String request_url = MyAppConfig.getInstance().prepareWebService("VComUPIPublication", filter);
                 StringRequest stringRequest = new MyStringRequestV2(
                         StringRequest.Method.GET,
                         user,
@@ -391,7 +389,7 @@ public class MyVComService extends Service {
                                     publications = output.getData().getvComUPIPublication();
                                 }
                                 setPublicationReloading(false);
-                                MyPublishMessage message = new MyPublishMessage(MyVComService.class.getSimpleName(), MyAppConfiguration.EVENT_BUS_MESSAGE.RELOAD_PUBLICATIONS);
+                                MyPublishMessage message = new MyPublishMessage(MyVComService.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_PUBLICATIONS);
                                 message.setPublications(publications);
                                 EventBus.getDefault().post(message);
                             }
@@ -403,11 +401,11 @@ public class MyVComService extends Service {
                             public void onErrorResponse(VolleyError error) {
                                 //TODO -- Error
                                 //sendEventBusMessage(MyAppConfiguration.EVENT_BUS_MESSAGE.UPI_RELOADED_FAIL, false, null, null, null);
-                                Log.e(MyAppConfiguration.LOG.Service, "MyAppConfiguration.EVENT_BUS_MESSAGE.UPI_RELOADED_FAIL");
+                                Log.e(MyAppConfig.LOG.Service, "MyAppConfiguration.EVENT_BUS_MESSAGE.UPI_RELOADED_FAIL");
                             }
                         }
                 );
-                AppController.getInstance().addToRequestQueue(stringRequest, MyAppConfiguration.VOLLEY_TAG.MANIPULATE_UPI);
+                AppController.getInstance().addToRequestQueue(stringRequest, MyAppConfig.VOLLEY_TAG.MANIPULATE_UPI);
             }
         }
     }
@@ -415,7 +413,7 @@ public class MyVComService extends Service {
     private void subsbribeComposite(VComUserRole role) {
         User user = AppController.getInstance().getOnlineUser();
         if( user != null ){
-            String request_url = MyAppConfiguration.getInstance().prepareWebService("User");
+            String request_url = MyAppConfig.getInstance().prepareWebService("User");
             request_url += "/"+user.getId()+"/vComUserRoles"+role.getId();
 
 
@@ -456,7 +454,7 @@ public class MyVComService extends Service {
 
 
         }else{
-            sendEventBusMessage(MyAppConfiguration.EVENT_BUS_MESSAGE.SUBSCRIBE_FAIL,false,user);
+            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.SUBSCRIBE_FAIL,false,user);
         }
 
 

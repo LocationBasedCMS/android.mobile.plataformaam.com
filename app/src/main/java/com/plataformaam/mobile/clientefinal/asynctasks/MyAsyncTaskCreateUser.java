@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.plataformaam.mobile.clientefinal.configurations.MyAppConfiguration;
+import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
 import com.plataformaam.mobile.clientefinal.models.User;
 
 import org.apache.http.HttpResponse;
@@ -24,9 +24,9 @@ import java.io.UnsupportedEncodingException;
  */
 public class MyAsyncTaskCreateUser extends AsyncTask<User,Class<User>,Void> {
 
-    protected String webService = MyAppConfiguration.getInstance().getWebService()+"User";
-    protected String defaultLogin =  MyAppConfiguration.getInstance().getLoginBase();
-    protected  String defaultPassword = MyAppConfiguration.getInstance().getPasswordBase();
+    protected String webService = MyAppConfig.getInstance().getWebService()+"User";
+    protected String defaultLogin =  MyAppConfig.getInstance().getLoginBase();
+    protected  String defaultPassword = MyAppConfig.getInstance().getPasswordBase();
     //ReSULTADOS
     public final int OPERATION_ERROR = -1;
     public final int OPERATION_NOT_COMPLET = 0;

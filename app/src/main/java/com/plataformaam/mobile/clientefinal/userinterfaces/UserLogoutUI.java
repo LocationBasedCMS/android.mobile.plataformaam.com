@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.plataformaam.mobile.clientefinal.R;
-import com.plataformaam.mobile.clientefinal.configurations.MyAppConfiguration;
+import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyMessage;
 import com.plataformaam.mobile.clientefinal.services.MyService;
 
@@ -45,7 +45,7 @@ public class UserLogoutUI extends ActionBarActivity {
     }
 
     public void doLogout(View v){
-        MyMessage message = new MyMessage(UserLogoutUI.class.getSimpleName(),MyAppConfiguration.EVENT_BUS_MESSAGE.TRY_LOGOUT);
+        MyMessage message = new MyMessage(UserLogoutUI.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.TRY_LOGOUT);
         EventBus.getDefault().post(message);
         Toast.makeText(getApplicationContext(), getString(R.string.operation_action_logout) , Toast.LENGTH_LONG).show();
     }
@@ -62,7 +62,7 @@ public class UserLogoutUI extends ActionBarActivity {
 
     public void onEvent(MyMessage message){
         if( message.getSender().equals(MyService.class.getSimpleName()) ){
-            if( message.getMessage().equals(MyAppConfiguration.EVENT_BUS_MESSAGE.LOGOUT_DONE)){
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.LOGOUT_DONE)){
                 goToLogin();
             }
         }

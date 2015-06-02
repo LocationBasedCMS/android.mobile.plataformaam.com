@@ -6,9 +6,16 @@
     <!-- item android:id="@+id/action_example" android:title="@string/action_example"
         app:showAsAction="withText|ifRoom" / -->
 
+    <item android:id="@+id/action_goToListUpiUI" android:title="@string/menu_list_upi"
+        android:orderInCategory="100" app:showAsAction="never"  />
 
     <item android:id="@+id/action_goToEditUpiUI" android:title="@string/menu_create_upi"
-        android:orderInCategory="100" app:showAsAction="never" />
+        android:orderInCategory="100" app:showAsAction="never"  />
+
+    <item android:id="@+id/action_goToEditImageUpiUI" android:title="@string/menu_create_upi_image"
+        android:orderInCategory="100" app:showAsAction="never"  />
+
+
 
     <item android:id="@+id/action_goToLogoutUI" android:title="@string/menu_logout"
         android:orderInCategory="100" app:showAsAction="never" />

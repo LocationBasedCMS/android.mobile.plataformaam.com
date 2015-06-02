@@ -33,6 +33,10 @@
     <string name="btnSave">Salvar!</string>
     <string name="btnEdit">Editar!</string>
     <string name="btnCancel">Cancelar!</string>
+    <string name="btnOpenCamera">Câmera</string>
+    <string name="btnOpenFile">Arquivo</string>
+
+
 
     <string name="btnJoin">Entrar!</string>
     <string name="btnBack">Voltar!</string>
@@ -91,11 +95,13 @@
     <string name="menu_delete">Deletar</string>
     <string name="menu_publish">Publicar</string>
     <string name="menu_create">Criar</string>
+    <string name="menu_create_image">Criar Imagem</string>
     <string name="menu_subscribe">Inscrever</string>
     <string name="menu_navigate">Navegar</string>
-    <string name="menu_create_upi">Produzir</string>
 
-
+    <string name="menu_list_upi">Minhas UPI</string>
+    <string name="menu_create_upi">Criar Texto</string>
+    <string name="menu_create_upi_image">Criar Imagem</string>
 
 
 

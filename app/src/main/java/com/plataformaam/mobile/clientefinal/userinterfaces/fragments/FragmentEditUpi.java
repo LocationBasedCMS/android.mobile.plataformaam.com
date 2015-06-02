@@ -12,10 +12,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.plataformaam.mobile.clientefinal.AppController;
-import com.plataformaam.mobile.clientefinal.models.vcloc.VComComposite;
-import com.plataformaam.mobile.clientefinal.userinterfaces.GlobalPanelUI;
 import com.plataformaam.mobile.clientefinal.R;
-import com.plataformaam.mobile.clientefinal.configurations.MyAppConfiguration;
+import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
 import com.plataformaam.mobile.clientefinal.configurations.MyAppData;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyMessage;
 import com.plataformaam.mobile.clientefinal.models.location.UserPosition;
@@ -25,7 +23,6 @@ import com.plataformaam.mobile.clientefinal.models.vcloc.upi.UPI;
 import com.plataformaam.mobile.clientefinal.models.vcloc.upi.VComUPIPublication;
 import com.plataformaam.mobile.clientefinal.services.MyService;
 import com.plataformaam.mobile.clientefinal.userinterfaces.listfragments.FragmentUpiList;
-import com.plataformaam.mobile.clientefinal.userinterfaces.mapsfragments.GlobalNavigateFragment;
 
 import de.greenrobot.event.EventBus;
 
@@ -202,7 +199,7 @@ public class FragmentEditUpi extends Fragment {
         //CRIA AS UPI
         if(this.upi == null ){
             this.upi = new UPI();
-            this.upi.setUpiType(MyAppData.getInstance().getUpiType(MyAppConfiguration.UpiType_Data_Code.UPI_TEXT));
+            this.upi.setUpiType(MyAppData.getInstance().getUpiType(MyAppConfig.UpiType_Data_Code.UPI_TEXT));
         }
         etxTitle.setText(upi.getTitle());
         etxContent.setText(upi.getContent());
@@ -220,7 +217,7 @@ public class FragmentEditUpi extends Fragment {
         changeButtonState(false);
         Toast.makeText(getActivity(),"Salvando ... ",Toast.LENGTH_SHORT);
         recoveryUpi();
-        MyMessage message = new MyMessage(FragmentEditUpi.class.getSimpleName(),MyAppConfiguration.EVENT_BUS_MESSAGE.SAVE_UPI);
+        MyMessage message = new MyMessage(FragmentEditUpi.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.SAVE_UPI);
         message.setUpi(upi);
         message.setUser(AppController.getInstance().getOnlineUser());
         EventBus.getDefault().post(message);
@@ -240,8 +237,8 @@ public class FragmentEditUpi extends Fragment {
 
     public void onEvent(MyMessage message){
         if( message.getSender().equals(MyService.class.getSimpleName())){
-            Log.i(MyAppConfiguration.LOG.Activity,"onEvent(MyMessage "+message.getSender()+"/"+message.getMessage()+")");
-            if( message.getMessage().equals(MyAppConfiguration.EVENT_BUS_MESSAGE.UPI_OPERATION_SUCCESS)){
+            Log.i(MyAppConfig.LOG.Activity,"onEvent(MyMessage "+message.getSender()+"/"+message.getMessage()+")");
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_SUCCESS)){
                 Toast.makeText(getActivity(), getString(R.string.operation_upi_save_success) ,Toast.LENGTH_LONG).show();
                 UPI savedUpi = message.getUpi();
                 if( savedUpi != null ){
@@ -251,7 +248,7 @@ public class FragmentEditUpi extends Fragment {
                 goToUpiList();
 
             }
-            if( message.getMessage().equals(MyAppConfiguration.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL)){
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL)){
                 Toast.makeText(getActivity(),getString(R.string.operation_upi_save_fail) ,Toast.LENGTH_LONG).show();
                 changeButtonState(true);
             }

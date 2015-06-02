@@ -18,7 +18,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.plataformaam.mobile.clientefinal.AppController;
-import com.plataformaam.mobile.clientefinal.configurations.MyAppConfiguration;
+import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
 import com.plataformaam.mobile.clientefinal.exceptions.InvalidCoordinatesException;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyMessage;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyPositionMessage;
@@ -62,8 +62,8 @@ public class MyLocationService extends Service implements
 
     public void onEvent(MyMessage message){
         if( message.getSender().equals(MyService.class.getSimpleName())){
-            if( message.getMessage().equals(MyAppConfiguration.EVENT_BUS_MESSAGE.LOGIN_DONE)){
-                manipulateQueueOperation(MyAppConfiguration.UserPositionContent.LOGIN_POSITION);
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_DONE)){
+                manipulateQueueOperation(MyAppConfig.UserPositionContent.LOGIN_POSITION);
             }
         }
         return;
@@ -137,10 +137,10 @@ public class MyLocationService extends Service implements
     // LISTENER
         @Override
         public void onConnected(Bundle bundle) {
-            Log.i(MyAppConfiguration.LOG.Service,"onConnected(Bundle bundle)"+bundle);
+            Log.i(MyAppConfig.LOG.Service,"onConnected(Bundle bundle)"+bundle);
             Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if( lastLocation != null ){
-                Log.i(MyAppConfiguration.LOG.ServiceLocation," Latitude: "+lastLocation.getLatitude() + " Longitude: "+lastLocation.getLongitude() );
+                Log.i(MyAppConfig.LOG.ServiceLocation," Latitude: "+lastLocation.getLatitude() + " Longitude: "+lastLocation.getLongitude() );
 
             }
             startLocationUpdate();
@@ -159,7 +159,7 @@ public class MyLocationService extends Service implements
     //Update de Localizações
     @Override
     public void onLocationChanged(Location location) {
-        Log.i(MyAppConfiguration.LOG.ServiceLocation," Latitude: "+location.getLatitude() + " Longitude: "+location.getLongitude() );
+        Log.i(MyAppConfig.LOG.ServiceLocation," Latitude: "+location.getLatitude() + " Longitude: "+location.getLongitude() );
         //IF HAS A CONNECTED USER
         sendMessage( prepareUserPosition(location));
     }
@@ -180,14 +180,14 @@ public class MyLocationService extends Service implements
                 userPosition.setCurrentTime(date);
                 String positionContent = manipulateQueueOperation(null);
                 if( positionContent == null ) {
-                    positionContent  = MyAppConfiguration.UserPositionContent.NAVIGATE;
+                    positionContent  = MyAppConfig.UserPositionContent.NAVIGATE;
                 }
                 userPosition.setContent(positionContent);
                 AppController.getInstance().getOnlineUser().getUserPositions().add(userPosition);
                 if(
-                           positionContent.equals(MyAppConfiguration.UserPositionContent.LOGIN_POSITION )
-                        || positionContent.equals(MyAppConfiguration.UserPositionContent.PUBLISH )
-                        || positionContent.equals(MyAppConfiguration.UserPositionContent.SUBSCRIBE_VCOM )
+                           positionContent.equals(MyAppConfig.UserPositionContent.LOGIN_POSITION )
+                        || positionContent.equals(MyAppConfig.UserPositionContent.PUBLISH )
+                        || positionContent.equals(MyAppConfig.UserPositionContent.SUBSCRIBE_VCOM )
                 ) {
                     saveUserPosition(null);
                 }
@@ -203,7 +203,7 @@ public class MyLocationService extends Service implements
 
     private void sendMessage(UserPosition position){
         if(position != null ) {
-            MyPositionMessage message = new MyPositionMessage(MyLocationService.class.getSimpleName(), MyAppConfiguration.EVENT_BUS_MESSAGE.LOCATION_CHANGE, position);
+            MyPositionMessage message = new MyPositionMessage(MyLocationService.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.LOCATION_CHANGE, position);
             EventBus.getDefault().post(message);
         }
     }
@@ -222,7 +222,7 @@ public class MyLocationService extends Service implements
                     position.setContent(userPositionContent);
                 }
                 //SALVANDO AS POSIÇÔES
-                String request_url = MyAppConfiguration.getInstance().prepareWebService("UserPosition");
+                String request_url = MyAppConfig.getInstance().prepareWebService("UserPosition");
                 StringRequest stringRequest = new MyPostStringRequest(
                         request_url,
                         position,
@@ -238,7 +238,7 @@ public class MyLocationService extends Service implements
                                     sendMessage(position);
 
                                 }else{
-                                    Log.i(MyAppConfiguration.LOG.Service,"SavePosition: Falha "+position.getContent()+" :" +position.getLatitude()+"/"+position.getLongitude() );
+                                    Log.i(MyAppConfig.LOG.Service,"SavePosition: Falha "+position.getContent()+" :" +position.getLatitude()+"/"+position.getLongitude() );
                                 }
                             }
                         }
@@ -246,12 +246,12 @@ public class MyLocationService extends Service implements
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                Log.i(MyAppConfiguration.LOG.Service,"SavePosition: Falha "+position.getContent()+" :" +position.getLatitude()+"/"+position.getLongitude() );
-                                Log.i(MyAppConfiguration.LOG.Service,"\n"+error.getMessage() );
+                                Log.i(MyAppConfig.LOG.Service,"SavePosition: Falha "+position.getContent()+" :" +position.getLatitude()+"/"+position.getLongitude() );
+                                Log.i(MyAppConfig.LOG.Service,"\n"+error.getMessage() );
                             }
                         }
                 );
-                AppController.getInstance().addToRequestQueue(stringRequest,MyAppConfiguration.VOLLEY_TAG.MANIPULATE_UPI);
+                AppController.getInstance().addToRequestQueue(stringRequest, MyAppConfig.VOLLEY_TAG.MANIPULATE_UPI);
             }
         }
     }

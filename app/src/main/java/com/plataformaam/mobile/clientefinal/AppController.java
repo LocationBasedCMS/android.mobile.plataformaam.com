@@ -8,7 +8,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
-import com.plataformaam.mobile.clientefinal.configurations.MyAppConfiguration;
+import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
 import com.plataformaam.mobile.clientefinal.helpers.volley.LruBitmapCache;
 import com.plataformaam.mobile.clientefinal.models.User;
 import com.plataformaam.mobile.clientefinal.models.vcloc.VComComposite;
@@ -65,7 +65,7 @@ public class AppController extends Application {
         // set the default tag if tag is empty
         req.setTag(TextUtils.isEmpty(tag) ? TAG : tag);
         getRequestQueue().add(req);
-        Log.i(MyAppConfiguration.LOG.Application,"addToRequestQueue"+req.toString());
+        Log.i(MyAppConfig.LOG.Application,"addToRequestQueue"+req.toString());
     }
 
     public <T> void addToRequestQueue(Request<T> req) {
@@ -82,7 +82,7 @@ public class AppController extends Application {
     public void setOnlineUser(User u){
         onlineUser = u;
         if( onlineUser!= null ) {
-            Log.i(MyAppConfiguration.LOG.Application, "setOnlineUser(User " + u.getLogin() + ")");
+            Log.i(MyAppConfig.LOG.Application, "setOnlineUser(User " + u.getLogin() + ")");
         }
     }
 
@@ -97,7 +97,7 @@ public class AppController extends Application {
     public  void setAllComposites(List<VComComposite> allComposites) {
         AppController.allComposites = allComposites;
         if( allComposites != null ) {
-            Log.i(MyAppConfiguration.LOG.Application, "setAllComposites(" + allComposites.size() + ")");
+            Log.i(MyAppConfig.LOG.Application, "setAllComposites(" + allComposites.size() + ")");
         }
     }
 
@@ -108,7 +108,7 @@ public class AppController extends Application {
     public  void setMyComposite(Map<Integer, VComComposite> myComposite) {
         AppController.myComposite = myComposite;
         if( myComposite != null ) {
-            Log.i(MyAppConfiguration.LOG.Application, "setMyComposite(Map<Integer, VComComposite> " + myComposite.size() + ")");
+            Log.i(MyAppConfig.LOG.Application, "setMyComposite(Map<Integer, VComComposite> " + myComposite.size() + ")");
         }
     }
 }

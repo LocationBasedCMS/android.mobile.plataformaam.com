@@ -1,0 +1,128 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.plataformaam.mobile.clientefinal.userinterfaces.fragments.FragmentEditUpi"
+    android:padding="10dp"
+
+    android:background="@drawable/plano_fundo_jardim_penha"
+
+    >
+    <LinearLayout
+        android:background="@drawable/form_box_layout_bg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentStart="true"
+        android:padding="10dp"
+        android:id="@+id/linearLayoutForm"
+
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_above="@+id/linearLayoutButtons"
+        android:weightSum="1">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lblUPITitle"
+            android:id="@+id/lblTitleCreateNewUPIText"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:textColor="@color/pam_text_upi_list_row_title"
+            />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/etxCreateUPIText"
+            android:layout_below="@+id/lblTitleCreateNewUPIText"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:hint="@string/hntUPITitle"
+            android:background="@color/pam_bg_upi_edit_text"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/lblUPIContent"
+            android:id="@+id/lblContentCreateNewUPIText"
+            android:layout_below="@+id/etxCreateUPIText"
+            android:layout_alignParentStart="true"
+            android:layout_alignEnd="@+id/etxCreateUPIText"
+            android:textColor="@color/pam_text_upi_list_row_title"
+            />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/imgUpiContent"
+            android:layout_weight="0.77" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/linearLayoutButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="2dp"
+
+
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignStart="@+id/linearLayoutForm"
+        android:weightSum="99">
+
+        <Button
+            android:id="@+id/btnOpenCamera"
+            android:text="@string/btnOpenCamera"
+            style="@style/btn_primary"
+            android:layout_height="wrap_content"
+            android:layout_weight="33"
+            android:layout_width="0dp"
+            android:layout_margin="4dp"
+            />
+
+        <Button
+            android:id="@+id/btnOpenFile"
+            android:text="Arquivo"
+            style="@style/btn_primary"
+            android:layout_height="wrap_content"
+            android:layout_weight="33"
+            android:layout_width="0dp"
+            android:layout_margin="4dp"
+            />
+
+        <Button
+
+            android:id="@+id/btnSaveImage"
+            android:text="@string/btnSave"
+
+            style="@style/btn_success"
+            android:layout_height="wrap_content"
+            android:layout_weight="33"
+            android:layout_width="0dp"
+            android:layout_margin="4dp"
+            />
+
+
+    </LinearLayout>
+
+
+
+
+
+</RelativeLayout>

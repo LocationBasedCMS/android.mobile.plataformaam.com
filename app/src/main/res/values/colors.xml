@@ -21,5 +21,9 @@
         <item name="pam_bg_upi_edit_title" type="color">#99DDFFFF</item>
         <item name="pam_bg_upi_edit_text" type="color">#9999DDDD</item>
 
+        <item name="primary" type="color">#DDDDFF</item>
+        <item name="primary_dark" type="color">#9999FF</item>
+        <item name="accent" type="color">#99FF99</item>
+
 
 </resources>

@@ -25,7 +25,7 @@ import com.plataformaam.mobile.clientefinal.AppController;
 import com.plataformaam.mobile.clientefinal.R;
 import com.plataformaam.mobile.clientefinal.adapters.PublishRuleDialogArrayAdapter;
 import com.plataformaam.mobile.clientefinal.adapters.UPITextArrayAdapter;
-import com.plataformaam.mobile.clientefinal.configurations.MyAppConfiguration;
+import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyMessage;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyPositionMessage;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyPublishMessage;
@@ -166,7 +166,7 @@ public class GlobalNavigateFragment extends Fragment
         super.onResume();
         EventBus.getDefault().register(GlobalNavigateFragment.this);
         first_location = true;
-        MyPublishMessage message = new MyPublishMessage(GlobalNavigateFragment.class.getSimpleName(),MyAppConfiguration.EVENT_BUS_MESSAGE.RELOAD_PUBLICATIONS);
+        MyPublishMessage message = new MyPublishMessage(GlobalNavigateFragment.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_PUBLICATIONS);
 
     }
 
@@ -258,9 +258,9 @@ public class GlobalNavigateFragment extends Fragment
         if( base != null && !loadVComBaseFail ) {
             if (base.getVirtualSpace() == null) {
                 loadVComBaseFail = true;
-                MyMessage message = new MyMessage(GlobalNavigateFragment.class.getSimpleName(),MyAppConfiguration.EVENT_BUS_MESSAGE.RELOAD_BASE);
+                MyMessage message = new MyMessage(GlobalNavigateFragment.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_BASE);
                 EventBus.getDefault().post(message);
-                Log.i(MyAppConfiguration.LOG.Activity, "drawVComBase(VComBase base) fail ->" + base.getName());
+                Log.i(MyAppConfig.LOG.Activity, "drawVComBase(VComBase base) fail ->" + base.getName());
                 return;
             } else {
                 PolygonOptions rectOptions = base.getVirtualSpace()
@@ -294,7 +294,7 @@ public class GlobalNavigateFragment extends Fragment
 
     public void onEvent(MyPositionMessage message){
         if( message.getSender().equals(MyLocationService.class.getSimpleName())){
-            if( message.getMessage().equals(MyAppConfiguration.EVENT_BUS_MESSAGE.LOCATION_CHANGE) ){
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.LOCATION_CHANGE) ){
                 if(message.getUserPosition() != null ){
                     drawAvatar(message.getUserPosition());
 
@@ -304,8 +304,8 @@ public class GlobalNavigateFragment extends Fragment
         }
 
         if( message.getSender().equals(MyVComService.class.getSimpleName())){
-            if( message.getMessage().equals(MyAppConfiguration.EVENT_BUS_MESSAGE.LOAD_BASE) ){
-                Log.i(MyAppConfiguration.LOG.Application,message.getMessage()+ " Disparando -> drawVComComposite(mVcomComposite);  " );
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.LOAD_BASE) ){
+                Log.i(MyAppConfig.LOG.Application,message.getMessage()+ " Disparando -> drawVComComposite(mVcomComposite);  " );
                 loadVComBaseFail = false;
                 drawVComComposite(mVcomComposite);
             }
@@ -316,7 +316,7 @@ public class GlobalNavigateFragment extends Fragment
 
     public void onEvent(MyPublishMessage message){
         if( message.getSender().equals(MyVComService.class.getSimpleName())){
-            if(message.getMessage().equals(MyAppConfiguration.EVENT_BUS_MESSAGE.RELOAD_PUBLICATIONS)){
+            if(message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_PUBLICATIONS)){
                 if( message.getPublications() != null ){
                     drawPublication(message.getPublications());
                 }
@@ -417,7 +417,7 @@ public class GlobalNavigateFragment extends Fragment
                 publishRule,
                 position
         );
-        MyPublishMessage message =  new MyPublishMessage(GlobalNavigateFragment.class.getSimpleName(),MyAppConfiguration.EVENT_BUS_MESSAGE.PUBLISH_UPI,publication);
+        MyPublishMessage message =  new MyPublishMessage(GlobalNavigateFragment.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.PUBLISH_UPI,publication);
         message.setUpi(upi);
         message.setBase(base);
         message.setPublishRule(publishRule);

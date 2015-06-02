@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
-import com.plataformaam.mobile.clientefinal.configurations.MyAppConfiguration;
+import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
 import com.plataformaam.mobile.clientefinal.helpers.volley.IObjectToPost;
 import com.plataformaam.mobile.clientefinal.models.User;
 import com.plataformaam.mobile.clientefinal.models.vcloc.VComBase;
@@ -164,8 +164,8 @@ public class VComUPIPublication   implements Serializable,IObjectToPost {
                         '}';
             }
         } catch (NullPointerException e){
-            Log.i(MyAppConfiguration.LOG.Model,"VComUPIPublication: " +  e.getMessage());
-            Log.i(MyAppConfiguration.LOG.Model,"VComUPIPublication: A construção do objeto de publicação não cumpre os requisitos estabelecidos pelo modelo. ");
+            Log.i(MyAppConfig.LOG.Model,"VComUPIPublication: " +  e.getMessage());
+            Log.i(MyAppConfig.LOG.Model,"VComUPIPublication: A construção do objeto de publicação não cumpre os requisitos estabelecidos pelo modelo. ");
             e.printStackTrace();
         } finally {
             return jsonToPost;

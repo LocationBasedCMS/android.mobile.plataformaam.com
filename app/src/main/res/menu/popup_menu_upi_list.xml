@@ -9,6 +9,13 @@
         />
 
     <item
+        android:id="@+id/popup_item_create_image_upi"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/menu_create_image"
+        android:visible="true"
+        />
+
+    <item
         android:id="@+id/popup_item_edit_upi"
         android:showAsAction="ifRoom|withText"
         android:title="@string/menu_edit"

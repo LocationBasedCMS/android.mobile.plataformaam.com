@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.plataformaam.mobile.clientefinal.R;
-import com.plataformaam.mobile.clientefinal.configurations.MyAppConfiguration;
+import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyMessage;
 import com.plataformaam.mobile.clientefinal.models.User;
 import com.plataformaam.mobile.clientefinal.services.MyService;
@@ -33,11 +33,11 @@ public class UserLoginUI extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_login_ui);
         //CARREGANDO DADOS ANTERIORES
-        SharedPreferences sharedpreferences = getSharedPreferences(MyAppConfiguration.Preferences.PREFERENCE_AUTO_LOGIN, Context.MODE_PRIVATE);
-        if (sharedpreferences.contains(MyAppConfiguration.Preferences.HTTP_X_REST_USERNAME)) {
-            ((EditText) findViewById(R.id.etxLoginUserLoginUI)).setText(sharedpreferences.getString(MyAppConfiguration.Preferences.HTTP_X_REST_USERNAME, ""));
-            if (sharedpreferences.contains(MyAppConfiguration.Preferences.HTTP_X_REST_PASSWORD)) {
-                ((EditText) findViewById(R.id.etxPasswordUserLoginUI)).setText(sharedpreferences.getString(MyAppConfiguration.Preferences.HTTP_X_REST_PASSWORD, ""));
+        SharedPreferences sharedpreferences = getSharedPreferences(MyAppConfig.Preferences.PREFERENCE_AUTO_LOGIN, Context.MODE_PRIVATE);
+        if (sharedpreferences.contains(MyAppConfig.Preferences.HTTP_X_REST_USERNAME)) {
+            ((EditText) findViewById(R.id.etxLoginUserLoginUI)).setText(sharedpreferences.getString(MyAppConfig.Preferences.HTTP_X_REST_USERNAME, ""));
+            if (sharedpreferences.contains(MyAppConfig.Preferences.HTTP_X_REST_PASSWORD)) {
+                ((EditText) findViewById(R.id.etxPasswordUserLoginUI)).setText(sharedpreferences.getString(MyAppConfig.Preferences.HTTP_X_REST_PASSWORD, ""));
             }
         }
 
@@ -88,7 +88,7 @@ public class UserLoginUI extends ActionBarActivity {
     }
 
     public void doLogin(View view) {
-        Log.i(MyAppConfiguration.LOG.Activity,"doLogin");
+        Log.i(MyAppConfig.LOG.Activity,"doLogin");
 
         //OBTENDO LOGIN E PASSWORD
         etxLogin = (EditText) (findViewById(R.id.etxLoginUserLoginUI));
@@ -97,10 +97,10 @@ public class UserLoginUI extends ActionBarActivity {
         password = etxPassword.getText().toString();
 
         //SALVANDO OS VALORES EM SHAREDPREFERENCES PARA FACILITAR O LOGIN DO USUÁRIO NO FUTURO.
-        SharedPreferences sharedpreferences = getSharedPreferences(MyAppConfiguration.Preferences.PREFERENCE_AUTO_LOGIN, Context.MODE_PRIVATE);
+        SharedPreferences sharedpreferences = getSharedPreferences(MyAppConfig.Preferences.PREFERENCE_AUTO_LOGIN, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
-        editor.putString(MyAppConfiguration.Preferences.HTTP_X_REST_USERNAME, login);
-        editor.putString(MyAppConfiguration.Preferences.HTTP_X_REST_PASSWORD, password);
+        editor.putString(MyAppConfig.Preferences.HTTP_X_REST_USERNAME, login);
+        editor.putString(MyAppConfig.Preferences.HTTP_X_REST_PASSWORD, password);
         editor.commit();
 
         //Criando Usuário
@@ -112,7 +112,7 @@ public class UserLoginUI extends ActionBarActivity {
         MyMessage message =new MyMessage();
         message.setSender(UserLoginUI.class.getSimpleName());
         message.setUser(test_user);
-        message.setMessage(MyAppConfiguration.EVENT_BUS_MESSAGE.TRY_LOGIN);
+        message.setMessage(MyAppConfig.EVENT_BUS_MESSAGE.TRY_LOGIN);
         EventBus.getDefault().post(message);
 
 
@@ -123,11 +123,11 @@ public class UserLoginUI extends ActionBarActivity {
     public void onEvent(MyMessage message){
         // THE SENDER IS THE SERVICE
         if( message.getSender().equals( MyService.class.getSimpleName() ) ){
-            Log.i(MyAppConfiguration.LOG.Activity, "onEvent(MyMessage message):" + message.toString());
-            if( message.getMessage().equals(MyAppConfiguration.EVENT_BUS_MESSAGE.LOGIN_FAIL )){
+            Log.i(MyAppConfig.LOG.Activity, "onEvent(MyMessage message):" + message.toString());
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_FAIL )){
                 onLoginError();
             }
-            if( message.getMessage().equals(MyAppConfiguration.EVENT_BUS_MESSAGE.LOGIN_DONE )) {
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_DONE )) {
                 Intent intent = new Intent(UserLoginUI.this,GlobalPanelUI.class);
                 startActivity(intent);
             }

@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +22,7 @@ import com.plataformaam.mobile.clientefinal.models.vcloc.roles.VComUserRole;
 import com.plataformaam.mobile.clientefinal.userinterfaces.mapsfragments.GlobalNavigateFragment;
 import com.plataformaam.mobile.clientefinal.R;
 import com.plataformaam.mobile.clientefinal.adapters.VComCompositeArrayAdapter;
-import com.plataformaam.mobile.clientefinal.configurations.MyAppConfiguration;
+import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyMessage;
 import com.plataformaam.mobile.clientefinal.models.vcloc.VComComposite;
 import com.plataformaam.mobile.clientefinal.services.MyVComService;
@@ -187,7 +186,7 @@ public class FragmentVComCompositeList extends Fragment implements AbsListView.O
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                MyMessage message = new MyMessage(FragmentVComCompositeList.class.getSimpleName(),MyAppConfiguration.EVENT_BUS_MESSAGE.SUBSCRIBE_COMPOSITE);
+                                MyMessage message = new MyMessage(FragmentVComCompositeList.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.SUBSCRIBE_COMPOSITE);
                                 message.setRole(role);
                                 EventBus.getDefault().post(message);
                             }
@@ -257,8 +256,8 @@ public class FragmentVComCompositeList extends Fragment implements AbsListView.O
 
     public void onEvent(MyMessage message){
         if(message.getSender().equals(MyVComService.class.getSimpleName()) ){
-            if( message.getMessage().equals(MyAppConfiguration.EVENT_BUS_MESSAGE.LOAD_COMPOSITE)) {
-                Log.i(MyAppConfiguration.LOG.Activity,"FragmentVComCompositeList.onEvent("+message.getMessage()+")");
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.LOAD_COMPOSITE)) {
+                Log.i(MyAppConfig.LOG.Activity,"FragmentVComCompositeList.onEvent("+message.getMessage()+")");
                 refreshList();
             }
         }

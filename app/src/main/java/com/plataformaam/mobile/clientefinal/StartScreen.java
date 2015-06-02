@@ -13,7 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.plataformaam.mobile.clientefinal.configurations.MyAppConfiguration;
+import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyMessage;
 import com.plataformaam.mobile.clientefinal.services.MyLocationService;
 import com.plataformaam.mobile.clientefinal.services.MyService;
@@ -116,12 +116,12 @@ public class StartScreen extends ActionBarActivity {
     }
 
     public void tryAutoLogin(){
-        Log.i(MyAppConfiguration.LOG.Activity,"tryAutoLogin");
+        Log.i(MyAppConfig.LOG.Activity,"tryAutoLogin");
 
 
         MyMessage myMessage = new MyMessage();
         myMessage.setSender(StartScreen.class.getSimpleName());
-        myMessage.setMessage(MyAppConfiguration.EVENT_BUS_MESSAGE.TRY_AUTO_LOGIN);
+        myMessage.setMessage(MyAppConfig.EVENT_BUS_MESSAGE.TRY_AUTO_LOGIN);
         EventBus.getDefault().post(myMessage);
 
     }
@@ -131,13 +131,13 @@ public class StartScreen extends ActionBarActivity {
     public void onEvent(MyMessage message){
         // THE SENDER IS THE SERVICE
         if( message.getSender().equals( MyService.class.getSimpleName() ) ){
-            Log.i(MyAppConfiguration.LOG.Activity,"onEvent(MyMessage message):"+message.toString());
+            Log.i(MyAppConfig.LOG.Activity,"onEvent(MyMessage message):"+message.toString());
 
-            if( message.getMessage().equals(MyAppConfiguration.EVENT_BUS_MESSAGE.LOGIN_FAIL )){
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_FAIL )){
                 //GO TO USER LOGIN
                 goToUserLogin();
             }
-            if( message.getMessage().equals(MyAppConfiguration.EVENT_BUS_MESSAGE.LOGIN_DONE )) {
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_DONE )) {
                 goToPanel();
             }
         }
