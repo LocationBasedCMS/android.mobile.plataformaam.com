@@ -35,6 +35,8 @@
     <string name="btnCancel">Cancelar!</string>
     <string name="btnOpenCamera">Câmera</string>
     <string name="btnOpenFile">Arquivo</string>
+    <string name="btnYes">Sim</string>
+    <string name="btnNo">Não</string>
 
 
 
@@ -57,9 +59,16 @@
     <string name="errorInternetConnectionFail">Falha na conexão na Internet</string>
     <string name="errorNoDataReceived">Falha: nenhum dado recebido.</string>
     <string name="errorOperationNotAllwed">Operação não Permitida</string>
+    <string name="errorUPITitleAndImage">Título/Imagem não podem ser vazios</string>
+
+
 
     <!-- TEXTO DE DIALOG -->
     <string name="dialogEnableGPS">Para continuar é necessário habilitar o GPS! </string>
+    <string name="dialogSelectRole">Selecione um Papel</string>
+    <string name="dialogSelectRoleFail">Nenhum Papel Disponível!</string>
+    <string name="dialogSelectPublishRule">Selecione a Regra de Publicação</string>
+    <string name="dialogSelectResponseRule">Selecione a Regra de Resposta</string>
 
     <!-- Mensagens Ao Usuário -->
     <string name="msgLogoutWarningInfo">
@@ -155,3 +164,4 @@
 
 
 </resources>
+

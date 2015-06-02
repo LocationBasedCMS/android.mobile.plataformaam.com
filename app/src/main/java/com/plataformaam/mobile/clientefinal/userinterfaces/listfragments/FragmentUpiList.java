@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.plataformaam.mobile.clientefinal.AppController;
 import com.plataformaam.mobile.clientefinal.R;
-import com.plataformaam.mobile.clientefinal.adapters.UPITextArrayAdapter;
+import com.plataformaam.mobile.clientefinal.adapters.UPIArrayAdapter;
 import com.plataformaam.mobile.clientefinal.models.User;
 import com.plataformaam.mobile.clientefinal.models.vcloc.upi.UPI;
 import com.plataformaam.mobile.clientefinal.userinterfaces.fragments.FragmentDeleteUpiConfirmation;
@@ -39,7 +39,7 @@ import java.util.List;
 public class FragmentUpiList extends Fragment implements AbsListView.OnItemClickListener {
 
     private OnFragmentInteractionListener mListener;
-    UPITextArrayAdapter mAdapter;
+    UPIArrayAdapter mAdapter;
     UPI selected_upi = null;
     AbsListView listView;
     private AbsListView mListView;
@@ -199,11 +199,11 @@ public class FragmentUpiList extends Fragment implements AbsListView.OnItemClick
 
 
     private void buildList(List<UPI> upis){
-        mAdapter = new UPITextArrayAdapter(
+        mAdapter = new UPIArrayAdapter(
                 getActivity(),
-                R.layout.row_upitext_list ,
-                upis
-        );
+                R.layout.row_upitext_list,
+                R.layout.row_upiimage_list ,
+                upis);
 
 
         ListView list = (ListView) view.findViewById(R.id.upi_list);

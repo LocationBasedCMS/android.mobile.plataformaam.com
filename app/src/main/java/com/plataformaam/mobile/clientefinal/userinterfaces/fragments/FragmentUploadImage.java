@@ -30,12 +30,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.plataformaam.mobile.clientefinal.AppController;
 import com.plataformaam.mobile.clientefinal.R;
 import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
+import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyMessage;
 import com.plataformaam.mobile.clientefinal.helpers.multipart.AndroidMultiPartEntity;
+import com.plataformaam.mobile.clientefinal.helpers.multipart.UploadImageResponse;
+import com.plataformaam.mobile.clientefinal.models.vcloc.upi.UPI;
+import com.plataformaam.mobile.clientefinal.services.MyService;
 import com.plataformaam.mobile.clientefinal.userinterfaces.listfragments.FragmentUpiList;
 
+import de.greenrobot.event.EventBus;
 
 
 /**
@@ -49,7 +57,9 @@ import com.plataformaam.mobile.clientefinal.userinterfaces.listfragments.Fragmen
 public class FragmentUploadImage extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String FILE_URI = "FILE_URI";
+    private static final String UPI_TITLE = "UPI_TITLE";
     private Uri mImageUri;
+    private String upiTitle;
     Bitmap bitmap;
 
     private ProgressBar progressBar;
@@ -57,10 +67,11 @@ public class FragmentUploadImage extends Fragment {
     private TextView txtPercentage;
     long totalSize = 0;
 
-    public static FragmentUploadImage newInstance(Uri fileUri) {
+    public static FragmentUploadImage newInstance(Uri fileUri, String upiTitle) {
         FragmentUploadImage fragment = new FragmentUploadImage();
         Bundle args = new Bundle();
         args.putString(FILE_URI, fileUri.toString());
+        args.putString(UPI_TITLE, fileUri.toString());
         fragment.setArguments(args);
         return fragment;
     }
@@ -77,9 +88,18 @@ public class FragmentUploadImage extends Fragment {
         if (getArguments() != null) {
             mImageUri = Uri.parse(getArguments().getString(FILE_URI));
             filePath = mImageUri.getPath();
-
+            upiTitle = getArguments().getString(UPI_TITLE);
         }
+        EventBus.getDefault().register(FragmentUploadImage.this);
     }
+
+    @Override
+    public void onDestroy() {
+        EventBus.getDefault().unregister(FragmentUploadImage.this);
+        super.onDestroy();
+    }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
@@ -100,7 +120,6 @@ public class FragmentUploadImage extends Fragment {
         return rootView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -139,13 +158,6 @@ public class FragmentUploadImage extends Fragment {
     }
 
 
-    //NAVEGAcAO
-    public void goToFragmentList(){
-        android.app.FragmentManager fragmentManager = getFragmentManager();
-        android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        android.app.Fragment frag  = FragmentUpiList.newInstance();
-        fragmentTransaction.replace(R.id.container,frag, null).commit();
-    }
 
 
     /**
@@ -209,8 +221,8 @@ public class FragmentUploadImage extends Fragment {
 
             HttpClient httpClient = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost( MyAppConfig.getInstance().getUploadWebService() );
-            httpPost.addHeader("HTTP_X_REST_USERNAME", "bernauuudo");
-            httpPost.addHeader("HTTP_X_REST_PASSWORD", "qw");
+            httpPost.addHeader("HTTP_X_REST_USERNAME", AppController.getInstance().getOnlineUser().getLogin());
+            httpPost.addHeader("HTTP_X_REST_PASSWORD", AppController.getInstance().getOnlineUser().getPassword());
             httpPost.addHeader("Accept", "application/json");
             String boundary = "--" + System.currentTimeMillis()+ "--";
             //httpPost.setHeader("Content-type", "multipart/form-data; charset=utf-8;");
@@ -246,6 +258,11 @@ public class FragmentUploadImage extends Fragment {
                 if (statusCode == 200) {
                     // Server response
                     responseString = EntityUtils.toString(r_entity);
+                    Gson gson = new Gson();
+                    UploadImageResponse imageResponse = gson.fromJson(responseString, UploadImageResponse.class);
+                    saveUPI(imageResponse.getUrl());
+
+
                 } else {
                     responseString = "Error occurred! Http Status Code: "
                             + statusCode;
@@ -265,29 +282,47 @@ public class FragmentUploadImage extends Fragment {
         }
 
 
-//        String newUploadFile(){
-//
-//            String responseString = null;
-//            HttpClient httpclient = new DefaultHttpClient();
-//            HttpPost httppost = new HttpPost(url);
-//
-//            FileBody bin = new FileBody(new File(fileName));
-//            StringBody comment = new StringBody("Filename: " + fileName);
-//
-//            MultipartEntity reqEntity = new MultipartEntity();
-//            reqEntity.addPart("bin", bin);
-//            reqEntity.addPart("comment", comment);
-//            httppost.setEntity(reqEntity);
-//
-//            HttpResponse response = httpclient.execute(httppost);
-//            HttpEntity resEntity = response.getEntity();
-//
-//
-//            return responseString;
-//        }
+
     }
 
+    public void onEvent(MyMessage message){
+        if( message.getSender().equals(MyService.class.getSimpleName())){
+            Log.i(MyAppConfig.LOG.Activity,"onEvent(MyMessage "+message.getSender()+"/"+message.getMessage()+")");
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_SUCCESS)){
+                Toast.makeText(getActivity(), getString(R.string.operation_upi_save_success), Toast.LENGTH_LONG).show();
+                UPI savedUpi = message.getUpi();
+                if( savedUpi != null ){
+                    AppController.getInstance().getOnlineUser().getUpis().add(savedUpi);
+                }
+                goToUpiList();
 
+            }
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL)){
+                Toast.makeText(getActivity(),getString(R.string.operation_upi_save_fail) ,Toast.LENGTH_LONG).show();
+                goToUpiList();
+            }
+
+        }
+    }
+    //NAVEGAcAO
+    public void goToUpiList(){
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        android.app.Fragment frag  = FragmentUpiList.newInstance();
+        fragmentTransaction.replace(R.id.container,frag, null).commit();
+    }
+
+    public void saveUPI(String content){
+        UPI upi = new UPI();
+        upi.setUser(AppController.getInstance().getOnlineUser());
+        upi.setTitle(upiTitle);
+        upi.setContent(content);
+        upi.setUpiType(MyAppConfig.UpiType_Data_Code.UPI_IMAGE);
+        MyMessage message = new MyMessage(FragmentEditUpi.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.SAVE_UPI);
+        message.setUpi(upi);
+        message.setUser(AppController.getInstance().getOnlineUser());
+        EventBus.getDefault().post(message);
+    }
 
 }
 

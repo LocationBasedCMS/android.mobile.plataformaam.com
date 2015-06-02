@@ -151,10 +151,9 @@ public class FragmentVComCompositeList extends Fragment implements AbsListView.O
                     //CREATE A  ADAPTER
                     VComUserRoleArrayAdapter adapter = new VComUserRoleArrayAdapter(getActivity(),R.layout.row_vcomuserrole_list,roles);
                     //CREATE A DIALOG
-                    //TODO - strings.xml
                     AlertDialog.Builder builder = new AlertDialog.Builder(
                             getActivity())
-                            .setTitle("Papeis disponíveis no cadastro!")
+                            .setTitle(getString(R.string.dialogSelectRole) )
                             .setAdapter(
                                     adapter,
                                     new DialogInterface.OnClickListener() {
@@ -169,8 +168,12 @@ public class FragmentVComCompositeList extends Fragment implements AbsListView.O
 
 
                 } else {
-                    //TODO - VCom sem papeis disponíveis  - Exibir mensagem .
-                    Toast.makeText(getActivity(),"Usuário Sem Papel - implemenatr" , Toast.LENGTH_LONG).show();
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                    alertDialogBuilder
+                            .setTitle(getString(R.string.dialogSelectRole))
+                            .setMessage(getString(R.string.dialogSelectRoleFail))
+                            .setCancelable(true);
+                    alertDialogBuilder.show();
                 }
             }
         }
@@ -182,7 +185,7 @@ public class FragmentVComCompositeList extends Fragment implements AbsListView.O
                 getActivity())
                 .setTitle(" Confirmar cadastro ? ")
                 .setMessage( role.getName() )
-                .setPositiveButton("SIM",
+                .setPositiveButton(getString(R.string.btnYes),
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -192,7 +195,7 @@ public class FragmentVComCompositeList extends Fragment implements AbsListView.O
                             }
                         }
 
-                ).setNegativeButton("Não",null)
+                ).setNegativeButton(getString(R.string.btnNo),null)
                 .setCancelable(true);
         builder.show();
     }

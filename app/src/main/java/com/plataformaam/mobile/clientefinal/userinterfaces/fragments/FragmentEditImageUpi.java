@@ -418,22 +418,18 @@ public class FragmentEditImageUpi extends Fragment {
 
 
     public void saveUPI(View v){
-        if( mImageUri != null ) {
-
-            changeButtonState(false);
-            android.app.FragmentManager fragmentManager = getFragmentManager();
-            android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            android.app.Fragment frag = FragmentUploadImage.newInstance(mImageUri);
-            fragmentTransaction.replace(R.id.container, frag, null).commit();
+       String upiTitle =  etxTitle.getText().toString();
+        if( !upiTitle.isEmpty() ) {
+           if (mImageUri != null) {
+                changeButtonState(false);
+                android.app.FragmentManager fragmentManager = getFragmentManager();
+                android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                android.app.Fragment frag = FragmentUploadImage.newInstance(mImageUri,upiTitle);
+                fragmentTransaction.replace(R.id.container, frag, null).commit();
+            }
+        } else{
+            Toast.makeText(getActivity(), getString(R.string.errorUPITitleAndImage) ,Toast.LENGTH_SHORT).show();
         }
-        /*
-
-        MyMessage message = new MyMessage(FragmentEditImageUpi.class.getSimpleName(),MyAppConfiguration.EVENT_BUS_MESSAGE.SAVE_UPI);
-        message.setUpi(upi);
-        message.setUser(AppController.getInstance().getOnlineUser());
-        EventBus.getDefault().post(message);
-        */
-
     }
 
 }

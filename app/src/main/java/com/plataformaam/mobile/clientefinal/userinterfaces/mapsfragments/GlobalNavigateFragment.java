@@ -24,7 +24,7 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.plataformaam.mobile.clientefinal.AppController;
 import com.plataformaam.mobile.clientefinal.R;
 import com.plataformaam.mobile.clientefinal.adapters.PublishRuleDialogArrayAdapter;
-import com.plataformaam.mobile.clientefinal.adapters.UPITextArrayAdapter;
+import com.plataformaam.mobile.clientefinal.adapters.UPIArrayAdapter;
 import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyMessage;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyPositionMessage;
@@ -389,7 +389,12 @@ public class GlobalNavigateFragment extends Fragment
 
     private void selectUpi(final LatLng position,final VComBase base,final UPIAggregationRuleStart publishRule){
         final List<UPI> upis = AppController.getInstance().getOnlineUser().getUpis();
-        UPITextArrayAdapter adapter = new UPITextArrayAdapter(getActivity(),R.layout.row_upitext_list,upis);
+        UPIArrayAdapter adapter = new UPIArrayAdapter(
+                getActivity(),
+                R.layout.row_upitext_list,
+                R.layout.row_upiimage_list,
+                upis
+        );
         AlertDialog.Builder builder = new AlertDialog.Builder(
                 getActivity())
                 .setTitle("Selecione a Produção ")
