@@ -57,10 +57,9 @@ public class GlobalNavigateFragment extends Fragment
     private View rootView;
 
 
+
+
     VComComposite mVcomComposite;
-    int mVcomCompositePosition;
-
-
 
     private OnFragmentInteractionListener mListener;
     public static GlobalNavigateFragment newInstance(VComComposite param1) {
@@ -289,41 +288,6 @@ public class GlobalNavigateFragment extends Fragment
     }
 
 
-    public void onEvent(MyMessage message){
-        return;
-    }
-
-    public void onEvent(MyPositionMessage message){
-        if( message.getSender().equals(MyLocationService.class.getSimpleName())){
-            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.LOCATION_CHANGE) ){
-                if(message.getUserPosition() != null ){
-                    drawAvatar(message.getUserPosition());
-
-                }
-            }
-
-        }
-
-        if( message.getSender().equals(MyVComService.class.getSimpleName())){
-            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.LOAD_BASE) ){
-                Log.i(MyAppConfig.LOG.Application,message.getMessage()+ " Disparando -> drawVComComposite(mVcomComposite);  " );
-                loadVComBaseFail = false;
-                drawVComComposite(mVcomComposite);
-            }
-        }
-
-
-    }
-
-    public void onEvent(MyPublishMessage message){
-        if( message.getSender().equals(MyVComService.class.getSimpleName())){
-            if(message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_PUBLICATIONS)){
-                if( message.getPublications() != null ){
-                    drawPublication(message.getPublications());
-                }
-            }
-        }
-    }
 
 
     public VComComposite isInsideOfComposite(LatLng point){
@@ -428,6 +392,72 @@ public class GlobalNavigateFragment extends Fragment
         message.setPosition(position);
         EventBus.getDefault().post(message);
     }
+
+    //TODO - Mensagem de erro quando a publicação falah
+    //TODO Botão para visualização de detalhes da publicação
+    //TODO Botão para fechar a visualização da publicação
+    //TODO Visualização da Resposta
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    //  Event Bus : Dispara os Metodos
+    ////////////////////////////////////////////////////////////////////////////////////////
+    public void onEvent(MyMessage message){
+        return;
+    }
+
+    public void onEvent(MyPositionMessage message){
+        if( message.getSender().equals(MyLocationService.class.getSimpleName())){
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.LOCATION_CHANGE) ){
+                if(message.getUserPosition() != null ){
+                    drawAvatar(message.getUserPosition());
+
+                }
+            }
+
+        }
+
+        if( message.getSender().equals(MyVComService.class.getSimpleName())){
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.LOAD_BASE) ){
+                Log.i(MyAppConfig.LOG.Application,message.getMessage()+ " Disparando -> drawVComComposite(mVcomComposite);  " );
+                loadVComBaseFail = false;
+                drawVComComposite(mVcomComposite);
+            }
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.PUBLISH_UPI_FAIL)){
+                Toast.makeText(getActivity()," Falha ao publicar. ",Toast.LENGTH_SHORT ).show();
+                //TODO - Falha na Publicação
+            }
+        }
+
+
+    }
+
+    public void onEvent(MyPublishMessage message){
+        if( message.getSender().equals(MyVComService.class.getSimpleName())){
+            if(message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_PUBLICATIONS)){
+                if( message.getPublications() != null ){
+                    drawPublication(message.getPublications());
+                }
+            }
+        }
+    }
+
+
 
 
 
