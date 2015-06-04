@@ -75,18 +75,19 @@ public class FragmentUpiList extends Fragment implements AbsListView.OnItemClick
         super.onDestroy();
     }
 
-    public void onEvent(MyMessage message){
-        if( message.getSender().equals(MyService.class.getSimpleName())){
-            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED)){
-                List<UPI> upis = AppController.getInstance().getOnlineUser().getUpis();
-                if( upis != null ) {
-                    refreshUpiList(upis);
-                }
-            }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        User user = AppController.getInstance().getOnlineUser();
+        List<UPI> upis=null;
+        if( user != null ){
+            upis = user.getUpis();
         }
+        if( upis == null ){
+            upis = new ArrayList<UPI>();
+        }
+        buildList(upis);
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -105,6 +106,8 @@ public class FragmentUpiList extends Fragment implements AbsListView.OnItemClick
         }
     }
 
+
+
     @Override
     public void onDetach() {
         super.onDetach();
@@ -114,13 +117,7 @@ public class FragmentUpiList extends Fragment implements AbsListView.OnItemClick
 
 
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (null != mListener) {
-            selected_upi = (UPI) parent.getItemAtPosition(position);
-            mListener.onFragmentInteraction( selected_upi );
-        }
-    }
+
 
 
     public void setEmptyText(CharSequence emptyText) {
@@ -135,6 +132,9 @@ public class FragmentUpiList extends Fragment implements AbsListView.OnItemClick
         void onFragmentInteraction(UPI upi);
     }
 
+    ///////////////////////////////////////////////////////////////////
+    //  MENU
+    /////////////////////////////////////////////////////////////////
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,ContextMenu.ContextMenuInfo menuInfo) {
@@ -185,35 +185,7 @@ public class FragmentUpiList extends Fragment implements AbsListView.OnItemClick
         fragmentTransaction.replace(R.id.container,frag, null).commit();
     }
 
-    public void goToCreateUpiUI(){
-        android.app.FragmentManager fragmentManager = getFragmentManager();
-        android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        android.app.Fragment frag  = FragmentEditUpi.newInstance();
-        fragmentTransaction.replace(R.id.container,frag, null).commit();
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        User user = AppController.getInstance().getOnlineUser();
-        List<UPI> upis=null;
-        if( user != null ){
-            upis = user.getUpis();
-        }
-        if( upis == null ){
-            upis = new ArrayList<UPI>();
-        }
-        buildList(upis);
-
-    }
-
-    public void goToEditUpiUI(UPI upi){
-        mListener.onFragmentInteraction( upi);
-        android.app.FragmentManager fragmentManager = getFragmentManager();
-        android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        android.app.Fragment frag  = FragmentEditUpi.newInstance(upi);
-        fragmentTransaction.replace(R.id.container,frag, null).commit();
-    }
 
     //REFRESH LIST VIEW
     void refreshUpiList( List<UPI> upis){
@@ -238,12 +210,56 @@ public class FragmentUpiList extends Fragment implements AbsListView.OnItemClick
         mAdapter.notifyDataSetChanged();
     }
 
-    public void deleteUpi(UPI upi){
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (null != mListener) {
+            selected_upi = (UPI) parent.getItemAtPosition(position);
+            mListener.onFragmentInteraction(selected_upi);
+        }
+    }
 
+    //NAVEGACAO
+    public void goToCreateUpiUI(){
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        android.app.Fragment frag  = FragmentEditUpi.newInstance();
+        fragmentTransaction.replace(R.id.container,frag, null).commit();
+    }
+
+
+
+
+    public void goToEditUpiUI(UPI upi){
+        mListener.onFragmentInteraction( upi);
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        android.app.Fragment frag  = FragmentEditUpi.newInstance(upi);
+        fragmentTransaction.replace(R.id.container,frag, null).commit();
+    }
+
+
+
+    public void deleteUpi(UPI upi){
         android.app.FragmentManager fragmentManager = getFragmentManager();
         android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         android.app.Fragment frag  = FragmentDeleteUpiConfirmation.newInstance(upi);
         fragmentTransaction.replace(R.id.container,frag, null).commit();
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    //  Event Bus
+    ////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void onEvent(MyMessage message){
+        if( message.getSender().equals(MyService.class.getSimpleName())){
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED)){
+                List<UPI> upis = AppController.getInstance().getOnlineUser().getUpis();
+                if( upis != null ) {
+                    refreshUpiList(upis);
+                }
+            }
+        }
     }
 
 }

@@ -1,6 +1,7 @@
 package com.plataformaam.mobile.clientefinal.models.vcloc.upi;
 
 import com.google.gson.annotations.SerializedName;
+import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
 import com.plataformaam.mobile.clientefinal.configurations.MyAppData;
 import com.plataformaam.mobile.clientefinal.helpers.volley.IObjectToPost;
 import com.plataformaam.mobile.clientefinal.models.User;
@@ -28,7 +29,7 @@ public class UPI  implements Serializable,IObjectToPost {
     }
 
     public void setUpiType(int upiTypeID) {
-        UPIType type  = MyAppData.getInstance().getUpiType(upiTypeID);
+        UPIType type  = MyAppConfig.generateUpiType(upiTypeID);
         this.upitype = type;
     }
 

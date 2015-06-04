@@ -13,7 +13,6 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.plataformaam.mobile.clientefinal.AppController;
 import com.plataformaam.mobile.clientefinal.adapters.VComUserRoleArrayAdapter;
@@ -258,7 +257,7 @@ public class FragmentVComCompositeList extends Fragment implements AbsListView.O
 
     public void onEvent(MyMessage message){
         if(message.getSender().equals(MyVComService.class.getSimpleName()) ){
-            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.COMPOSITE_LOADED)) {
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.COMPOSITE_LOADED_SUCCESS)) {
                 Log.i(MyAppConfig.LOG.Activity,"FragmentVComCompositeList.onEvent("+message.getMessage()+")");
                 refreshList();
             }

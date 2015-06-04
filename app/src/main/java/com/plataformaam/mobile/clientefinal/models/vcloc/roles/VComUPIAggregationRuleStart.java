@@ -6,17 +6,13 @@ import java.io.Serializable;
 
 /**
  * Created by bernard on 31/01/2015.
+ *   LIga a Regra de Publicação ao Papel do USuário.
  */
 public class VComUPIAggregationRuleStart implements Serializable{
     int id;
     VComUserRole vComUserRole;
     UPIAggregationRuleStart upiAggregationRuleStart;
     String name;
-
-//TODO - Qual é a regra de publicação ....
-
-
-
 
     boolean
             allowedRead,

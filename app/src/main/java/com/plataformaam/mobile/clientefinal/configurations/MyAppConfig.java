@@ -22,6 +22,7 @@ public class MyAppConfig {
     private final String loginBase = "root";
     private final String passwordBase = "qq";
 
+    //GAMBIARRA
     //DEVE BATER COM O BANCO DE DADOS
     public final static class UPI_TYPE_CODE {
         public final  static  int UPI_TEXT   = 1;
@@ -29,6 +30,13 @@ public class MyAppConfig {
         public final  static  int UPI_VIDEO  = 3;
         public final  static  int UPI_AUDIO  = 4;
         public final  static  int UPI_LINK   = 5;
+    }
+    public static UPIType generateUpiType(int CODE){
+        if( UPI_TYPE_CODE.UPI_IMAGE == CODE  )
+            return new UPIType(UPI_TYPE_CODE.UPI_IMAGE,"UPI_IMAGE");
+        if( UPI_TYPE_CODE.UPI_TEXT == CODE  )
+            return new UPIType(UPI_TYPE_CODE.UPI_TEXT,"UPI_TEXT");
+        return null;
     }
 
     public static class LOG{
@@ -109,6 +117,8 @@ public class MyAppConfig {
         public final static String LOGIN_FAIL               = "LOGIN_FAIL";
         public static final String TRY_LOGOUT               = "TRY_LOGOUT";
         public final static String LOGOUT_DONE              = "LOGOUT_DONE";
+
+        //UPI MESSAGES
         public final static String UPI_RELOADED             = "UPI_RELOADED";
         public final static String UPI_RELOADED_FAIL        = "UPI_RELOADED_FAIL";
         public final static String SAVE_UPI                 = "SAVE_UPI";
@@ -119,12 +129,21 @@ public class MyAppConfig {
 
         //VCOM SERVICE
         public final static String LOAD_COMPOSITE           = "LOAD_COMPOSITE";
-        public final static String COMPOSITE_LOADED         = "COMPOSITE_LOADED";
+        public final static String COMPOSITE_LOADED_FAIL    = "COMPOSITE_LOADED_FAIL";
+        public final static String COMPOSITE_LOADED_SUCCESS = "COMPOSITE_LOADED_SUCCESS";
         public final static String LOAD_BASE                = "LOAD_BASE";
+        public final static String BASE_LOADED_FAIL         = "BASE_LOADED_FAIL";
+        public final static String BASE_LOADED_SUCCESS      = "BASE_LOADED_SUCCESS";
+
+
+
         public final static String PUBLISH_UPI              = "PUBLISH_UPI";
         public final static String RESPONSE_UPI             = "RESPONSE_UPI";
         public final static String PUBLISH_UPI_FAIL         = "PUBLISH_UPI_FAIL";
         public final static String PUBLISH_UPI_SUCCESS      = "PUBLISH_UPI_SUCCESS";
+        public final static String RESPONSE_UPI_FAIL        = "PUBLISH_UPI_FAIL";
+        public final static String RESPONSE_UPI_SUCCESS     = "PUBLISH_UPI_SUCCESS";
+
 
         public static final String SUBSCRIBE_COMPOSITE      = "SUBSCRIBE_COMPOSITE";
         public static final String SUBSCRIBE_SUCCESS        = "SUBSCRIBE_SUCCESS";

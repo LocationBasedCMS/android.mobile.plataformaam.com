@@ -36,12 +36,9 @@ public class VComUserRoleArrayAdapter extends ArrayAdapter<VComUserRole> {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(this.rowLayoutID, parent, false);
 
-        //TODO - Corrigir os campos  --- apona para o roles 
         TextView title = (TextView) rowView.findViewById(R.id.txtRowVComUserRoleName);
-
         VComUserRole role = values.get(position);
         title.setText(role.getName());
-
         rowView.setBackgroundColor(rowView.getResources().getColor(R.color.pam_bg_vcom_list_row_signed));
 
 

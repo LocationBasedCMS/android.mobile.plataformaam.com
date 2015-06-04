@@ -370,11 +370,9 @@ public class GlobalNavigateFragment extends Fragment
     private void selectRule(final LatLng position,final VComBase base){
         List<UPIAggregationRuleStart> publishRules = base.getPublishRules();
         PublishRuleDialogArrayAdapter adapter = new PublishRuleDialogArrayAdapter(getActivity(),R.layout.dialog_row_publish_rule,publishRules);
-
-        //TODO xml
         AlertDialog.Builder builder = new AlertDialog.Builder(
                 getActivity())
-                .setTitle("Selecione a Regra de Publicação")
+                .setTitle(R.string.dialogSelectPublishRule)
                 .setAdapter(
                         adapter,
                         new DialogInterface.OnClickListener() {

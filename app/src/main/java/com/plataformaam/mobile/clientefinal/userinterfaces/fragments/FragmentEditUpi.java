@@ -13,7 +13,6 @@ import android.widget.Toast;
 import com.plataformaam.mobile.clientefinal.AppController;
 import com.plataformaam.mobile.clientefinal.R;
 import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
-import com.plataformaam.mobile.clientefinal.configurations.MyAppData;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyMessage;
 import com.plataformaam.mobile.clientefinal.models.location.UserPosition;
 import com.plataformaam.mobile.clientefinal.models.vcloc.roles.VComUPIAggregationRuleResponseOf;
@@ -198,7 +197,7 @@ public class FragmentEditUpi extends Fragment {
         //CRIA AS UPI
         if(this.upi == null ){
             this.upi = new UPI();
-            this.upi.setUpiType(MyAppData.getInstance().getUpiType(MyAppConfig.UPI_TYPE_CODE.UPI_TEXT));
+            this.upi.setUpiType(MyAppConfig.generateUpiType(MyAppConfig.UPI_TYPE_CODE.UPI_TEXT));
         }
         etxTitle.setText(upi.getTitle());
         etxContent.setText(upi.getContent());
