@@ -58,12 +58,12 @@
     <!-- MENSAGENS DE ERRO -->
     <string name="errorGPSDisable">GPS ou Serviço de Localização desabilitado! </string>
     <string name="errorInternetDisable">Internet desabilitada! </string>
-
     <string name="errorLoginFail">Falha na Operação: Favor verificar Login/Senha</string>
     <string name="errorInternetConnectionFail">Falha na conexão na Internet</string>
     <string name="errorNoDataReceived">Falha: nenhum dado recebido.</string>
     <string name="errorOperationNotAllwed">Operação não Permitida</string>
     <string name="errorUPITitleAndImage">Título/Imagem não podem ser vazios</string>
+    <string name="errorSubscribeVCom">Falha ao se registrar no VCOM</string>
 
 
 
@@ -74,6 +74,7 @@
     <string name="dialogSelectRoleFail">Nenhum Papel Disponível!</string>
     <string name="dialogSelectPublishRule">Selecione a Regra de Publicação</string>
     <string name="dialogSelectResponseRule">Selecione a Regra de Resposta</string>
+    <string name="dialogUserRegisterConfirm">Confirmar Cadastro</string>
 
     <!-- Mensagens Ao Usuário -->
     <string name="msgLogoutWarningInfo">
