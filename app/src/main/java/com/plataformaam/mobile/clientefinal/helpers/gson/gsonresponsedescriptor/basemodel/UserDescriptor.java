@@ -7,15 +7,15 @@ import java.util.List;
 /**
  * Created by bernard on 31/01/2015.
  */
-public class UserDescriptor {
-    List<User> user;
+public class UserDescriptor<RESPONSE> {
+    RESPONSE user;
     int totalCount;
 
-    public List<User> getUser() {
+    public RESPONSE getUser() {
         return user;
     }
 
-    public void setUser(List<User> user) {
+    public void setUser(RESPONSE user) {
         this.user = user;
     }
 
@@ -24,11 +24,6 @@ public class UserDescriptor {
     }
 
     public void setTotalCount(int totalCount) {
-        this.totalCount = totalCount;
-    }
-
-    public UserDescriptor(List<User> user, int totalCount) {
-        this.user = user;
         this.totalCount = totalCount;
     }
 
