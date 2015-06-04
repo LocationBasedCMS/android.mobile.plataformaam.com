@@ -40,6 +40,7 @@ import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyMessage;
 import com.plataformaam.mobile.clientefinal.helpers.multipart.AndroidMultiPartEntity;
 import com.plataformaam.mobile.clientefinal.helpers.multipart.UploadImageResponse;
 import com.plataformaam.mobile.clientefinal.models.vcloc.upi.UPI;
+import com.plataformaam.mobile.clientefinal.models.vcloc.upi.UPIType;
 import com.plataformaam.mobile.clientefinal.services.MyService;
 import com.plataformaam.mobile.clientefinal.userinterfaces.listfragments.FragmentUpiList;
 
@@ -71,7 +72,7 @@ public class FragmentUploadImage extends Fragment {
         FragmentUploadImage fragment = new FragmentUploadImage();
         Bundle args = new Bundle();
         args.putString(FILE_URI, fileUri.toString());
-        args.putString(UPI_TITLE, fileUri.toString());
+        args.putString(UPI_TITLE, upiTitle);
         fragment.setArguments(args);
         return fragment;
     }
@@ -317,7 +318,7 @@ public class FragmentUploadImage extends Fragment {
         upi.setUser(AppController.getInstance().getOnlineUser());
         upi.setTitle(upiTitle);
         upi.setContent(content);
-        upi.setUpiType(MyAppConfig.UpiType_Data_Code.UPI_IMAGE);
+        upi.setUpiType( new UPIType(MyAppConfig.UPI_TYPE_CODE.UPI_IMAGE,"UPI_IMAGE"));
         MyMessage message = new MyMessage(FragmentEditUpi.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.SAVE_UPI);
         message.setUpi(upi);
         message.setUser(AppController.getInstance().getOnlineUser());

@@ -12,6 +12,8 @@ import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
 import com.plataformaam.mobile.clientefinal.helpers.volley.LruBitmapCache;
 import com.plataformaam.mobile.clientefinal.models.User;
 import com.plataformaam.mobile.clientefinal.models.vcloc.VComComposite;
+import com.plataformaam.mobile.clientefinal.models.vcloc.upi.UPI;
+import com.plataformaam.mobile.clientefinal.models.vcloc.upi.VComUPIPublication;
 
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,11 @@ import java.util.Map;
  */
 public class AppController extends Application {
     private static User onlineUser;
+    private static VComComposite onlineComposite;
+    private static VComUPIPublication publication;
+
+
+
     private static List<VComComposite> allComposites;
     private static Map<Integer,VComComposite> myComposite;
 
@@ -31,7 +38,6 @@ public class AppController extends Application {
 
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
-
     private static AppController mInstance;
 
     @Override
@@ -111,4 +117,38 @@ public class AppController extends Application {
             Log.i(MyAppConfig.LOG.Application, "setMyComposite(Map<Integer, VComComposite> " + myComposite.size() + ")");
         }
     }
+
+    public VComComposite getOnlineComposite(){
+        VComComposite composite = null;
+        if( AppController.onlineUser != null ){
+            composite = AppController.onlineComposite;
+        }
+        return composite;
+    }
+
+    public void setOnlineComposite(VComComposite composite){
+        if( AppController.onlineUser != null ){
+            AppController.onlineComposite = composite;
+        }else{
+            AppController.onlineComposite = null;
+        }
+    }
+
+
+    public VComUPIPublication  getPublication(){
+        VComUPIPublication publication = null;
+        if( AppController.onlineUser != null ){
+            publication = AppController.publication;
+        }
+        return publication;
+    }
+
+    public void setPublication(VComUPIPublication publication){
+        if( AppController.onlineUser != null ){
+            AppController.publication = publication;
+        }else{
+            AppController.publication = null;
+        }
+    }
+
 }

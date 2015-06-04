@@ -12,21 +12,6 @@ import java.util.Map;
  */
 
 public class MyAppData {
-
-
-
-
-    //DADOS DO SISTEMA
-    private static Map<Integer,VComComposite> allVComComposite = new HashMap<Integer, VComComposite>();    //VEÍCULOS DE COMUNICAÇÂO DISPONÍVEIS PARA ESCOLHA
-    private static final List<UPIType> upiTypes = MyAppConfig.loadUpiTypes();
-    public List<UPIType> getUpiTypes() {
-        return upiTypes;
-    }
-    public UPIType getUpiType(int UPI_CODE){
-        return   upiTypes.get(UPI_CODE);
-    }
-
-
     //SINGLETON
     private static MyAppData myAppData;
     public static MyAppData getInstance(){
@@ -37,20 +22,35 @@ public class MyAppData {
     }
 
 
-    public MyAppData() {
+    //DADOS DO SISTEMA
+    private Map<Integer,VComComposite> allVComComposite;
+    private final List<UPIType> upiTypes;
+
+
+    //TIPOS DO APLICATIVO
+    public List<UPIType> getUpiTypes() {
+        return upiTypes;
+    }
+    public UPIType getUpiType(int UPI_CODE){
+        return   upiTypes.get(UPI_CODE);
     }
 
-    public static void setVComComposite(List<VComComposite> list){
+    public MyAppData() {
+        this.upiTypes= MyAppConfig.loadUpiTypes();
+        this.allVComComposite = new HashMap<Integer, VComComposite>();    //VEÍCULOS DE COMUNICAÇÂO DISPONÍVEIS PARA ESCOLHA
+    }
+
+    public void setVComComposite(List<VComComposite> list){
         for(VComComposite v: list){
-            allVComComposite.put(v.getId(),v);
+            this.allVComComposite.put(v.getId(),v);
         }
     }
 
-    public static void setVComComposite(Map<Integer,VComComposite> map){
-        allVComComposite =map;
+    public void setVComComposite(Map<Integer,VComComposite> map){
+        this.allVComComposite =map;
     }
-    public static Map<Integer, VComComposite> getAllVComComposite() {
-        return allVComComposite;
+    public Map<Integer, VComComposite> getAllVComComposite() {
+        return this.allVComComposite;
     }
 }
 

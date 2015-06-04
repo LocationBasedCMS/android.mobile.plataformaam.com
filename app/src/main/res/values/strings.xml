@@ -6,8 +6,8 @@
     <string name="action_settings">Settings</string>
 
     <!-- Títulos das Interfaces -->
-    <string name="title_activity_user_login_ui">Login do Usuário</string>
-    <string name="title_activity_create_new_user_ui">CreateNewUserUI</string>
+    <string name="title_activity_user_login_ui">Login</string>
+    <string name="title_activity_create_new_user_ui">Registrar</string>
     <string name="title_activity_dashboard_v1">DashboardV1</string>
 
     <!-- Label/Dica de Formulários -->
@@ -52,9 +52,13 @@
     <!-- MENSAGENS DE SUCESSO -->
     <string name="successLoginDone">Login efetuado com sucesso !</string>
     <string name="successLogoutDone">Logout efetuado com sucesso</string>
+    <string name="successInternetDetect">Conexão com Internet detectada.</string>
+
 
     <!-- MENSAGENS DE ERRO -->
     <string name="errorGPSDisable">GPS ou Serviço de Localização desabilitado! </string>
+    <string name="errorInternetDisable">Internet desabilitada! </string>
+
     <string name="errorLoginFail">Falha na Operação: Favor verificar Login/Senha</string>
     <string name="errorInternetConnectionFail">Falha na conexão na Internet</string>
     <string name="errorNoDataReceived">Falha: nenhum dado recebido.</string>
@@ -65,6 +69,7 @@
 
     <!-- TEXTO DE DIALOG -->
     <string name="dialogEnableGPS">Para continuar é necessário habilitar o GPS! </string>
+    <string name="dialogEnableInternet">Para continuar é necessário habilitar o Internet! </string>
     <string name="dialogSelectRole">Selecione um Papel</string>
     <string name="dialogSelectRoleFail">Nenhum Papel Disponível!</string>
     <string name="dialogSelectPublishRule">Selecione a Regra de Publicação</string>
@@ -160,6 +165,12 @@
     <!--Actions Result -->
     <string name="operation_upi_save_success">Produção Salva!</string>
     <string name="operation_upi_save_fail">Falha ao salvar produção!</string>
+
+
+
+    <!-- LOG Messages -->
+    <string name="verifyGPS">Verificando o GPS</string>
+    <string name="verifyNetwork">Verificando o conectividade com a internet</string>
 
 
 

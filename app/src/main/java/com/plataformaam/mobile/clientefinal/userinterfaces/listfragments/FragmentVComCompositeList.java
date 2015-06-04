@@ -259,7 +259,7 @@ public class FragmentVComCompositeList extends Fragment implements AbsListView.O
 
     public void onEvent(MyMessage message){
         if(message.getSender().equals(MyVComService.class.getSimpleName()) ){
-            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.LOAD_COMPOSITE)) {
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.COMPOSITE_LOADED)) {
                 Log.i(MyAppConfig.LOG.Activity,"FragmentVComCompositeList.onEvent("+message.getMessage()+")");
                 refreshList();
             }

@@ -24,6 +24,7 @@ import com.plataformaam.mobile.clientefinal.helpers.gson.gsonresponsedescriptor.
 import com.plataformaam.mobile.clientefinal.helpers.gson.gsonresponsedescriptor.model.post.PostVComUPIPublicationResponse;
 import com.plataformaam.mobile.clientefinal.helpers.volley.MyPostStringRequest;
 import com.plataformaam.mobile.clientefinal.helpers.volley.MyStringRequestV2;
+import com.plataformaam.mobile.clientefinal.helpers.volley.MyStringRequestV3;
 import com.plataformaam.mobile.clientefinal.models.User;
 import com.plataformaam.mobile.clientefinal.models.location.UserPosition;
 import com.plataformaam.mobile.clientefinal.models.vcloc.VComBase;
@@ -58,7 +59,7 @@ public class MyVComService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        EventBus.getDefault().registerSticky(MyVComService.this);
+        EventBus.getDefault().register(MyVComService.this);
 
     }
 
@@ -172,8 +173,9 @@ public class MyVComService extends Service {
         user.setLogin(MyAppConfig.getInstance().getLoginBase());
         user.setPassword(MyAppConfig.getInstance().getPasswordBase());
         String request_url = MyAppConfig.getInstance().prepareWebService("VComComposite");
+        request_url = "http://api.plataformaam.com/v3/index.php/api/VComComposite";
 
-        StringRequest stringRequest = new MyStringRequestV2(
+        StringRequest stringRequest = new MyStringRequestV3(
                 Request.Method.GET,
                 user,
                 request_url,
@@ -280,6 +282,7 @@ public class MyVComService extends Service {
                         }
                     }
                     ,
+
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {

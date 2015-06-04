@@ -18,14 +18,19 @@ import android.widget.Toast;
 import com.plataformaam.mobile.clientefinal.AppController;
 import com.plataformaam.mobile.clientefinal.R;
 import com.plataformaam.mobile.clientefinal.adapters.UPIArrayAdapter;
+import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
+import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyMessage;
 import com.plataformaam.mobile.clientefinal.models.User;
 import com.plataformaam.mobile.clientefinal.models.vcloc.upi.UPI;
+import com.plataformaam.mobile.clientefinal.services.MyService;
 import com.plataformaam.mobile.clientefinal.userinterfaces.fragments.FragmentDeleteUpiConfirmation;
 import com.plataformaam.mobile.clientefinal.userinterfaces.fragments.FragmentEditImageUpi;
 import com.plataformaam.mobile.clientefinal.userinterfaces.fragments.FragmentEditUpi;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * A fragment representing a vcom_list of Items.
@@ -61,7 +66,27 @@ public class FragmentUpiList extends Fragment implements AbsListView.OnItemClick
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(FragmentUpiList.this);
     }
+
+    @Override
+    public void onDestroy() {
+        EventBus.getDefault().unregister(FragmentUpiList.this);
+        super.onDestroy();
+    }
+
+    public void onEvent(MyMessage message){
+        if( message.getSender().equals(MyService.class.getSimpleName())){
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED)){
+                List<UPI> upis = AppController.getInstance().getOnlineUser().getUpis();
+                if( upis != null ) {
+                    refreshUpiList(upis);
+                }
+            }
+
+        }
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -201,8 +226,8 @@ public class FragmentUpiList extends Fragment implements AbsListView.OnItemClick
     private void buildList(List<UPI> upis){
         mAdapter = new UPIArrayAdapter(
                 getActivity(),
-                R.layout.row_upitext_list,
-                R.layout.row_upiimage_list ,
+                R.layout.row_upi_text_list,
+                R.layout.row_upi_image_list,
                 upis);
 
 

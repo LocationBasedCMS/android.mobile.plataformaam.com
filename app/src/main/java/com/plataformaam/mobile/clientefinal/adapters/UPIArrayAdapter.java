@@ -57,7 +57,7 @@ public class UPIArrayAdapter extends ArrayAdapter<UPI> {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView;
         if( upi.getUpiType() != null ){
-            if( upi.getUpiType().getId() == MyAppConfig.UpiType_Data_Code.UPI_IMAGE  ){
+            if( upi.getUpiType().getId() == MyAppConfig.UPI_TYPE_CODE.UPI_IMAGE  ){
                 rowView = generateImageRowView(parent, upi, inflater);
             }else{
                 rowView = getTextRowView(parent, upi, inflater);

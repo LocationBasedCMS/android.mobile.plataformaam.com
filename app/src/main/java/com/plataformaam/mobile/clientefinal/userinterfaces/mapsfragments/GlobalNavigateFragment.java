@@ -89,6 +89,7 @@ public class GlobalNavigateFragment extends Fragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mVcomComposite = (VComComposite) getArguments().getSerializable(  SELECTED_VCOM );
+            AppController.getInstance().setOnlineComposite(mVcomComposite);
         }
     }
 
@@ -391,8 +392,8 @@ public class GlobalNavigateFragment extends Fragment
         final List<UPI> upis = AppController.getInstance().getOnlineUser().getUpis();
         UPIArrayAdapter adapter = new UPIArrayAdapter(
                 getActivity(),
-                R.layout.row_upitext_list,
-                R.layout.row_upiimage_list,
+                R.layout.row_upi_text_list,
+                R.layout.row_upi_image_list,
                 upis
         );
         AlertDialog.Builder builder = new AlertDialog.Builder(

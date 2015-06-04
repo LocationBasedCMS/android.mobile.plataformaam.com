@@ -3,7 +3,6 @@ package com.plataformaam.mobile.clientefinal.userinterfaces.fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -199,7 +198,7 @@ public class FragmentEditUpi extends Fragment {
         //CRIA AS UPI
         if(this.upi == null ){
             this.upi = new UPI();
-            this.upi.setUpiType(MyAppData.getInstance().getUpiType(MyAppConfig.UpiType_Data_Code.UPI_TEXT));
+            this.upi.setUpiType(MyAppData.getInstance().getUpiType(MyAppConfig.UPI_TYPE_CODE.UPI_TEXT));
         }
         etxTitle.setText(upi.getTitle());
         etxContent.setText(upi.getContent());
@@ -237,7 +236,6 @@ public class FragmentEditUpi extends Fragment {
 
     public void onEvent(MyMessage message){
         if( message.getSender().equals(MyService.class.getSimpleName())){
-            Log.i(MyAppConfig.LOG.Activity,"onEvent(MyMessage "+message.getSender()+"/"+message.getMessage()+")");
             if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_SUCCESS)){
                 Toast.makeText(getActivity(), getString(R.string.operation_upi_save_success) ,Toast.LENGTH_LONG).show();
                 UPI savedUpi = message.getUpi();

@@ -27,6 +27,7 @@ import com.plataformaam.mobile.clientefinal.helpers.gson.gsonresponsedescriptor.
 import com.plataformaam.mobile.clientefinal.helpers.volley.MyPostStringRequest;
 import com.plataformaam.mobile.clientefinal.models.User;
 import com.plataformaam.mobile.clientefinal.models.location.UserPosition;
+import com.plataformaam.mobile.clientefinal.models.vcloc.VComComposite;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,33 +40,15 @@ public class MyLocationService extends Service implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener
-
 {
-
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private static List<String> queue = Collections.synchronizedList(new ArrayList<String>());
 
-    private synchronized String manipulateQueueOperation(String userPositionContent){
-        if( userPositionContent == null ){
-            String operation = null;
-            if(queue.size()>0){
-                operation = queue.remove(0);
-            }
-            return operation;
-        }else{
-            queue.add(userPositionContent);
-        }
-        return null;
-    }
 
 
+    //NEED TO EVENT BUS
     public void onEvent(MyMessage message){
-        if( message.getSender().equals(MyService.class.getSimpleName())){
-            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_DONE)){
-                manipulateQueueOperation(MyAppConfig.UserPositionContent.LOGIN_POSITION);
-            }
-        }
         return;
     }
 
@@ -119,18 +102,18 @@ public class MyLocationService extends Service implements
 
     private void initLocationRequest(){
         mLocationRequest  = new LocationRequest();
-        mLocationRequest.setInterval(60000);
-        mLocationRequest.setFastestInterval(10000);
+        mLocationRequest.setInterval(300000);
+        mLocationRequest.setFastestInterval(120000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     private void startLocationUpdate(){
         initLocationRequest();
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,mLocationRequest,MyLocationService.this);
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, MyLocationService.this);
     }
 
     private void stopLocationUpdate(){
-        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient,MyLocationService.this);
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, MyLocationService.this);
     }
 
 
@@ -159,102 +142,96 @@ public class MyLocationService extends Service implements
     //Update de Localizações
     @Override
     public void onLocationChanged(Location location) {
-        Log.i(MyAppConfig.LOG.ServiceLocation," Latitude: "+location.getLatitude() + " Longitude: "+location.getLongitude() );
-        //IF HAS A CONNECTED USER
-        sendMessage( prepareUserPosition(location));
+        if( location != null ){
+            Log.i(MyAppConfig.LOG.ServiceLocation,location.toString());
+            savePosition(location);
+        }
     }
 
 
+    private void savePosition(Location location){
+        AppController app =AppController.getInstance();
+        //TEST IF THE APLICATION IS RUNNING AND HAS A LOGGED USER
+        if( app != null && app.getOnlineUser() != null && location != null ){
+            User user = app.getOnlineUser();
+            VComComposite composite = app.getOnlineComposite();
+            UserPosition position = new UserPosition();
+            position.setUser(user);
+            //DATE
+            Calendar c  = Calendar.getInstance();
+            java.util.Date date = c.getTime();
+            position.setCurrentTime(date);
 
-    private UserPosition prepareUserPosition(Location location)  {
-        User user = AppController.getInstance().getOnlineUser();
-        UserPosition userPosition = null;
-        try {
-            if( user != null ) {
-                userPosition = new UserPosition();
-                userPosition.setUser(user);
-                userPosition.setLatitude(location.getLatitude());
-                userPosition.setLongitude(location.getLongitude());
-                Calendar c  = Calendar.getInstance();
-                java.util.Date date = c.getTime();
-                userPosition.setCurrentTime(date);
-                String positionContent = manipulateQueueOperation(null);
-                if( positionContent == null ) {
-                    positionContent  = MyAppConfig.UserPositionContent.NAVIGATE;
-                }
-                userPosition.setContent(positionContent);
-                AppController.getInstance().getOnlineUser().getUserPositions().add(userPosition);
-                if(
-                           positionContent.equals(MyAppConfig.UserPositionContent.LOGIN_POSITION )
-                        || positionContent.equals(MyAppConfig.UserPositionContent.PUBLISH )
-                        || positionContent.equals(MyAppConfig.UserPositionContent.SUBSCRIBE_VCOM )
-                ) {
-                    saveUserPosition(null);
-                }
 
+            //CONTENT
+            position.setContent(MyAppConfig.POSITION_CONTENT.NAVIGATE);
+            if( composite != null ){
+                position.setComposite(composite.getId());
+                position.setContent(MyAppConfig.POSITION_CONTENT.INSIDE_VCLOC);
             }
-        } catch (InvalidCoordinatesException e) {
-            e.printStackTrace();
-        }
-        return userPosition;
 
+            try {
+                //LOCATION
+                position.setLatitude(location.getLatitude());
+                position.setLongitude(location.getLongitude());
+                savePositionOperation(position);
+
+            } catch (InvalidCoordinatesException e) {
+                Log.e(MyAppConfig.LOG.ServiceLocation," Invalid Location e->message: "+e.getMessage() );
+                e.printStackTrace();
+            }
+
+
+        }
+
+    }
+
+    //THERE's NO PROBLEM IF FAIL
+    private void savePositionOperation(final UserPosition position){
+        if( position != null ){
+            String request_url = MyAppConfig.getInstance().prepareWebService("UserPosition");
+            StringRequest stringRequest = new MyPostStringRequest(
+                    request_url,
+                    position,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            GsonBuilder builderResult = new GsonBuilder();
+                            builderResult.setDateFormat("yyyy-MM-dd HH:mm:ss");
+                            builderResult.registerTypeAdapter(Boolean.class, new GSonBooleanAsIntAdapter()).registerTypeAdapter(boolean.class , new GSonBooleanAsIntAdapter());
+                            Gson gsonResult = builderResult.create();
+                            PostVComUPIPublicationResponse output= gsonResult.fromJson( response, PostVComUPIPublicationResponse.class);
+                            if( output.isSuccess() && output.getData().getTotalCount() == 1   ) {
+                                sendMessage(position);
+
+                            }else{
+                                Log.i(MyAppConfig.LOG.Service,MyAppConfig.VOLLEY_TAG.SAVE_POSITION + " : "+response + " "+position.toString());
+                            }
+                        }
+                    }
+                    ,
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.i(MyAppConfig.LOG.Service,MyAppConfig.VOLLEY_TAG.SAVE_POSITION + " : "+error.getMessage() );
+                        }
+                    }
+            );
+            AppController.getInstance().addToRequestQueue(stringRequest, MyAppConfig.VOLLEY_TAG.SAVE_POSITION);
+
+        }
     }
 
 
     private void sendMessage(UserPosition position){
         if(position != null ) {
             MyPositionMessage message = new MyPositionMessage(MyLocationService.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.LOCATION_CHANGE, position);
+            Log.i(MyAppConfig.LOG.ServiceLocation,message.toString());
             EventBus.getDefault().post(message);
         }
     }
 
-    //THE OPERATION FAIL ISN'T A PROBLEM
-    //EXCEPTION IS A PROBLEM TO PERFORMANCE
-    private synchronized void saveUserPosition(final String userPositionContent){
 
-        User user = AppController.getInstance().getOnlineUser();
-        if( user != null ){
-            if( user.getUserPositions() != null && user.getUserPositions().size()>0 ){
-
-                final UserPosition position = user.getUserPositions().get(user.getUserPositions().size() -1);
-                position.setUser(user);
-                if( userPositionContent != null ){
-                    position.setContent(userPositionContent);
-                }
-                //SALVANDO AS POSIÇÔES
-                String request_url = MyAppConfig.getInstance().prepareWebService("UserPosition");
-                StringRequest stringRequest = new MyPostStringRequest(
-                        request_url,
-                        position,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                GsonBuilder builderResult = new GsonBuilder();
-                                builderResult.setDateFormat("yyyy-MM-dd HH:mm:ss");
-                                builderResult.registerTypeAdapter(Boolean.class, new GSonBooleanAsIntAdapter()).registerTypeAdapter(boolean.class , new GSonBooleanAsIntAdapter());
-                                Gson gsonResult = builderResult.create();
-                                PostVComUPIPublicationResponse output= gsonResult.fromJson( response, PostVComUPIPublicationResponse.class);
-                                if( output.isSuccess() && output.getData().getTotalCount() == 1   ) {
-                                    sendMessage(position);
-
-                                }else{
-                                    Log.i(MyAppConfig.LOG.Service,"SavePosition: Falha "+position.getContent()+" :" +position.getLatitude()+"/"+position.getLongitude() );
-                                }
-                            }
-                        }
-                        ,
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.i(MyAppConfig.LOG.Service,"SavePosition: Falha "+position.getContent()+" :" +position.getLatitude()+"/"+position.getLongitude() );
-                                Log.i(MyAppConfig.LOG.Service,"\n"+error.getMessage() );
-                            }
-                        }
-                );
-                AppController.getInstance().addToRequestQueue(stringRequest, MyAppConfig.VOLLEY_TAG.MANIPULATE_UPI);
-            }
-        }
-    }
 
 
 

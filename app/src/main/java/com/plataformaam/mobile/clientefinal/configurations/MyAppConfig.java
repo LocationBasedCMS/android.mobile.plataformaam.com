@@ -19,9 +19,17 @@ import java.util.List;
 
 public class MyAppConfig {
     //GAMBIARRA :: LOGIN PARA CRIACAO DE USUÀRIO VIA API
-    private final String loginBase = "base";
-    private final String passwordBase = "base";
+    private final String loginBase = "root";
+    private final String passwordBase = "qq";
 
+    //DEVE BATER COM O BANCO DE DADOS
+    public final static class UPI_TYPE_CODE {
+        public final  static  int UPI_TEXT   = 1;
+        public final  static  int UPI_IMAGE  = 2;
+        public final  static  int UPI_VIDEO  = 3;
+        public final  static  int UPI_AUDIO  = 4;
+        public final  static  int UPI_LINK   = 5;
+    }
 
     public static class LOG{
         public final static String Service              = "SERVICE";
@@ -30,7 +38,7 @@ public class MyAppConfig {
         public final static String Runnable             = "RUNNABLE";
         public final static String Application          = "APPLICATION";
         public final static String Model                = "MODEL";
-        public final  static String AsyncTask           = "ASYNCTASK";
+        public final static String AsyncTask            = "ASYNCTASK";
     }
 
 
@@ -41,7 +49,7 @@ public class MyAppConfig {
 
     }
 
-    public static class UserPositionContent{
+    public static class POSITION_CONTENT {
         public final static String INSIDE_VCLOC             =   "inside_vcloc";
         public final static String JOIN_VCLOC               =   "join_vcloc";
         public final static String LEAVE_VCLOC              =   "leave_vcloc";
@@ -78,21 +86,15 @@ public class MyAppConfig {
     }
 
 
-    public final static class UpiType_Data_Code {
-        public final  static  int UPI_TEXT   = 0;
-        public final  static  int UPI_IMAGE  = 1;
-        public final  static  int UPI_VIDEO  = 2;
-        public final  static  int UPI_AUDIO  = 3;
-        public final  static  int UPI_LINK   = 4;
-    }
+
 
     public static List<UPIType> loadUpiTypes(){
         List<UPIType> upiTypes = new ArrayList<UPIType>();
-        upiTypes.add(MyAppConfig.UpiType_Data_Code.UPI_TEXT,    new UPIType(1,"UPIText"));
-        upiTypes.add(MyAppConfig.UpiType_Data_Code.UPI_IMAGE,   new UPIType(2,"UPIImage"));
-        upiTypes.add(MyAppConfig.UpiType_Data_Code.UPI_VIDEO,   new UPIType(3,"UPIVideo"));
-        upiTypes.add(MyAppConfig.UpiType_Data_Code.UPI_AUDIO,   new UPIType(4,"UPIAudio"));
-        upiTypes.add(MyAppConfig.UpiType_Data_Code.UPI_LINK,    new UPIType(5,"UPILink"));
+        upiTypes.add(UPI_TYPE_CODE.UPI_TEXT,    new UPIType(UPI_TYPE_CODE.UPI_TEXT,"UPIText"));
+        upiTypes.add(UPI_TYPE_CODE.UPI_IMAGE,   new UPIType(UPI_TYPE_CODE.UPI_IMAGE,"UPIImage"));
+        upiTypes.add(UPI_TYPE_CODE.UPI_VIDEO,   new UPIType(UPI_TYPE_CODE.UPI_VIDEO,"UPIVideo"));
+        upiTypes.add(UPI_TYPE_CODE.UPI_AUDIO,   new UPIType(UPI_TYPE_CODE.UPI_AUDIO,"UPIAudio"));
+        upiTypes.add(UPI_TYPE_CODE.UPI_LINK,    new UPIType(UPI_TYPE_CODE.UPI_LINK,"UPILink"));
         return upiTypes;
     }
 
@@ -117,6 +119,7 @@ public class MyAppConfig {
 
         //VCOM SERVICE
         public final static String LOAD_COMPOSITE           = "LOAD_COMPOSITE";
+        public final static String COMPOSITE_LOADED         = "COMPOSITE_LOADED";
         public final static String LOAD_BASE                = "LOAD_BASE";
         public final static String PUBLISH_UPI              = "PUBLISH_UPI";
         public final static String RESPONSE_UPI             = "RESPONSE_UPI";
@@ -140,7 +143,7 @@ public class MyAppConfig {
 
     public static class VOLLEY_TAG{
         public final static String LOGIN                = "LOGIN";
-        public final static String SAVE_USER_POSITION   = "SAVE_USER_POSITION";
+        public final static String SAVE_POSITION        = "SAVE_POSITION";
         public final static String MANIPULATE_USER      = "MANIPULATE_USER";
         public final static String MANIPULATE_VCOM      = "MANIPULATE_VCOM";
         public static final String MANIPULATE_UPI       = "MANIPULATE_UPI";

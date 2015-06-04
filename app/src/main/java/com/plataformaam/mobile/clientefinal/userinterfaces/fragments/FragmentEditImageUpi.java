@@ -239,17 +239,6 @@ public class FragmentEditImageUpi extends Fragment {
     }
 
 
-    public void loadUpi(){
-        //CRIA AS UPI
-        if(this.upi == null ){
-            this.upi = new UPI();
-            this.upi.setUpiType(MyAppData.getInstance().getUpiType(MyAppConfig.UpiType_Data_Code.UPI_IMAGE));
-        }
-
-    }
-
-
-
     private void changeButtonState(boolean enable){
         this.btnSave.setEnabled(enable);
         this.btnOpenCamera.setEnabled(enable);
