@@ -180,10 +180,9 @@ public class FragmentVComCompositeList extends Fragment implements AbsListView.O
     }
 
     public void confirmSubscribe(final VComUserRole role){
-        //todo strings.xml
         AlertDialog.Builder builder = new AlertDialog.Builder(
                 getActivity())
-                .setTitle(" Confirmar cadastro ? ")
+                .setTitle(R.string.dialogUserRegisterConfirm)
                 .setMessage( role.getName() )
                 .setPositiveButton(getString(R.string.btnYes),
                         new DialogInterface.OnClickListener() {
