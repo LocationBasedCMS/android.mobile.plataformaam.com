@@ -47,12 +47,11 @@ public class MyService extends Service {
     private boolean isUpiReloaded;
     private User user;
 
-    public synchronized void setUpiReloaded(boolean isUpiReloaded) {
+    public void setUpiReloaded(boolean isUpiReloaded) {
         this.isUpiReloaded = isUpiReloaded;
         if( this.isUpiReloaded ) {
             sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED, null, null, null);
         }
-        sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_DONE, AppController.getInstance().getOnlineUser(), null, null);
     }
 
 
@@ -91,9 +90,14 @@ public class MyService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-//LOGIN
+    ///////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////
+    //  LOGIN
+    ///////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////
+
     public void tryAutoLogin(){
-        Log.i(MyAppConfig.LOG.Service,"tryAutoLogin");
+        Log.i(MyAppConfig.LOG.Service, "tryAutoLogin");
         AppController app = AppController.getInstance();
         if ( app != null && app.getOnlineUser() == null ) {
 
@@ -116,7 +120,6 @@ public class MyService extends Service {
         }else{
             sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_DONE, AppController.getInstance().getOnlineUser(),null,null);
         }
-
     }
 
     public void doLogout(){
@@ -177,7 +180,12 @@ public class MyService extends Service {
 
     }
 
+    ///////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////
     //UPI
+    ///////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////
+
     public void saveUpi(UPI upi){
         if( upi.getId() > 0 ){
             updateUPI(upi);
@@ -282,7 +290,7 @@ public class MyService extends Service {
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            android.os.Debug.waitForDebugger();
+
                             GsonBuilder builderResult = new GsonBuilder();
                             builderResult.setDateFormat("yyyy-MM-dd HH:mm:ss");
                             Gson gsonResult = builderResult.create();
@@ -310,15 +318,20 @@ public class MyService extends Service {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED_FAIL, null, null, null);
-                            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_DONE, AppController.getInstance().getOnlineUser(), null, null);
                             Log.e(MyAppConfig.LOG.Service, "MyAppConfiguration.EVENT_BUS_MESSAGE.UPI_RELOADED_FAIL");
                         }
                     }
             );
             AppController.getInstance().addToRequestQueue(stringRequest, MyAppConfig.VOLLEY_TAG.MANIPULATE_UPI);
         }
+        sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_DONE, AppController.getInstance().getOnlineUser(), null, null);
     }
 
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //  EventBus Mensages
+    /////////////////////////////////////////////////////////////////////////////////////////////
 
     public void sendEventBusMessage(String strMessage, User user, List<VComComposite> composites, UPI upi){
 
