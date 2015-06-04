@@ -155,6 +155,7 @@ public class MyAppConfig {
         public final static String RELOAD_BASE              = "RELOAD_BASE";
         public final static String GET_PUBLICATIONS         = "GET_PUBLICATIONS";
         public final static String RELOAD_PUBLICATIONS      = "RELOAD_PUBLICATIONS";
+        public final static String RELOAD_PUBLICATIONS_FAIL = "RELOAD_PUBLICATIONS_FAIL";
 
 
 
