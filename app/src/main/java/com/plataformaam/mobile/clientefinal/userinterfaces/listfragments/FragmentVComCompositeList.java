@@ -13,6 +13,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.plataformaam.mobile.clientefinal.AppController;
 import com.plataformaam.mobile.clientefinal.adapters.VComUserRoleArrayAdapter;
@@ -60,6 +61,7 @@ public class FragmentVComCompositeList extends Fragment implements AbsListView.O
 
     View view;
     ListView vcom_list;
+    private VComComposite selectedComposite = null;
 
     public static FragmentVComCompositeList newInstance(int mode) {
         FragmentVComCompositeList fragment = new FragmentVComCompositeList();
@@ -134,16 +136,16 @@ public class FragmentVComCompositeList extends Fragment implements AbsListView.O
     @Override
     public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
         if (null != mListener) {
-            VComComposite composite = (VComComposite) parent.getItemAtPosition(position);
+            selectedComposite = (VComComposite) parent.getItemAtPosition(position);
             User user = AppController.getInstance().getOnlineUser();
-            if( user != null && composite.hasRole(user) ){
-                goToNavigateComposite(composite);
+            if( user != null && selectedComposite.hasRole(user) ){
+                goToNavigateComposite(selectedComposite);
             }else{
-                if( composite.getUserRoles()  != null ) {
+                if( selectedComposite.getUserRoles()  != null ) {
                     final List<VComUserRole> roles = new ArrayList<VComUserRole>();
-                    for (VComUserRole role : composite.getUserRoles() ) {
+                    for (VComUserRole role : selectedComposite.getUserRoles() ) {
                         if ( role.isClientSelectable() == 1 ){
-                            role.setvComComposite(composite);
+                            role.setvComComposite(selectedComposite);
                             roles.add(role);
                         }
                     }
@@ -187,9 +189,7 @@ public class FragmentVComCompositeList extends Fragment implements AbsListView.O
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                MyMessage message = new MyMessage(FragmentVComCompositeList.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.SUBSCRIBE_COMPOSITE);
-                                message.setRole(role);
-                                EventBus.getDefault().post(message);
+                                sendMessage(role);
                             }
                         }
 
@@ -197,6 +197,7 @@ public class FragmentVComCompositeList extends Fragment implements AbsListView.O
                 .setCancelable(true);
         builder.show();
     }
+
 
 
     private void goToNavigateComposite(VComComposite vComComposite) {
@@ -242,6 +243,7 @@ public class FragmentVComCompositeList extends Fragment implements AbsListView.O
 
     public void refreshList(){
         if( AppController.getInstance().getAllComposites() != null ){
+            selectedComposite = null;
             composites = AppController.getInstance().getAllComposites();
             if( AppController.getInstance().getMyComposite() != null ){
                 myComposites = AppController.getInstance().getMyComposite();
@@ -251,20 +253,40 @@ public class FragmentVComCompositeList extends Fragment implements AbsListView.O
             mAdapter.addAll(composites);
             mAdapter.notifyDataSetChanged();
         }
-
-
     }
+
+   /////////////////////////////////////////////////////////////////////////////////////////////
+   // EventBus
+   /////////////////////////////////
 
     public void onEvent(MyMessage message){
         if(message.getSender().equals(MyVComService.class.getSimpleName()) ){
+            //Recarrega a listagem de UPI
             if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.COMPOSITE_LOADED_SUCCESS)) {
                 Log.i(MyAppConfig.LOG.Activity,"FragmentVComCompositeList.onEvent("+message.getMessage()+")");
                 refreshList();
             }
+
+            //Assinou o VCOM
+            if(message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.SUBSCRIBE_SUCCESS)){
+                if( selectedComposite != null ) {
+                    goToNavigateComposite(selectedComposite);
+                }
+            }
+
+            if(message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.SUBSCRIBE_SUCCESS)){
+                Toast.makeText(getActivity(),getString(R.string.errorSubscribeVCom),Toast.LENGTH_SHORT).show();
+            }
+
         }
     }
 
 
+    private void sendMessage(VComUserRole role) {
+        MyMessage message = new MyMessage(FragmentVComCompositeList.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.SUBSCRIBE_COMPOSITE);
+        message.setRole(role);
+        EventBus.getDefault().post(message);
+    }
 
 
 }

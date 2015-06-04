@@ -18,9 +18,11 @@ import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyMessage;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyPublishMessage;
 import com.plataformaam.mobile.clientefinal.helpers.gson.adapters.GSonBooleanAsIntAdapter;
+import com.plataformaam.mobile.clientefinal.helpers.gson.gsonresponsedescriptor.model.get.GetUserResponse;
 import com.plataformaam.mobile.clientefinal.helpers.gson.gsonresponsedescriptor.model.get.GetVComBaseResponse;
 import com.plataformaam.mobile.clientefinal.helpers.gson.gsonresponsedescriptor.model.get.GetVComCompositeResponse;
 import com.plataformaam.mobile.clientefinal.helpers.gson.gsonresponsedescriptor.model.get.GetVComUPIPublicationResponse;
+import com.plataformaam.mobile.clientefinal.helpers.gson.gsonresponsedescriptor.model.post.PostUserResponse;
 import com.plataformaam.mobile.clientefinal.helpers.gson.gsonresponsedescriptor.model.post.PostVComUPIPublicationResponse;
 import com.plataformaam.mobile.clientefinal.helpers.volley.MyPostStringRequest;
 import com.plataformaam.mobile.clientefinal.helpers.volley.MyStringRequestV2;
@@ -45,10 +47,6 @@ import de.greenrobot.event.EventBus;
 
 public class MyVComService extends Service {
 
-    private boolean isPublicationReloading = false;
-    public synchronized void setPublicationReloading(boolean isPublicationReloading) {
-        this.isPublicationReloading = isPublicationReloading;
-    }
 
     public synchronized boolean setIfFalsePublicationReloading() {
         if( !this.isPublicationReloading  )
@@ -291,8 +289,14 @@ public class MyVComService extends Service {
         savePublication(publication);
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // PUBLICATION
+    /////////////////////////////////////////////////////////////////////////////////////////////
+
+    private boolean isPublicationReloading = false;
     private void reloadPublication(){
-        if( setIfFalsePublicationReloading()){
+        if( !isPublicationReloading ){
+            isPublicationReloading = true;
             final User user = AppController.getInstance().getOnlineUser();
             if(user.getUserPositions() != null && !user.getUserPositions().isEmpty() ) {
 
@@ -327,10 +331,9 @@ public class MyVComService extends Service {
                                 if (output.isSuccess() && output.getData().getTotalCount() > 0) {
                                     publications = output.getData().getvComUPIPublication();
                                 }
-                                setPublicationReloading(false);
-                                MyPublishMessage message = new MyPublishMessage(MyVComService.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_PUBLICATIONS);
-                                message.setPublications(publications);
-                                EventBus.getDefault().post(message);
+
+                                sendPublishMessage(publications);
+                                isPublicationReloading = false;
                             }
 
 
@@ -338,9 +341,8 @@ public class MyVComService extends Service {
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                //TODO -- Error
                                 sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED_FAIL);
-
+                                isPublicationReloading = false;
                             }
                         }
                 );
@@ -349,16 +351,44 @@ public class MyVComService extends Service {
         }
     }
 
+
     private void subsbribeComposite(VComUserRole role) {
         User user = AppController.getInstance().getOnlineUser();
-        if( user != null ){
+        if( user != null && role != null ){
             String request_url = MyAppConfig.getInstance().prepareWebService("User");
-            request_url += "/"+user.getId()+"/vComUserRoles"+role.getId();
+            request_url += "/"+user.getId()+"/vComUserRoles/"+role.getId();
 
 
+            StringRequest stringRequest = new MyStringRequestV2(
+                    StringRequest.Method.PUT,
+                    user,
+                    request_url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            GsonBuilder builderResult = new GsonBuilder();
+                            builderResult.registerTypeAdapter(Boolean.class, new GSonBooleanAsIntAdapter()).registerTypeAdapter(boolean.class , new GSonBooleanAsIntAdapter());
+                            builderResult.setDateFormat("yyyy-MM-dd HH:mm:ss");
+                            Gson gsonResult = builderResult.create();
 
+                            PostUserResponse output = gsonResult.fromJson(response, PostUserResponse.class);
+                            if( output.isSuccess() ) {
+                                sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.SUBSCRIBE_SUCCESS);
+                            }else{
+                                sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.SUBSCRIBE_FAIL);
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e(MyAppConfig.LOG.Service,"EVENT_BUS_MESSAGE.SUBSCRIBE_FAIL"+error.getMessage());
+                            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.SUBSCRIBE_FAIL);
+                        }
+                    }
+            );
+            AppController.getInstance().addToRequestQueue(stringRequest, MyAppConfig.VOLLEY_TAG.MANIPULATE_VCOM);
 
-            //TODO >>  PUT http://api.plataformaam.com/v1/index.php/api/User/8/vComUserRoles/41
             /*
             {
                     success: "true"
@@ -405,7 +435,6 @@ public class MyVComService extends Service {
     ///////////////////////////////////////////////////////////////////
 
 
-
     public void onEvent(MyMessage message) {
         if (message.getSender().equals(MyService.class.getSimpleName())) {
             if (message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_DONE)) {
@@ -418,14 +447,11 @@ public class MyVComService extends Service {
                     subsbribeComposite(message.getRole());
                 }
             }
-
         }
         if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_BASE)){
             loadBases();
         }
-
     }
-
 
     public void onEvent(MyPublishMessage message){
         if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.PUBLISH_UPI )){
@@ -468,6 +494,11 @@ public class MyVComService extends Service {
         EventBus.getDefault().post(message);
     }
 
+    private void sendPublishMessage(List<VComUPIPublication> publications) {
+        MyPublishMessage message = new MyPublishMessage(MyVComService.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_PUBLICATIONS);
+        message.setPublications(publications);
+        EventBus.getDefault().post(message);
+    }
 
 
 

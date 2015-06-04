@@ -115,11 +115,6 @@ public class FragmentUpiList extends Fragment implements AbsListView.OnItemClick
     }
 
 
-
-
-
-
-
     public void setEmptyText(CharSequence emptyText) {
         View emptyView = mListView.getEmptyView();
         if (emptyView instanceof TextView) {

@@ -26,7 +26,6 @@ import com.nononsenseapps.filepicker.FilePickerActivity;
 import com.plataformaam.mobile.clientefinal.AppController;
 import com.plataformaam.mobile.clientefinal.R;
 import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
-import com.plataformaam.mobile.clientefinal.configurations.MyAppData;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyMessage;
 import com.plataformaam.mobile.clientefinal.models.location.UserPosition;
 import com.plataformaam.mobile.clientefinal.models.vcloc.roles.VComUPIAggregationRuleResponseOf;

@@ -7,6 +7,6 @@ import com.plataformaam.mobile.clientefinal.models.User;
 /**
  * Created by bernard on 04/06/2015.
  */
-public class PosUserResponse extends GsonResponseDescriptor<UserDescriptor<User>> {
+public class PostUserResponse extends GsonResponseDescriptor<UserDescriptor<User>> {
 
 }
