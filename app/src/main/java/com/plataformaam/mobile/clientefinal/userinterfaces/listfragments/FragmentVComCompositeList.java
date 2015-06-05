@@ -56,8 +56,8 @@ public class FragmentVComCompositeList extends Fragment implements AbsListView.O
     private AbsListView mListView;
     private VComCompositeArrayAdapter mAdapter;
 
-    private List<VComComposite> composites = new ArrayList<VComComposite>();
-    private Map<Integer,VComComposite> myComposites = new HashMap<Integer,VComComposite>();
+    private List<VComComposite> composites = new ArrayList<>();
+    private Map<Integer,VComComposite> myComposites = new HashMap<>();
 
     View view;
     ListView vcom_list;
@@ -89,7 +89,7 @@ public class FragmentVComCompositeList extends Fragment implements AbsListView.O
     @Override
     public void onResume() {
         if(mode == MODE.MY_VCOM){
-            composites = new ArrayList<VComComposite>(AppController.getInstance().getMyComposite().values());
+            composites = new ArrayList<>(AppController.getInstance().getMyComposite().values());
         }else{
             composites = AppController.getInstance().getAllComposites();
         }
@@ -142,7 +142,7 @@ public class FragmentVComCompositeList extends Fragment implements AbsListView.O
                 goToNavigateComposite(selectedComposite);
             }else{
                 if( selectedComposite.getUserRoles()  != null ) {
-                    final List<VComUserRole> roles = new ArrayList<VComUserRole>();
+                    final List<VComUserRole> roles = new ArrayList<>();
                     for (VComUserRole role : selectedComposite.getUserRoles() ) {
                         if ( role.isClientSelectable() == 1 ){
                             role.setvComComposite(selectedComposite);
@@ -249,8 +249,8 @@ public class FragmentVComCompositeList extends Fragment implements AbsListView.O
                 myComposites = AppController.getInstance().getMyComposite();
                 mAdapter.setMyComposites(myComposites);
             }
-            mAdapter.clear();
-            mAdapter.addAll(composites);
+            //mAdapter.clear();
+            //mAdapter.addAll(composites);
             mAdapter.notifyDataSetChanged();
         }
     }
