@@ -15,7 +15,8 @@ import android.widget.AdapterView;
 
 import com.plataformaam.mobile.clientefinal.userinterfaces.fragments.FragmentEditImageUpi;
 import com.plataformaam.mobile.clientefinal.userinterfaces.fragments.FragmentUploadImage;
-import com.plataformaam.mobile.clientefinal.userinterfaces.mapsfragments.GlobalNavigateFragment;
+import com.plataformaam.mobile.clientefinal.userinterfaces.fragments.PublicationDetailFragment;
+import com.plataformaam.mobile.clientefinal.userinterfaces.mapsfragments.MapFragment;
 import com.plataformaam.mobile.clientefinal.R;
 import com.plataformaam.mobile.clientefinal.models.vcloc.VComComposite;
 import com.plataformaam.mobile.clientefinal.models.vcloc.upi.UPI;
@@ -30,12 +31,13 @@ public class GlobalPanelUI extends ActionBarActivity
         implements
         NavigationDrawerFragment.NavigationDrawerCallbacks,
         FragmentUpiList.OnFragmentInteractionListener,
-        GlobalNavigateFragment.OnFragmentInteractionListener,
+        MapFragment.OnFragmentInteractionListener,
         FragmentVComCompositeList.OnFragmentInteractionListener,
         FragmentEditUpi.OnFragmentInteractionListener,
         FragmentEditImageUpi.OnFragmentInteractionListener,
         FragmentUploadImage.OnFragmentInteractionListener,
-        FragmentDeleteUpiConfirmation.OnFragmentInteractionListener
+        FragmentDeleteUpiConfirmation.OnFragmentInteractionListener,
+        PublicationDetailFragment.OnFragmentInteractionListener
     {
 
 

@@ -13,9 +13,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by bernard on 04/01/2015.
- */
 
 public class MyAppConfig {
     //GAMBIARRA :: LOGIN PARA CRIACAO DE USUÀRIO VIA API
@@ -41,6 +38,7 @@ public class MyAppConfig {
 
     public static class LOG{
         public final static String Service              = "SERVICE";
+        public final static String VComService          = "VCOM_SERVICE";
         public final static String ServiceLocation      = "LOCATION";
         public final static String Activity             = "ACTIVITY";
         public final static String Runnable             = "RUNNABLE";
@@ -119,7 +117,7 @@ public class MyAppConfig {
         public final static String LOGOUT_DONE              = "LOGOUT_DONE";
 
         //UPI MESSAGES
-        public final static String UPI_RELOADED             = "UPI_RELOADED";
+        public final static String UPI_RELOADED_SUCCESS     = "UPI_RELOADED_SUCCESS";
         public final static String UPI_RELOADED_FAIL        = "UPI_RELOADED_FAIL";
         public final static String SAVE_UPI                 = "SAVE_UPI";
         public final static String DELETE_UPI               = "DELETE_UPI";
@@ -136,7 +134,7 @@ public class MyAppConfig {
         public final static String BASE_LOADED_SUCCESS      = "BASE_LOADED_SUCCESS";
 
 
-
+        //PUBLISH
         public final static String PUBLISH_UPI              = "PUBLISH_UPI";
         public final static String RESPONSE_UPI             = "RESPONSE_UPI";
         public final static String PUBLISH_UPI_FAIL         = "PUBLISH_UPI_FAIL";
@@ -151,13 +149,12 @@ public class MyAppConfig {
 
 
         //LOCATION SERVICE
-        public final static String LOCATION_CHANGE          = "LOCATION_CHANGE";
-        public final static String RELOAD_BASE              = "RELOAD_BASE";
-        public final static String GET_PUBLICATIONS         = "GET_PUBLICATIONS";
-        public final static String RELOAD_PUBLICATIONS      = "RELOAD_PUBLICATIONS";
-        public final static String RELOAD_PUBLICATIONS_FAIL = "RELOAD_PUBLICATIONS_FAIL";
-
-
+        public final static String LOCATION_CHANGE              = "LOCATION_CHANGE";
+        public final static String RELOAD_BASE                  = "RELOAD_BASE";
+        public final static String REQUEST_LAST_POSITION        = "REQUEST_LAST_POSITION";
+        public final static String GET_PUBLICATIONS             = "GET_PUBLICATIONS";
+        public final static String PUBLICATIONS_RELOADED        = "PUBLICATIONS_RELOADED";
+        public final static String PUBLICATIONS_RELOADED_FAIL   = "PUBLICATIONS_RELOADED_FAIL";
 
     }
 

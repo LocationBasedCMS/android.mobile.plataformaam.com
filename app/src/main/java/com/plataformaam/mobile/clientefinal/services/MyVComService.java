@@ -81,7 +81,7 @@ public class MyVComService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i(MyAppConfig.LOG.Service,"MyVComService.onStartCommand ");
+        Log.i(MyAppConfig.LOG.VComService,"onStartCommand ");
         new Thread(
                 new Runnable() {
                     @Override
@@ -254,11 +254,11 @@ public class MyVComService extends Service {
                             savedPublication.setResponseRule(publication.getResponseRule());
                             AppController.getInstance().getOnlineUser().getPublications().add(savedPublication);
                             //TODO - implementar saída
-                            Log.i(MyAppConfig.LOG.Service, "createPublication: Sucesso -> " + savedPublication.toString());
+                            Log.i(MyAppConfig.LOG.VComService, "createPublication: Sucesso -> " + savedPublication.toString());
                             reloadPublication();
                         }else{
                             //TODO - implementar saída de erro
-                            Log.i(MyAppConfig.LOG.Service,"createPublication: Falha ");
+                            Log.i(MyAppConfig.LOG.VComService,"createPublication: Falha ");
                             sendEventBusMessage( MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL);
                         }
 
@@ -269,8 +269,8 @@ public class MyVComService extends Service {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         //TODO - implementar saída de erro
-                        Log.i(MyAppConfig.LOG.Service,"createPublication: Falha na reuiqsição");
-                        Log.i(MyAppConfig.LOG.Service,"\n"+error.getMessage() );
+                        Log.i(MyAppConfig.LOG.VComService,"createPublication: Falha na reuiqsição");
+                        Log.i(MyAppConfig.LOG.VComService,"\n"+error.getMessage() );
                     }
                 }
         );
@@ -306,10 +306,10 @@ public class MyVComService extends Service {
                 //https://gis.stackexchange.com/questions/8650/how-to-measure-the-accuracy-of-latitude-and-longitude/8674#8674?newreg=f2b54a75c8ae4c8fa450184001cd5fcd
                 //The second decimal place is worth up to 1.1 km: it can separate one village from the next.
                 String filter = "[" +
-                                    "{\"property\": \"latitude\",   \"value\" : " + (position.getLatitude() - 0.01) + ",   \"operator\": \">\"}," +
-                                    "{\"property\": \"latitude\",   \"value\" : " + (position.getLatitude() + 0.01) + ",   \"operator\": \"<\"}," +
-                                    "{\"property\": \"longitude\",  \"value\" : " + (position.getLongitude() - 0.01) + ",   \"operator\": \">\"}," +
-                                    "{\"property\": \"longitude\",  \"value\" : " + (position.getLongitude() + 0.01) + ",   \"operator\": \"<\"}," +
+                                    "{\"property\": \"latitude\",   \"value\" : " + (position.getLatitude() - 0.1) + ",   \"operator\": \">\"}," +
+                                    "{\"property\": \"latitude\",   \"value\" : " + (position.getLatitude() + 0.1) + ",   \"operator\": \"<\"}," +
+                                    "{\"property\": \"longitude\",  \"value\" : " + (position.getLongitude() - 0.1) + ",   \"operator\": \">\"}," +
+                                    "{\"property\": \"longitude\",  \"value\" : " + (position.getLongitude() + 0.1) + ",   \"operator\": \"<\"}," +
                         "]";
 
 
@@ -382,7 +382,7 @@ public class MyVComService extends Service {
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Log.e(MyAppConfig.LOG.Service,"EVENT_BUS_MESSAGE.SUBSCRIBE_FAIL"+error.getMessage());
+                            Log.e(MyAppConfig.LOG.VComService,"EVENT_BUS_MESSAGE.SUBSCRIBE_FAIL"+error.getMessage());
                             sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.SUBSCRIBE_FAIL);
                         }
                     }
@@ -436,6 +436,7 @@ public class MyVComService extends Service {
 
 
     public void onEvent(MyMessage message) {
+        Log.i(MyAppConfig.LOG.VComService,"onEvent(MyMessage "+message.getMessage()+")");
         if (message.getSender().equals(MyService.class.getSimpleName())) {
             if (message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_DONE)) {
                 detectUserComposite();
@@ -451,13 +452,17 @@ public class MyVComService extends Service {
         if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_BASE)){
             loadBases();
         }
+        if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.GET_PUBLICATIONS)){
+            reloadPublication();
+        }
     }
 
     public void onEvent(MyPublishMessage message){
+        Log.i(MyAppConfig.LOG.VComService,"onEvent(MyPublishMessage "+message.getMessage()+")");
         if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.PUBLISH_UPI )){
             if(message.getPublishRule() != null ){
                 //TODO - Remover excesso de parâmetros - Usar somente o publication
-                createPublication(
+                this.createPublication(
                         message.getBase(),
                         message.getUpi(),
                         message.getPublishRule(),
@@ -473,29 +478,28 @@ public class MyVComService extends Service {
             }
         }
 
-        //GET_PUBLICATIONS
-        if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.GET_PUBLICATIONS)){
-            reloadPublication();
-        }
     }
 
 
     public void sendEventBusMessage(String strMessage){
-        Log.i(MyAppConfig.LOG.Service, MyVComService.class.getSimpleName()+":"+strMessage);
-        MyMessage message = new MyMessage();
-        message.setMessage(strMessage);
-        if( AppController.getInstance().getMyComposite() != null ){
-            message.setMyComposites(AppController.getInstance().getMyComposite());
-        }
-        if( AppController.getInstance().getAllComposites() != null ){
-            message.setComposites(AppController.getInstance().getAllComposites());
+        Log.i(MyAppConfig.LOG.VComService, strMessage);
+        AppController app =AppController.getInstance();
+        MyMessage message = new MyMessage(MyVComService.class.getSimpleName(),strMessage);
+        if( app != null ) {
+            if (app.getMyComposite() != null) {
+                message.setMyComposites(AppController.getInstance().getMyComposite());
+            }
+            if (AppController.getInstance().getAllComposites() != null) {
+                message.setComposites(AppController.getInstance().getAllComposites());
+            }
         }
         message.setSender(MyVComService.class.getSimpleName());
         EventBus.getDefault().post(message);
     }
 
     private void sendPublishMessage(List<VComUPIPublication> publications) {
-        MyPublishMessage message = new MyPublishMessage(MyVComService.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_PUBLICATIONS);
+        Log.i(MyAppConfig.LOG.VComService, MyAppConfig.EVENT_BUS_MESSAGE.PUBLICATIONS_RELOADED);
+        MyPublishMessage message = new MyPublishMessage(MyVComService.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.PUBLICATIONS_RELOADED);
         message.setPublications(publications);
         EventBus.getDefault().post(message);
     }

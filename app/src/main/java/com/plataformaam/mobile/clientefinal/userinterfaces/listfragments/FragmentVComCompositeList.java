@@ -19,7 +19,7 @@ import com.plataformaam.mobile.clientefinal.AppController;
 import com.plataformaam.mobile.clientefinal.adapters.VComUserRoleArrayAdapter;
 import com.plataformaam.mobile.clientefinal.models.User;
 import com.plataformaam.mobile.clientefinal.models.vcloc.roles.VComUserRole;
-import com.plataformaam.mobile.clientefinal.userinterfaces.mapsfragments.GlobalNavigateFragment;
+import com.plataformaam.mobile.clientefinal.userinterfaces.mapsfragments.MapFragment;
 import com.plataformaam.mobile.clientefinal.R;
 import com.plataformaam.mobile.clientefinal.adapters.VComCompositeArrayAdapter;
 import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
@@ -204,7 +204,7 @@ public class FragmentVComCompositeList extends Fragment implements AbsListView.O
         mListener.onFragmentInteraction( vComComposite);
         android.app.FragmentManager fragmentManager = getFragmentManager();
         android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Fragment frag  = GlobalNavigateFragment.newInstance(vComComposite);
+        Fragment frag  = MapFragment.newInstance(vComComposite);
         fragmentTransaction.replace(R.id.container,frag, null).commit();
     }
 

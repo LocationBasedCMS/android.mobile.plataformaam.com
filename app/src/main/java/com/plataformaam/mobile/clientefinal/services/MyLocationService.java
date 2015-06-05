@@ -28,6 +28,7 @@ import com.plataformaam.mobile.clientefinal.helpers.volley.MyPostStringRequest;
 import com.plataformaam.mobile.clientefinal.models.User;
 import com.plataformaam.mobile.clientefinal.models.location.UserPosition;
 import com.plataformaam.mobile.clientefinal.models.vcloc.VComComposite;
+import com.plataformaam.mobile.clientefinal.userinterfaces.mapsfragments.MapFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,15 +47,6 @@ public class MyLocationService extends Service implements
     private static List<String> queue = Collections.synchronizedList(new ArrayList<String>());
 
 
-
-    //NEED TO EVENT BUS
-    public void onEvent(MyMessage message){
-        return;
-    }
-
-    public void onEvent(MyPositionMessage message){
-        return;
-    }
 
 
     public MyLocationService() {
@@ -104,7 +96,7 @@ public class MyLocationService extends Service implements
         mLocationRequest  = new LocationRequest();
         mLocationRequest.setInterval(300000);
         mLocationRequest.setFastestInterval(120000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
     }
 
     private void startLocationUpdate(){
@@ -120,10 +112,22 @@ public class MyLocationService extends Service implements
     // LISTENER
         @Override
         public void onConnected(Bundle bundle) {
-            Log.i(MyAppConfig.LOG.Service,"onConnected(Bundle bundle)"+bundle);
+            Log.i(MyAppConfig.LOG.Service, "onConnected(Bundle bundle)" + bundle);
             Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if( lastLocation != null ){
-                Log.i(MyAppConfig.LOG.ServiceLocation," Latitude: "+lastLocation.getLatitude() + " Longitude: "+lastLocation.getLongitude() );
+                Log.i(MyAppConfig.LOG.ServiceLocation, " Latitude: " + lastLocation.getLatitude() + " Longitude: " + lastLocation.getLongitude());
+                AppController app =AppController.getInstance();
+                if( app != null && app.getOnlineUser() != null ) {
+                    UserPosition position = new UserPosition();
+                    position.setUser(app.getOnlineUser());
+                    try {
+                        position.setLongitude(lastLocation.getLatitude());
+                        position.setLongitude(lastLocation.getLongitude());
+                    } catch (InvalidCoordinatesException e) {
+                        e.printStackTrace();
+                    }
+                    sendMessage(position);
+                }
 
             }
             startLocationUpdate();
@@ -153,6 +157,7 @@ public class MyLocationService extends Service implements
         AppController app =AppController.getInstance();
         //TEST IF THE APLICATION IS RUNNING AND HAS A LOGGED USER
         if( app != null && app.getOnlineUser() != null && location != null ){
+
             User user = app.getOnlineUser();
             VComComposite composite = app.getOnlineComposite();
             UserPosition position = new UserPosition();
@@ -175,6 +180,7 @@ public class MyLocationService extends Service implements
                 position.setLatitude(location.getLatitude());
                 position.setLongitude(location.getLongitude());
                 savePositionOperation(position);
+                sendMessage(position);
 
             } catch (InvalidCoordinatesException e) {
                 Log.e(MyAppConfig.LOG.ServiceLocation," Invalid Location e->message: "+e.getMessage() );
@@ -189,6 +195,7 @@ public class MyLocationService extends Service implements
     //THERE's NO PROBLEM IF FAIL
     private void savePositionOperation(final UserPosition position){
         if( position != null ){
+
             String request_url = MyAppConfig.getInstance().prepareWebService("UserPosition");
             StringRequest stringRequest = new MyPostStringRequest(
                     request_url,
@@ -202,10 +209,9 @@ public class MyLocationService extends Service implements
                             Gson gsonResult = builderResult.create();
                             PostVComUPIPublicationResponse output= gsonResult.fromJson( response, PostVComUPIPublicationResponse.class);
                             if( output.isSuccess() && output.getData().getTotalCount() == 1   ) {
-                                sendMessage(position);
-
+                                Log.i(MyAppConfig.LOG.Service,MyAppConfig.VOLLEY_TAG.SAVE_POSITION + " SUCCESS  ");
                             }else{
-                                Log.i(MyAppConfig.LOG.Service,MyAppConfig.VOLLEY_TAG.SAVE_POSITION + " : "+response + " "+position.toString());
+                                Log.i(MyAppConfig.LOG.Service,MyAppConfig.VOLLEY_TAG.SAVE_POSITION + " FAIL ");
                             }
                         }
                     }
@@ -222,12 +228,29 @@ public class MyLocationService extends Service implements
         }
     }
 
-
+    //
+    private static UserPosition lastUserPosition = null;
     private void sendMessage(UserPosition position){
         if(position != null ) {
+            lastUserPosition = position;
             MyPositionMessage message = new MyPositionMessage(MyLocationService.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.LOCATION_CHANGE, position);
-            Log.i(MyAppConfig.LOG.ServiceLocation,message.toString());
+            Log.i(MyAppConfig.LOG.ServiceLocation, message.toString());
             EventBus.getDefault().post(message);
+        }
+    }
+
+    //NEED TO EVENT BUS
+    public void onEvent(MyMessage message){
+
+    }
+
+    public void onEvent(MyPositionMessage message){
+        if( message != null && message.getSender().equals(MapFragment.class.getSimpleName()) ){
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.REQUEST_LAST_POSITION) ){
+                if( lastUserPosition != null ) {
+                    sendMessage(lastUserPosition);
+                }
+            }
         }
     }
 

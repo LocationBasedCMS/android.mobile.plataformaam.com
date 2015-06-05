@@ -1,5 +1,5 @@
 package com.plataformaam.mobile.clientefinal.userinterfaces.mapsfragments;
-
+import de.greenrobot.event.EventBus;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -29,6 +29,7 @@ import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyMessage;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyPositionMessage;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyPublishMessage;
+
 import com.plataformaam.mobile.clientefinal.models.User;
 import com.plataformaam.mobile.clientefinal.models.location.UserPosition;
 import com.plataformaam.mobile.clientefinal.models.vcloc.VComBase;
@@ -43,9 +44,8 @@ import com.plataformaam.mobile.clientefinal.userinterfaces.GlobalPanelUI;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.greenrobot.event.EventBus;
 
-public class GlobalNavigateFragment extends Fragment
+public class MapFragment extends Fragment
         implements
         GoogleMap.OnMapClickListener,
         GoogleMap.OnMapLongClickListener
@@ -53,7 +53,7 @@ public class GlobalNavigateFragment extends Fragment
     boolean first_location = true;
     private static GoogleMap mMap;
     private static Marker mMarkerMyLocation;
-    private static final String SELECTED_VCOM = GlobalNavigateFragment.class.getCanonicalName();
+    private static final String SELECTED_VCOM = MapFragment.class.getCanonicalName();
     private View rootView;
 
 
@@ -62,11 +62,11 @@ public class GlobalNavigateFragment extends Fragment
     VComComposite mVcomComposite;
 
     private OnFragmentInteractionListener mListener;
-    public static GlobalNavigateFragment newInstance(VComComposite param1) {
+    public static MapFragment newInstance(VComComposite param1) {
         if( param1 == null ){
             return newInstance();
         }
-        GlobalNavigateFragment fragment = new GlobalNavigateFragment();
+        MapFragment fragment = new MapFragment();
         Bundle args = new Bundle();
         args.putSerializable(SELECTED_VCOM, param1);
         fragment.setArguments(args);
@@ -74,13 +74,13 @@ public class GlobalNavigateFragment extends Fragment
     }
 
 
-    public static GlobalNavigateFragment newInstance() {
-        GlobalNavigateFragment fragment = new GlobalNavigateFragment();
+    public static MapFragment newInstance() {
+        MapFragment fragment = new MapFragment();
         return fragment;
     }
 
 
-    public GlobalNavigateFragment() {
+    public MapFragment() {
     }
 
     @Override
@@ -90,6 +90,7 @@ public class GlobalNavigateFragment extends Fragment
             mVcomComposite = (VComComposite) getArguments().getSerializable(  SELECTED_VCOM );
             AppController.getInstance().setOnlineComposite(mVcomComposite);
         }
+
     }
 
 
@@ -98,7 +99,7 @@ public class GlobalNavigateFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_global_navigate, container, false);
+        rootView = inflater.inflate(R.layout.fragment_map_navigate, container, false);
         return rootView;
     }
 
@@ -132,10 +133,16 @@ public class GlobalNavigateFragment extends Fragment
 
 
     public void setUpMapIfNeeded(VComComposite composite) {
+
+        sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOAD_BASE);
+        sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.REQUEST_LAST_POSITION);
+        sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.GET_PUBLICATIONS);
+
         if (mMap == null) {
             mMap = ((SupportMapFragment) GlobalPanelUI.fragmentManager.findFragmentById(R.id.navigate_map)).getMap();
             if (mMap != null)
                 setUpMap(composite);
+
         }
     }
 
@@ -164,26 +171,25 @@ public class GlobalNavigateFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        EventBus.getDefault().register(GlobalNavigateFragment.this);
+        EventBus.getDefault().register(MapFragment.this);
         first_location = true;
-        MyPublishMessage message = new MyPublishMessage(GlobalNavigateFragment.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_PUBLICATIONS);
+
 
     }
 
     @Override
     public void onPause() {
-        EventBus.getDefault().unregister(GlobalNavigateFragment.this);
+        EventBus.getDefault().unregister(MapFragment.this);
         super.onPause();
     }
 
 
 
     private void setUpMap(VComComposite composite) {
-
-        //mMap.setMyLocationEnabled(true);
         drawVComComposite(composite);
-        mMap.setOnMapLongClickListener( this );
+        mMap.setOnMapLongClickListener(this);
         mMap.setOnMapClickListener(this);
+
 
     }
 
@@ -258,8 +264,7 @@ public class GlobalNavigateFragment extends Fragment
         if( base != null && !loadVComBaseFail ) {
             if (base.getVirtualSpace() == null) {
                 loadVComBaseFail = true;
-                MyMessage message = new MyMessage(GlobalNavigateFragment.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_BASE);
-                EventBus.getDefault().post(message);
+                sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_BASE);
                 Log.i(MyAppConfig.LOG.Activity, "drawVComBase(VComBase base) fail ->" + base.getName());
                 return;
             } else {
@@ -342,7 +347,7 @@ public class GlobalNavigateFragment extends Fragment
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                selectUpi(position,base,base.getPublishRules().get(which) );
+                                selectUpi(position, base, base.getPublishRules().get(which));
                             }
                         }
                 )
@@ -385,13 +390,10 @@ public class GlobalNavigateFragment extends Fragment
                 publishRule,
                 position
         );
-        MyPublishMessage message =  new MyPublishMessage(GlobalNavigateFragment.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.PUBLISH_UPI,publication);
-        message.setUpi(upi);
-        message.setBase(base);
-        message.setPublishRule(publishRule);
-        message.setPosition(position);
-        EventBus.getDefault().post(message);
+        sendPublishMessage(position, base, publishRule, upi, publication);
     }
+
+
 
     //TODO - Mensagem de erro quando a publicação falah
     //TODO Botão para visualização de detalhes da publicação
@@ -449,13 +451,50 @@ public class GlobalNavigateFragment extends Fragment
 
     public void onEvent(MyPublishMessage message){
         if( message.getSender().equals(MyVComService.class.getSimpleName())){
-            if(message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_PUBLICATIONS)){
+            if(message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.PUBLICATIONS_RELOADED)){
                 if( message.getPublications() != null ){
                     drawPublication(message.getPublications());
                 }
             }
         }
     }
+
+    public void sendMessage(final String messageCode){
+        if( messageCode.equals(MyAppConfig.EVENT_BUS_MESSAGE.REQUEST_LAST_POSITION)){
+            MyPositionMessage message = new MyPositionMessage(MapFragment.class.getSimpleName(),messageCode);
+            EventBus.getDefault().post(message);
+        }
+        if( messageCode.equals(MyAppConfig.EVENT_BUS_MESSAGE.PUBLICATIONS_RELOADED)) {
+            MyMessage message = new MyMessage(MapFragment.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.GET_PUBLICATIONS);
+            EventBus.getDefault().post(message);
+        }
+        if( messageCode.equals(MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_BASE)) {
+            MyMessage message = new MyMessage(MapFragment.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_BASE);
+            EventBus.getDefault().post(message);
+        }
+        return;
+    }
+
+    private void sendPublishMessage(LatLng position, VComBase base, UPIAggregationRuleStart publishRule, UPI upi, VComUPIPublication publication) {
+        MyPublishMessage message =  new MyPublishMessage(MapFragment.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.PUBLISH_UPI,publication);
+        message.setUpi(upi);
+        message.setBase(base);
+        message.setPublishRule(publishRule);
+        message.setPosition(position);
+        EventBus.getDefault().post(message);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

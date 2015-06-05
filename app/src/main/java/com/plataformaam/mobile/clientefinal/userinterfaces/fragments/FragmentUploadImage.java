@@ -218,8 +218,6 @@ public class FragmentUploadImage extends Fragment {
         @SuppressWarnings("deprecation")
         private String uploadFile() {
             String responseString = null;
-            android.os.Debug.waitForDebugger();
-
             HttpClient httpClient = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost( MyAppConfig.getInstance().getUploadWebService() );
             httpPost.addHeader("HTTP_X_REST_USERNAME", AppController.getInstance().getOnlineUser().getLogin());

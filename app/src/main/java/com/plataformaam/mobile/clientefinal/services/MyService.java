@@ -44,19 +44,7 @@ import de.greenrobot.event.EventBus;
 
 public class MyService extends Service {
 
-    private boolean isUpiReloaded;
     private User user;
-
-    public void setUpiReloaded(boolean isUpiReloaded) {
-        this.isUpiReloaded = isUpiReloaded;
-        if( this.isUpiReloaded ) {
-            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED, null, null, null);
-        }
-    }
-
-
-
-
 
     @Override
     public void onCreate() {
@@ -208,14 +196,9 @@ public class MyService extends Service {
                         builderResult.setDateFormat("yyyy-MM-dd HH:mm:ss");
                         Gson gsonResult = builderResult.create();
                         PostUpiResponse output = gsonResult.fromJson( response, PostUpiResponse.class);
-
                         if( output.isSuccess() && output.getData().getTotalCount() == 1   ) {
-
-                            setUpiReloaded(false);
                             UPI savedUpi = output.getData().getuPI();
                             sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_SUCCESS, AppController.getInstance().getOnlineUser(), null, savedUpi);
-                            //getUPIfromWebservice();
-
                         }else{
                             sendEventBusMessage( MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL, AppController.getInstance().getOnlineUser(),null, null);
                         }
@@ -233,6 +216,38 @@ public class MyService extends Service {
     }
 
     private void updateUPI(UPI upi) {
+        String request_url = MyAppConfig.getInstance().prepareWebService("UPI");
+        request_url += "/"+upi.getId();
+        StringRequest stringRequest = new MyStringRequestV2(
+                StringRequest.Method.PUT,
+                user,
+                request_url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        GsonBuilder builderResult = new GsonBuilder();
+                        builderResult.setDateFormat("yyyy-MM-dd HH:mm:ss");
+                        Gson gsonResult = builderResult.create();
+                        PostUpiResponse output = gsonResult.fromJson( response, PostUpiResponse.class);
+
+                        if( output.isSuccess() && output.getData().getTotalCount() == 1   ) {
+                            UPI savedUpi = output.getData().getuPI();
+                            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_SUCCESS, AppController.getInstance().getOnlineUser(), null, savedUpi);
+                        }else{
+                            sendEventBusMessage( MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL, AppController.getInstance().getOnlineUser(),null, null);
+                        }
+                    }
+                }
+                ,
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL, AppController.getInstance().getOnlineUser(), null, null);
+                    }
+                }
+        );
+        AppController.getInstance().addToRequestQueue(stringRequest, MyAppConfig.VOLLEY_TAG.MANIPULATE_UPI);
 
     }
 
@@ -279,8 +294,11 @@ public class MyService extends Service {
         }
     }
 
+
+    private boolean isUpiReloading = false;
     private void getUPIfromWebservice(){
-        if( !isUpiReloaded ) {
+        if( !isUpiReloading) {
+            isUpiReloading = true;
             User user = AppController.getInstance().getOnlineUser();
             String request_url = MyAppConfig.getInstance().prepareWebService("UPI", "[{\"property\": \"user\", \"value\" : \"" + user.getId() + "\", \"operator\": \"=\"}]");
             StringRequest stringRequest = new MyStringRequestV2(
@@ -311,18 +329,22 @@ public class MyService extends Service {
                                 }
 
                             }
-                            setUpiReloaded(true);
+                            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED_SUCCESS, null, null, null);
+                            Log.d(MyAppConfig.LOG.Service, MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED_SUCCESS);
+                            isUpiReloading = false;
                         }
                     },
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED_FAIL, null, null, null);
-                            Log.e(MyAppConfig.LOG.Service, "MyAppConfiguration.EVENT_BUS_MESSAGE.UPI_RELOADED_FAIL");
+                            isUpiReloading = false;
+                            Log.e(MyAppConfig.LOG.Service, MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED_FAIL+":"+error.getMessage());
                         }
                     }
             );
             AppController.getInstance().addToRequestQueue(stringRequest, MyAppConfig.VOLLEY_TAG.MANIPULATE_UPI);
+
         }
         sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_DONE, AppController.getInstance().getOnlineUser(), null, null);
     }

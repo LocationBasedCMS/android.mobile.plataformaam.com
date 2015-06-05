@@ -14,6 +14,7 @@ import com.plataformaam.mobile.clientefinal.AppController;
 import com.plataformaam.mobile.clientefinal.R;
 import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyMessage;
+import com.plataformaam.mobile.clientefinal.models.User;
 import com.plataformaam.mobile.clientefinal.models.location.UserPosition;
 import com.plataformaam.mobile.clientefinal.models.vcloc.roles.VComUPIAggregationRuleResponseOf;
 import com.plataformaam.mobile.clientefinal.models.vcloc.roles.VComUPIAggregationRuleStart;
@@ -21,6 +22,9 @@ import com.plataformaam.mobile.clientefinal.models.vcloc.upi.UPI;
 import com.plataformaam.mobile.clientefinal.models.vcloc.upi.VComUPIPublication;
 import com.plataformaam.mobile.clientefinal.services.MyService;
 import com.plataformaam.mobile.clientefinal.userinterfaces.listfragments.FragmentUpiList;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.greenrobot.event.EventBus;
 
@@ -238,9 +242,16 @@ public class FragmentEditUpi extends Fragment {
             if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_SUCCESS)){
                 Toast.makeText(getActivity(), getString(R.string.operation_upi_save_success) ,Toast.LENGTH_LONG).show();
                 UPI savedUpi = message.getUpi();
-                if( savedUpi != null ){
+
+                if( savedUpi != null && AppController.getInstance().getOnlineUser() != null ){
                     this.upi = savedUpi;
-                    AppController.getInstance().getOnlineUser().getUpis().add(savedUpi);
+                    if( AppController.getInstance().getOnlineUser().getUpis() != null ) {
+                        AppController.getInstance().getOnlineUser().getUpis().add(savedUpi);
+                    }else{
+                        List<UPI> upis = new ArrayList<>();
+                        upis.add(savedUpi);
+                        AppController.getInstance().getOnlineUser().setUpis(upis);
+                    }
                 }
                 goToUpiList();
 

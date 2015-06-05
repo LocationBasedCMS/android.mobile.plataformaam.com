@@ -248,7 +248,7 @@ public class FragmentUpiList extends Fragment implements AbsListView.OnItemClick
 
     public void onEvent(MyMessage message){
         if( message.getSender().equals(MyService.class.getSimpleName())){
-            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED)){
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED_SUCCESS)){
                 List<UPI> upis = AppController.getInstance().getOnlineUser().getUpis();
                 if( upis != null ) {
                     refreshUpiList(upis);

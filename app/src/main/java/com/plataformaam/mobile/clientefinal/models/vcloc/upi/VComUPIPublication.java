@@ -1,5 +1,6 @@
 package com.plataformaam.mobile.clientefinal.models.vcloc.upi;
 
+import android.os.Parcelable;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -13,9 +14,7 @@ import com.plataformaam.mobile.clientefinal.models.vcloc.rules.UPIAggregationRul
 
 import java.io.Serializable;
 
-/**
- * Created by bernard on 31/01/2015.
- */
+
 public class VComUPIPublication   implements Serializable,IObjectToPost {
     int id;
     @SerializedName("user0")
