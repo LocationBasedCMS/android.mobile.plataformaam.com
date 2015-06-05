@@ -34,4 +34,12 @@ public class UPIAggregationRuleResponseOfDescriptor {
 
     public UPIAggregationRuleResponseOfDescriptor() {
     }
+
+    @Override
+    public String toString() {
+        return "UPIAggregationRuleResponseOfDescriptor{" +
+                "totalCount=" + totalCount +
+                ", uPIAggregationRuleResponseOf=" + uPIAggregationRuleResponseOf +
+                '}';
+    }
 }

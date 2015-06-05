@@ -351,32 +351,40 @@ public class MapFragment extends Fragment
         builder.show();
     }
 
-    private void selectUpi(final LatLng position,final VComBase base,final UPIAggregationRuleStart publishRule){
+    private void selectUpi(final LatLng position,final VComBase base,final UPIAggregationRuleStart aPublishRule){
         final List<UPI> upis = AppController.getInstance().getOnlineUser().getUpis();
+        List<UPI> filteredUpis = new ArrayList<>();
+        if( AppController.getInstance().getAllPublicationRules() != null ) {
+            final UPIAggregationRuleStart publishRule = AppController.getInstance().getAllPublicationRules().get(aPublishRule.getId());
+            for(int i = 0; i < upis.size(); i++ ){
+                UPI test = upis.get(i);
+                if( test.getUpiType() != null && publishRule.getUpiType() != null && publishRule.getUpiType().getId() == test.getUpiType().getId() ){
+                    filteredUpis.add(test);
+                }
+            }
 
 
-
-        UPIArrayAdapter adapter = new UPIArrayAdapter(
-                getActivity(),
-                R.layout.row_upi_text_list,
-                R.layout.row_upi_image_list,
-                upis
-        );
-        AlertDialog.Builder builder = new AlertDialog.Builder(
-                getActivity())
-                .setTitle("Selecione a Produção ")
-                .setAdapter(
-                        adapter,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                UPI upi = upis.get(which);
-                                makePublish(position,base,publishRule,upi);
+            UPIArrayAdapter adapter = new UPIArrayAdapter(
+                    getActivity(),
+                    R.layout.row_upi_text_list,
+                    R.layout.row_upi_image_list,
+                    filteredUpis
+            );
+            AlertDialog.Builder builder = new AlertDialog.Builder(
+                    getActivity())
+                    .setTitle("Selecione a Produção ")
+                    .setAdapter(
+                            adapter,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    UPI upi = upis.get(which);
+                                    makePublish(position, base, publishRule, upi);
+                                }
                             }
-                        }
-                )
-                .setCancelable(true);
-        builder.show();
+                    ).setCancelable(true);
+            builder.show();
+        }
     }
 
 

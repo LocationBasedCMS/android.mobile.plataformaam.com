@@ -25,8 +25,8 @@ public class UPIAggregationRuleResponseOf implements Serializable {
     UPIAggregationRuleStart upiAggregationRuleStart;
     @SerializedName("upitype0")
     UPIType upiType;
-    @SerializedName("vComUPIAggregationRuleResponseOfs")
-    List<VComUPIAggregationRuleResponseOf> roles;
+
+
     @SerializedName("vComUPIPublications")
     List<VComUPIPublication> publications;
 
@@ -103,13 +103,6 @@ public class UPIAggregationRuleResponseOf implements Serializable {
         this.publications = publications;
     }
 
-    public List<VComUPIAggregationRuleResponseOf> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<VComUPIAggregationRuleResponseOf> roles) {
-        this.roles = roles;
-    }
 
     public UPIAggregationRuleResponseOf() {
     }
@@ -143,7 +136,6 @@ public class UPIAggregationRuleResponseOf implements Serializable {
                 ", acceptMultiple=" + acceptMultiple +
                 ", upiAggregationRuleStart=" + upiAggregationRuleStart +
                 ", upiType=" + upiType +
-                ", roles=" + roles +
                 ", publications=" + publications +
                 '}';
     }
