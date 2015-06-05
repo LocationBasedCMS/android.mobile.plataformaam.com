@@ -38,6 +38,8 @@ public class UPIAggregationRuleStart implements Serializable {
     List<VComUPIPublication> publications;
 
 
+
+
     public int getId() {
         return id;
     }
@@ -180,7 +182,7 @@ public class UPIAggregationRuleStart implements Serializable {
                 ", description='" + description + '\'' +
                 ", requirePositionToCreate=" + requirePositionToCreate +
                 ", requirePositionToView=" + requirePositionToView +
-                ", republisAllowed=" + republisAllowed +
+                ", republishAllowed=" + republisAllowed +
                 ", isSingleton=" + isSingleton +
                 ", visibleDistance=" + visibleDistance +
                 '}';

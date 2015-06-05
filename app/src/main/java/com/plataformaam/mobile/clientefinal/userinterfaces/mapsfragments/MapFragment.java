@@ -353,6 +353,9 @@ public class MapFragment extends Fragment
 
     private void selectUpi(final LatLng position,final VComBase base,final UPIAggregationRuleStart publishRule){
         final List<UPI> upis = AppController.getInstance().getOnlineUser().getUpis();
+
+
+
         UPIArrayAdapter adapter = new UPIArrayAdapter(
                 getActivity(),
                 R.layout.row_upi_text_list,

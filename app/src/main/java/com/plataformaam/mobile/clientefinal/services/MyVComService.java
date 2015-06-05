@@ -18,7 +18,8 @@ import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyMessage;
 import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyPublishMessage;
 import com.plataformaam.mobile.clientefinal.helpers.gson.adapters.GSonBooleanAsIntAdapter;
-import com.plataformaam.mobile.clientefinal.helpers.gson.gsonresponsedescriptor.model.get.GetUserResponse;
+import com.plataformaam.mobile.clientefinal.helpers.gson.gsonresponsedescriptor.model.get.GetUPIAggregationRuleResponseOfResponse;
+import com.plataformaam.mobile.clientefinal.helpers.gson.gsonresponsedescriptor.model.get.GetUPIAggregationRuleStartResponse;
 import com.plataformaam.mobile.clientefinal.helpers.gson.gsonresponsedescriptor.model.get.GetVComBaseResponse;
 import com.plataformaam.mobile.clientefinal.helpers.gson.gsonresponsedescriptor.model.get.GetVComCompositeResponse;
 import com.plataformaam.mobile.clientefinal.helpers.gson.gsonresponsedescriptor.model.get.GetVComUPIPublicationResponse;
@@ -76,7 +77,9 @@ public class MyVComService extends Service {
                 new Runnable() {
                     @Override
                     public void run() {
-                        LoadVComComposite();
+                        loadVComComposite();
+                        loadResponseRule();
+                        loadPublicationRules();
                     }
                 }
         ).start();
@@ -90,7 +93,7 @@ public class MyVComService extends Service {
 
 
 
-    public void LoadVComComposite(){
+    public void loadVComComposite(){
         //CRIA USUÁRIO PARA OBTER OS DADOS
         User user = new User();
         user.setLogin(MyAppConfig.getInstance().getLoginBase());
@@ -271,7 +274,7 @@ public class MyVComService extends Service {
 
 
     private void createPublication(VComBase base, UPI upi, UPIAggregationRuleStart publishRule, LatLng position){
-        VComUPIPublication publication = new VComUPIPublication(upi,AppController.getInstance().getOnlineUser(),base,publishRule,position);
+        VComUPIPublication publication = new VComUPIPublication(upi,AppController.getInstance().getOnlineUser(), base, publishRule,position);
         savePublication(publication);
     }
 
@@ -280,6 +283,91 @@ public class MyVComService extends Service {
         VComUPIPublication publication = new VComUPIPublication(upi,AppController.getInstance().getOnlineUser(),base,responseRule,position);
         savePublication(publication);
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // PUBLICATIONS RULES
+    /////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void loadPublicationRules(){
+        User user = new User();
+        user.setLogin(MyAppConfig.getInstance().getLoginBase());
+        user.setPassword(MyAppConfig.getInstance().getPasswordBase());
+        String request_url = MyAppConfig.getInstance().prepareWebService("UPIAggregationRuleStart");
+
+        StringRequest stringRequest = new MyStringRequestV2(
+                Request.Method.GET,
+                user,
+                request_url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        GsonBuilder builderResult = new GsonBuilder();
+                        builderResult.setDateFormat("yyyy-MM-dd HH:mm:ss");
+                        builderResult.registerTypeAdapter(Boolean.class, new GSonBooleanAsIntAdapter()).registerTypeAdapter(boolean.class , new GSonBooleanAsIntAdapter());
+                        Gson gsonResult = builderResult.create();
+                        GetUPIAggregationRuleStartResponse output = gsonResult.fromJson(response, GetUPIAggregationRuleStartResponse.class);
+                        Map<Integer,UPIAggregationRuleStart> publishRules = new HashMap<>();
+                        if( output.isSuccess() && output.getData() != null && output.getData().getTotalCount() > 0  ) {
+                            List<UPIAggregationRuleStart> list = output.getData().getuPIAggregationRuleStart();
+                            for( int i =0; i< list.size(); i  ++ ){
+                                publishRules.put(   list.get(i).getId(),list.get(i)  );
+                            }
+                        }
+                        AppController.getInstance().setAllPublicationRules(publishRules);
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(MyAppConfig.LOG.VComService,"loadPublicationRules :"+error.getMessage());
+                    }
+                }
+        );
+        AppController.getInstance().addToRequestQueue(stringRequest, MyAppConfig.VOLLEY_TAG.MANIPULATE_VCOM);
+    }
+
+
+    private void loadResponseRule(){
+        User user = new User();
+        user.setLogin(MyAppConfig.getInstance().getLoginBase());
+        user.setPassword(MyAppConfig.getInstance().getPasswordBase());
+        String request_url = MyAppConfig.getInstance().prepareWebService("UPIAggregationRuleResponseOf");
+
+        StringRequest stringRequest = new MyStringRequestV2(
+                Request.Method.GET,
+                user,
+                request_url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        GsonBuilder builderResult = new GsonBuilder();
+                        builderResult.setDateFormat("yyyy-MM-dd HH:mm:ss");
+                        builderResult.registerTypeAdapter(Boolean.class, new GSonBooleanAsIntAdapter()).registerTypeAdapter(boolean.class , new GSonBooleanAsIntAdapter());
+                        Gson gsonResult = builderResult.create();
+                        GetUPIAggregationRuleResponseOfResponse output = gsonResult.fromJson(response, GetUPIAggregationRuleResponseOfResponse.class);
+                        Map<Integer,UPIAggregationRuleResponseOf> responseRules = new HashMap<>();
+                        if( output.isSuccess() && output.getData() != null && output.getData().getTotalCount() > 0  ) {
+                            List<UPIAggregationRuleResponseOf> list = output.getData().getuPIAggregationRuleResponseOf();
+                            for( int i =0; i< list.size(); i  ++ ){
+                                responseRules.put(list.get(i).getId(), list.get(i));
+                            }
+                        }
+                        AppController.getInstance().setAllResponseRules(responseRules);
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(MyAppConfig.LOG.VComService,"loadResponseRule :"+error.getMessage());
+                    }
+                }
+        );
+        AppController.getInstance().addToRequestQueue(stringRequest, MyAppConfig.VOLLEY_TAG.MANIPULATE_VCOM );
+    }
+
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // PUBLICATION

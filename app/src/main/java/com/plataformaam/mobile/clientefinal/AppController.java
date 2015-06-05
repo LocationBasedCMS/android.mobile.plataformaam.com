@@ -12,6 +12,8 @@ import com.plataformaam.mobile.clientefinal.configurations.MyAppConfig;
 import com.plataformaam.mobile.clientefinal.helpers.volley.LruBitmapCache;
 import com.plataformaam.mobile.clientefinal.models.User;
 import com.plataformaam.mobile.clientefinal.models.vcloc.VComComposite;
+import com.plataformaam.mobile.clientefinal.models.vcloc.rules.UPIAggregationRuleResponseOf;
+import com.plataformaam.mobile.clientefinal.models.vcloc.rules.UPIAggregationRuleStart;
 import com.plataformaam.mobile.clientefinal.models.vcloc.upi.UPI;
 import com.plataformaam.mobile.clientefinal.models.vcloc.upi.VComUPIPublication;
 
@@ -31,6 +33,10 @@ public class AppController extends Application {
 
     private static List<VComComposite> allComposites;
     private static Map<Integer,VComComposite> myComposite;
+    private static Map<Integer,UPIAggregationRuleStart> allPublicationRules;
+    private static Map<Integer,UPIAggregationRuleResponseOf> allResponseRules;
+
+
 
 
     public static final String TAG = AppController.class
@@ -150,5 +156,23 @@ public class AppController extends Application {
             AppController.publication = null;
         }
     }
+
+
+    public Map<Integer, UPIAggregationRuleStart> getAllPublicationRules() {
+        return allPublicationRules;
+    }
+
+    public void setAllPublicationRules(Map<Integer, UPIAggregationRuleStart> allPublicationRules) {
+        AppController.allPublicationRules = allPublicationRules;
+    }
+
+    public Map<Integer, UPIAggregationRuleResponseOf> getAllResponseRules() {
+        return allResponseRules;
+    }
+
+    public void setAllResponseRules(Map<Integer, UPIAggregationRuleResponseOf> allResponseRules) {
+        AppController.allResponseRules = allResponseRules;
+    }
+
 
 }

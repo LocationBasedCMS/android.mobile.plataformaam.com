@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class UPIAggregationRuleResponseOfDescriptor {
     int totalCount;
-    List<UPIAggregationRuleResponseOf> uPIAggregationRuleResponse;
+    List<UPIAggregationRuleResponseOf> uPIAggregationRuleResponseOf;
 
     public int getTotalCount() {
         return totalCount;
@@ -19,17 +19,17 @@ public class UPIAggregationRuleResponseOfDescriptor {
         this.totalCount = totalCount;
     }
 
-    public List<UPIAggregationRuleResponseOf> getuPIAggregationRuleResponse() {
-        return uPIAggregationRuleResponse;
+    public List<UPIAggregationRuleResponseOf> getuPIAggregationRuleResponseOf() {
+        return uPIAggregationRuleResponseOf;
     }
 
-    public void setuPIAggregationRuleResponse(List<UPIAggregationRuleResponseOf> uPIAggregationRuleResponse) {
-        this.uPIAggregationRuleResponse = uPIAggregationRuleResponse;
+    public void setuPIAggregationRuleResponseOf(List<UPIAggregationRuleResponseOf> uPIAggregationRuleResponseOf) {
+        this.uPIAggregationRuleResponseOf = uPIAggregationRuleResponseOf;
     }
 
-    public UPIAggregationRuleResponseOfDescriptor(int totalCount, List<UPIAggregationRuleResponseOf> uPIAggregationRuleResponse) {
+    public UPIAggregationRuleResponseOfDescriptor(int totalCount, List<UPIAggregationRuleResponseOf> uPIAggregationRuleResponseOf) {
         this.totalCount = totalCount;
-        this.uPIAggregationRuleResponse = uPIAggregationRuleResponse;
+        this.uPIAggregationRuleResponseOf = uPIAggregationRuleResponseOf;
     }
 
     public UPIAggregationRuleResponseOfDescriptor() {
