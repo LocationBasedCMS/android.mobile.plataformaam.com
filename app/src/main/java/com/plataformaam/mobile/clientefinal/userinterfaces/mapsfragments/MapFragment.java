@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,6 +41,8 @@ import com.plataformaam.mobile.clientefinal.models.vcloc.upi.VComUPIPublication;
 import com.plataformaam.mobile.clientefinal.services.MyLocationService;
 import com.plataformaam.mobile.clientefinal.services.MyVComService;
 import com.plataformaam.mobile.clientefinal.userinterfaces.GlobalPanelUI;
+import com.plataformaam.mobile.clientefinal.userinterfaces.fragments.PublicationDetailFragment;
+import com.plataformaam.mobile.clientefinal.userinterfaces.listfragments.FragmentUpiList;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -58,9 +61,12 @@ public class MapFragment extends Fragment
     private View rootView;
     List<VComUPIPublication> publications;
     private static List<Marker> publicationMarkers = null;
-
-
+    private VComUPIPublication selectedPublish;
     VComComposite composite;
+
+    Button btnDetailPublish;
+    Button btnPublish;
+
 
     private OnFragmentInteractionListener mListener;
     public static MapFragment newInstance(VComComposite param1) {
@@ -100,6 +106,24 @@ public class MapFragment extends Fragment
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_map_navigate, container, false);
+
+        btnDetailPublish = (Button) rootView.findViewById(R.id.btnDetailPublish);
+        btnDetailPublish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToDetailPublish(v);
+            }
+        });
+        btnPublish = (Button) rootView.findViewById(R.id.btnNavigatePublish);
+        btnPublish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(),"Clique em posição no mapa. ",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
         return rootView;
     }
 
@@ -495,7 +519,13 @@ public class MapFragment extends Fragment
         EventBus.getDefault().post(message);
     }
 
-
+    private void goToDetailPublish(View v){
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        //TODO - Passagem de parametros
+        android.app.Fragment frag  = PublicationDetailFragment.newInstance();
+        fragmentTransaction.replace(R.id.container,frag, null).commit();
+    }
 
 
 

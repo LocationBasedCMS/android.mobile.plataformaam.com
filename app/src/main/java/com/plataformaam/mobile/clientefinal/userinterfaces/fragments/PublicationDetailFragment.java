@@ -4,11 +4,16 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.plataformaam.mobile.clientefinal.R;
+import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyMessage;
+import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyPositionMessage;
+import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyPublishDetailMessage;
+import com.plataformaam.mobile.clientefinal.helpers.eventbus.MyPublishMessage;
 import com.plataformaam.mobile.clientefinal.models.vcloc.rules.UPIAggregationRuleResponseOf;
 import com.plataformaam.mobile.clientefinal.models.vcloc.rules.UPIAggregationRuleStart;
 import com.plataformaam.mobile.clientefinal.models.vcloc.upi.VComUPIPublication;
@@ -45,6 +50,12 @@ public class PublicationDetailFragment extends Fragment {
         return fragment;
 
     }
+    public static PublicationDetailFragment newInstance() {
+        PublicationDetailFragment fragment = new PublicationDetailFragment();
+        return fragment;
+
+    }
+
 
     public PublicationDetailFragment() {
         // Required empty public constructor
@@ -115,10 +126,15 @@ public class PublicationDetailFragment extends Fragment {
 
     }
 
-    public void onEvent( ){
-
+    public void onEvent(MyMessage message){
     }
 
+    public void onEvent(MyPositionMessage message){
+    }
 
+    public void onEvent(MyPublishDetailMessage message){
+    }
 
+    public void onEvent(MyPublishMessage message){
+    }
 }
