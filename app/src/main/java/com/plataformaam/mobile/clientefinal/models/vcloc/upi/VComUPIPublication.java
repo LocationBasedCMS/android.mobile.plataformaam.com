@@ -13,6 +13,8 @@ import com.plataformaam.mobile.clientefinal.models.vcloc.rules.UPIAggregationRul
 import com.plataformaam.mobile.clientefinal.models.vcloc.rules.UPIAggregationRuleStart;
 
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class VComUPIPublication   implements Serializable,IObjectToPost {
@@ -32,6 +34,9 @@ public class VComUPIPublication   implements Serializable,IObjectToPost {
             latitude,
             longitude;
 
+
+
+    Date currentTime;
 
     public int getId() {
         return id;
@@ -104,6 +109,18 @@ public class VComUPIPublication   implements Serializable,IObjectToPost {
         }
     }
 
+    public Date getCurrentTime() {
+        if( currentTime == null ){
+            Calendar c  = Calendar.getInstance();
+            currentTime = c.getTime();
+        }
+        return currentTime;
+    }
+
+    public void setCurrentTime(Date currentTime) {
+        this.currentTime = currentTime;
+    }
+
     public VComUPIPublication() {
     }
 
@@ -125,6 +142,18 @@ public class VComUPIPublication   implements Serializable,IObjectToPost {
         setLatLng(latLng);
     }
 
+    public VComUPIPublication(int id, User user, VComBase vComBase, UPI upi, UPIAggregationRuleStart publishRule, UPIAggregationRuleResponseOf responseRule, double latitude, double longitude, Date currentTime) {
+        this.id = id;
+        this.user = user;
+        this.vComBase = vComBase;
+        this.upi = upi;
+        this.publishRule = publishRule;
+        this.responseRule = responseRule;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.currentTime = currentTime;
+    }
+
     @Override
     public String toString() {
         return "{" +
@@ -143,7 +172,10 @@ public class VComUPIPublication   implements Serializable,IObjectToPost {
     public String generatePostJson() {
         String jsonToPost = null ;
         try {
+            java.text.SimpleDateFormat sdf =  new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String formattedCurrentTime = sdf.format(getCurrentTime());
             if (publishRule != null) {
+
                 jsonToPost = "{" +
                         " user:" + user.getId() +
                         ", vcombase:" + vComBase.getId() +
@@ -151,6 +183,7 @@ public class VComUPIPublication   implements Serializable,IObjectToPost {
                         ", upiaggregationrulestart:" + publishRule.getId() +
                         ", latitude:" + latitude +
                         ", longitude:" + longitude +
+                        ", currentTime:'" + formattedCurrentTime + '\'' +
                         '}';
             } else {
                 jsonToPost = "{" +
@@ -160,10 +193,10 @@ public class VComUPIPublication   implements Serializable,IObjectToPost {
                         ", upiaggregationruleresponseof:" + responseRule.getId() +
                         ", latitude:" + latitude +
                         ", longitude:" + longitude +
+                        ", currentTime:'" + formattedCurrentTime + '\'' +
                         '}';
             }
         } catch (NullPointerException e){
-            Log.i(MyAppConfig.LOG.Model,"VComUPIPublication: " +  e.getMessage());
             Log.i(MyAppConfig.LOG.Model,"VComUPIPublication: A construção do objeto de publicação não cumpre os requisitos estabelecidos pelo modelo. ");
             e.printStackTrace();
         } finally {

@@ -42,6 +42,7 @@ import com.plataformaam.mobile.clientefinal.services.MyVComService;
 import com.plataformaam.mobile.clientefinal.userinterfaces.GlobalPanelUI;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -55,11 +56,11 @@ public class MapFragment extends Fragment
     private static Marker mMarkerMyLocation;
     private static final String SELECTED_VCOM = MapFragment.class.getCanonicalName();
     private View rootView;
+    List<VComUPIPublication> publications;
+    private static List<Marker> publicationMarkers = null;
 
 
-
-
-    VComComposite mVcomComposite;
+    VComComposite composite;
 
     private OnFragmentInteractionListener mListener;
     public static MapFragment newInstance(VComComposite param1) {
@@ -86,8 +87,8 @@ public class MapFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mVcomComposite = (VComComposite) getArguments().getSerializable(  SELECTED_VCOM );
-            AppController.getInstance().setOnlineComposite(mVcomComposite);
+            composite = (VComComposite) getArguments().getSerializable(  SELECTED_VCOM );
+            AppController.getInstance().setOnlineComposite(composite);
         }
 
     }
@@ -132,17 +133,16 @@ public class MapFragment extends Fragment
 
 
     public void setUpMapIfNeeded(VComComposite composite) {
-
-        sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOAD_BASE);
-        sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.REQUEST_LAST_POSITION);
-        sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.GET_PUBLICATIONS);
-
         if (mMap == null) {
             mMap = ((SupportMapFragment) GlobalPanelUI.fragmentManager.findFragmentById(R.id.navigate_map)).getMap();
             if (mMap != null)
                 setUpMap(composite);
 
         }
+        sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOAD_BASE);
+        sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.REQUEST_LAST_POSITION);
+        sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOAD_PUBLICATIONS);
+
     }
 
 
@@ -150,7 +150,7 @@ public class MapFragment extends Fragment
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setUpMapIfNeeded(mVcomComposite);
+        setUpMapIfNeeded(composite);
     }
 
     @Override
@@ -185,36 +185,14 @@ public class MapFragment extends Fragment
 
 
     private void setUpMap(VComComposite composite) {
-        drawVComComposite(composite);
         mMap.setOnMapLongClickListener(this);
         mMap.setOnMapClickListener(this);
-
-
+        drawComposite(composite);
     }
 
 
-    private static List<Marker> publicationMarkers = null;
-    public void drawPublication(List<VComUPIPublication> publications){
-        //Limpa os marcadores
-        if( publicationMarkers == null ){
-            publicationMarkers = new ArrayList<>();
-        }else{
-            for(Marker marker : publicationMarkers){
-                marker.remove();
-            }
-        }
-        for(VComUPIPublication publication : publications){
-            Marker marker = mMap.addMarker(
-                    new MarkerOptions()
-                            .position(new LatLng(publication.getLatitude(), publication.getLongitude()))
-                            .title(publication.getUpi().getTitle())
-                            .snippet(publication.getUpi().getContent())
-                            .icon( BitmapDescriptorFactory.fromResource(R.mipmap.ic_text_message )
-                    )
-            );
-            publicationMarkers.add(marker);
-        }
-    }
+
+
 
 
     private void drawAvatar(UserPosition userPosition){
@@ -238,7 +216,7 @@ public class MapFragment extends Fragment
     }
 
     Polygon polylineComposite = null;
-    private void drawVComComposite(VComComposite composite){
+    private void drawComposite(VComComposite composite){
         if( composite != null         ) {
             if( polylineComposite != null  ){
                 polylineComposite.remove();
@@ -251,20 +229,20 @@ public class MapFragment extends Fragment
                     ;
             polylineComposite = mMap.addPolygon(rectOptions);
             for(VComBase base : composite.getvComBases()){
-                drawVComBase(base);
+                drawBase(base);
             }
-        }
 
+        }
 
     }
 
     boolean loadVComBaseFail = false;
-    private void drawVComBase(VComBase base){
+    private void drawBase(VComBase base){
         if( base != null && !loadVComBaseFail ) {
             if (base.getVirtualSpace() == null) {
                 loadVComBaseFail = true;
                 sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_BASE);
-                Log.i(MyAppConfig.LOG.Activity, "drawVComBase(VComBase base) fail ->" + base.getName());
+                Log.i(MyAppConfig.LOG.Activity, "drawBase(VComBase base) fail ->" + base.getName());
             } else {
                 PolygonOptions rectOptions = base.getVirtualSpace()
                         .getPolygonOptionsGoogleMapsV2()
@@ -273,6 +251,40 @@ public class MapFragment extends Fragment
                         .strokeWidth(1)
                         ;
                 Polygon polyline = mMap.addPolygon(rectOptions);
+            }
+            if( publications == null ){
+                publications = new ArrayList<>();
+            }
+            List<VComUPIPublication> list = base.getPublications();
+            if( list != null ){
+                for(VComUPIPublication item : list) {
+                    publications.add(item);
+                }
+            }
+        }
+
+    }
+
+    public void drawPublications(){
+        if (publications != null) {
+            //Limpa os marcadores
+            if( publicationMarkers == null ){
+                publicationMarkers = new ArrayList<>();
+            }else{
+                for(Marker marker : publicationMarkers){
+                    marker.remove();
+                }
+            }
+            for(VComUPIPublication publication : publications){
+                Marker marker = mMap.addMarker(
+                        new MarkerOptions()
+                                .position(new LatLng(publication.getLatitude(), publication.getLongitude()))
+                                .title(publication.getUpi().getTitle())
+                                .snippet(publication.getUpi().getContent())
+                                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_text_message)
+                                )
+                );
+                publicationMarkers.add(marker);
             }
         }
     }
@@ -289,12 +301,10 @@ public class MapFragment extends Fragment
     }
 
 
-
-
     public VComComposite isInsideOfComposite(LatLng point){
-        if( mVcomComposite != null ){
-            if( mVcomComposite.isInside(point)){
-                return mVcomComposite;
+        if( composite != null ){
+            if( composite.isInside(point)){
+                return composite;
             }else{
                 return null;
             }
@@ -325,7 +335,7 @@ public class MapFragment extends Fragment
                 Toast.makeText(getActivity(), "INSIDE OF BASE " + insideBase.getName() + "  -> " + point, Toast.LENGTH_LONG).show();
                 selectRule(point, insideBase);
             }else {
-                Toast.makeText(getActivity(), "INSIDE OF COMPOSITE " + mVcomComposite.getName() + "  -> " + point, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "INSIDE OF COMPOSITE " + this.composite.getName() + "  -> " + point, Toast.LENGTH_LONG).show();
             }
         }else{
             Toast.makeText(getActivity(), "OUTSIDE of COMPOSITE : " + point, Toast.LENGTH_LONG).show();
@@ -390,6 +400,8 @@ public class MapFragment extends Fragment
 
     private void makePublish(LatLng position,VComBase base,UPIAggregationRuleStart publishRule,UPI upi){
         User user = AppController.getInstance().getOnlineUser();
+        Calendar c  = Calendar.getInstance();
+        java.util.Date date = c.getTime();
         VComUPIPublication publication = new VComUPIPublication(
                 upi,
                 user,
@@ -397,21 +409,9 @@ public class MapFragment extends Fragment
                 publishRule,
                 position
         );
+        publication.setCurrentTime(date);
         sendPublishMessage(position, base, publishRule, upi, publication);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -427,6 +427,17 @@ public class MapFragment extends Fragment
     //  Event Bus : Dispara os Metodos
     ////////////////////////////////////////////////////////////////////////////////////////
     public void onEvent(MyMessage message){
+        if( message.getSender().equals(MyVComService.class.getSimpleName())){
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.BASE_LOADED_SUCCESS) ){
+                Log.i(MyAppConfig.LOG.Application,message.getMessage()+ " Disparando -> drawComposite(composite);  " );
+                loadVComBaseFail = false;
+                drawComposite(composite);
+            }
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.PUBLISH_UPI_FAIL)){
+                Toast.makeText(getActivity()," Falha ao publicar. ",Toast.LENGTH_SHORT ).show();
+                //TODO - Falha na Publicação
+            }
+        }
     }
 
     public void onEvent(MyPositionMessage message){
@@ -440,17 +451,7 @@ public class MapFragment extends Fragment
 
         }
 
-        if( message.getSender().equals(MyVComService.class.getSimpleName())){
-            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.LOAD_BASE) ){
-                Log.i(MyAppConfig.LOG.Application,message.getMessage()+ " Disparando -> drawVComComposite(mVcomComposite);  " );
-                loadVComBaseFail = false;
-                drawVComComposite(mVcomComposite);
-            }
-            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.PUBLISH_UPI_FAIL)){
-                Toast.makeText(getActivity()," Falha ao publicar. ",Toast.LENGTH_SHORT ).show();
-                //TODO - Falha na Publicação
-            }
-        }
+
 
 
     }
@@ -459,8 +460,13 @@ public class MapFragment extends Fragment
         if( message.getSender().equals(MyVComService.class.getSimpleName())){
             if(message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.PUBLICATIONS_RELOADED)){
                 if( message.getPublications() != null ){
-                    drawPublication(message.getPublications());
+                    publications = message.getPublications();
+                    drawPublications();
                 }
+            }
+
+            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.BASE_LOADED_SUCCESS)){
+                drawComposite(this.composite);
             }
         }
     }
@@ -470,12 +476,12 @@ public class MapFragment extends Fragment
             MyPositionMessage message = new MyPositionMessage(MapFragment.class.getSimpleName(),messageCode);
             EventBus.getDefault().post(message);
         }
-        if( messageCode.equals(MyAppConfig.EVENT_BUS_MESSAGE.PUBLICATIONS_RELOADED)) {
-            MyMessage message = new MyMessage(MapFragment.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.GET_PUBLICATIONS);
+        if( messageCode.equals(MyAppConfig.EVENT_BUS_MESSAGE.LOAD_PUBLICATIONS)) {
+            MyMessage message = new MyMessage(MapFragment.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.LOAD_PUBLICATIONS);
             EventBus.getDefault().post(message);
         }
         if( messageCode.equals(MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_BASE)) {
-            MyMessage message = new MyMessage(MapFragment.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_BASE);
+            MyMessage message = new MyMessage(MapFragment.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.LOAD_BASE);
             EventBus.getDefault().post(message);
         }
     }

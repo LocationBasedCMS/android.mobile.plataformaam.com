@@ -5,9 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import com.plataformaam.mobile.clientefinal.exceptions.InvalidCoordinatesException;
 import com.plataformaam.mobile.clientefinal.helpers.volley.IObjectToPost;
 import com.plataformaam.mobile.clientefinal.models.User;
-import com.plataformaam.mobile.clientefinal.models.vcloc.VComBase;
-import com.plataformaam.mobile.clientefinal.models.vcloc.VComComposite;
-import com.plataformaam.mobile.clientefinal.models.vcloc.upi.UPI;
+
 
 import java.io.Serializable;
 import java.util.Date;

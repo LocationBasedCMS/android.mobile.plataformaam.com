@@ -104,7 +104,7 @@ public class FragmentUploadImage extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-        View rootView =inflater.inflate(R.layout.fragment_fragment_upload_image, container, false);
+        View rootView =inflater.inflate(R.layout.fragment_upload_image, container, false);
         progressBar  = (ProgressBar) rootView.findViewById(R.id.progressBar);
         txtPercentage = (TextView) rootView.findViewById(R.id.txtPercentage);
         if( mImageUri != null ){

@@ -263,9 +263,8 @@ public class MyVComService extends Service {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        //TODO - implementar saída de erro
-                        Log.i(MyAppConfig.LOG.VComService,"createPublication: Falha na reuiqsição");
-                        Log.i(MyAppConfig.LOG.VComService,"\n"+error.getMessage() );
+                        sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.PUBLISH_UPI_FAIL);
+                        Log.i(MyAppConfig.LOG.VComService,"createPublication: "+error.getMessage());
                     }
                 }
         );
@@ -421,7 +420,7 @@ public class MyVComService extends Service {
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED_FAIL);
+                                sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.PUBLICATIONS_RELOADED_FAIL);
                                 isPublicationReloading = false;
                             }
                         }
@@ -468,40 +467,6 @@ public class MyVComService extends Service {
                     }
             );
             AppController.getInstance().addToRequestQueue(stringRequest, MyAppConfig.VOLLEY_TAG.MANIPULATE_VCOM);
-
-            /*
-            {
-                    success: "true"
-                    message: "Subresource Added"
-                    data: {
-                        totalCount: "1"
-                        user: {
-                            id: "8"
-                            login: "aln01"
-                            name: "Aluno de Testes 01"
-                            email: "aluno01@lied.inf.ufes.br"
-                            password: "qw"
-                            isExcluded: "0"
-                            status: null
-                            vComUserRoles: [1]
-                                0:  {
-                                    id: "41"
-                                    vcomcomposite: "34"
-                                    name: "Usuário Padrão :VCom de Testes"
-                                    allowedEditVComAggregationRule: "0"
-                                    allowedEditVCom: "0"
-                                    isClientDefault: "1"
-                                    isClientSelectable: "1"
-                                    allowedAccessPedagogicalPanel: "0"
-                                    allowedAccessOnlineMap: "0"
-                                }-
-                    -
-                            }-
-                        }-
-                    }
-             */
-
-
         }else{
             sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.SUBSCRIBE_FAIL);
         }
@@ -532,15 +497,19 @@ public class MyVComService extends Service {
         if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_BASE)){
             loadBases();
         }
-        if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.GET_PUBLICATIONS)){
+        if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.LOAD_PUBLICATIONS)){
             reloadPublication();
         }
+
+
     }
 
     public void onEvent(MyPublishMessage message){
         Log.i(MyAppConfig.LOG.VComService,"onEvent(MyPublishMessage "+message.getMessage()+")");
         if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.PUBLISH_UPI )){
             if(message.getPublishRule() != null ){
+                savePublication(message.getPublication());
+                /*
                 //TODO - Remover excesso de parâmetros - Usar somente o publication
                 this.createPublication(
                         message.getBase(),
@@ -548,6 +517,7 @@ public class MyVComService extends Service {
                         message.getPublishRule(),
                         message.getPosition()
                 );
+                */
             }else{
                 this.createResponse(
                         message.getBase(),
@@ -557,6 +527,7 @@ public class MyVComService extends Service {
                 );
             }
         }
+
 
     }
 

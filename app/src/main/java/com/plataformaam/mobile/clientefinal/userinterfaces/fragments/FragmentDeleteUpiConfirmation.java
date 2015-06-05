@@ -61,7 +61,7 @@ public class FragmentDeleteUpiConfirmation extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_fragment_delete_upi_confirmation, container, false);
+        rootView = inflater.inflate(R.layout.fragment_delete_upi_confirmation, container, false);
 
         txtUpiTitle = (TextView) rootView.findViewById(R.id.txUpiTitleConfirm);
         txtUpiTitle.setText(upi.getTitle());

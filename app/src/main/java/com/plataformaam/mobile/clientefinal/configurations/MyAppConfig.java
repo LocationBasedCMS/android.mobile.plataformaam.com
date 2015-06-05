@@ -141,6 +141,7 @@ public class MyAppConfig {
         public final static String PUBLISH_UPI_SUCCESS      = "PUBLISH_UPI_SUCCESS";
         public final static String RESPONSE_UPI_FAIL        = "PUBLISH_UPI_FAIL";
         public final static String RESPONSE_UPI_SUCCESS     = "PUBLISH_UPI_SUCCESS";
+        public final static String LOAD_PUBLICATION         = "LOAD_PUBLICATION";
 
 
         public static final String SUBSCRIBE_COMPOSITE      = "SUBSCRIBE_COMPOSITE";
@@ -152,7 +153,7 @@ public class MyAppConfig {
         public final static String LOCATION_CHANGE              = "LOCATION_CHANGE";
         public final static String RELOAD_BASE                  = "RELOAD_BASE";
         public final static String REQUEST_LAST_POSITION        = "REQUEST_LAST_POSITION";
-        public final static String GET_PUBLICATIONS             = "GET_PUBLICATIONS";
+        public final static String LOAD_PUBLICATIONS            = "LOAD_PUBLICATIONS";
         public final static String PUBLICATIONS_RELOADED        = "PUBLICATIONS_RELOADED";
         public final static String PUBLICATIONS_RELOADED_FAIL   = "PUBLICATIONS_RELOADED_FAIL";
 
