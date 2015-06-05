@@ -7,11 +7,10 @@ import com.plataformaam.mobile.clientefinal.models.vcloc.upi.UPI;
 import com.plataformaam.mobile.clientefinal.models.vcloc.upi.VComUPIPublication;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by bernard on 04/01/2015.
- */
+
 public class User implements Serializable {
 
     private int id;
@@ -139,12 +138,19 @@ public class User implements Serializable {
         this.publications = publications;
     }
 
-    public List<UPI> getUpis() {
+    public synchronized List<UPI> getUpis() {
         return upis;
     }
 
-    public void setUpis(List<UPI> upis) {
+    public  synchronized void setUpis(List<UPI> upis) {
         this.upis = upis;
+    }
+
+    public  synchronized void addUpi(UPI upi){
+        if( this.upis == null ){
+            this.upis = new ArrayList<>();
+        }
+        this.upis.add(upi);
     }
 
     public List<UserPosition> getUserPositions() {
