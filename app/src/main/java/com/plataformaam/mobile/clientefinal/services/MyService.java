@@ -36,6 +36,7 @@ import com.plataformaam.mobile.clientefinal.models.vcloc.upi.UPI;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,27 +88,34 @@ public class MyService extends Service {
     public void tryAutoLogin(){
         Log.i(MyAppConfig.LOG.Service, "tryAutoLogin");
         AppController app = AppController.getInstance();
-        if ( app != null && app.getOnlineUser() == null ) {
-
-            User test_user =  new User();
-            SharedPreferences sharedpreferences = getSharedPreferences(MyAppConfig.Preferences.PREFERENCE_AUTO_LOGIN, Context.MODE_PRIVATE);
-            if (sharedpreferences.contains(MyAppConfig.Preferences.HTTP_X_REST_USERNAME)) {
-                test_user.setLogin(sharedpreferences.getString(MyAppConfig.Preferences.HTTP_X_REST_USERNAME, ""));
-                if (sharedpreferences.contains(MyAppConfig.Preferences.HTTP_X_REST_PASSWORD)) {
-                    test_user.setPassword(sharedpreferences.getString(MyAppConfig.Preferences.HTTP_X_REST_PASSWORD, ""));
-                }
+        if( app == null ){
+            sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_FAIL);
+        } else {
+            if( app.getOnlineUser() != null ){
+                sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_DONE);
             }else{
+                //Aplicativo iniciado e sem usuário logado
+
+                User test_user =  new User();
                 test_user.setLogin("");
                 test_user.setPassword("");
+                //VERIFICA CREDENCIAIS SALVAS
+                SharedPreferences sharedpreferences = getSharedPreferences(MyAppConfig.Preferences.PREFERENCE_AUTO_LOGIN, Context.MODE_PRIVATE);
+                if (sharedpreferences.contains(MyAppConfig.Preferences.HTTP_X_REST_USERNAME)) {
+                    test_user.setLogin(sharedpreferences.getString(MyAppConfig.Preferences.HTTP_X_REST_USERNAME, ""));
+                    if (sharedpreferences.contains(MyAppConfig.Preferences.HTTP_X_REST_PASSWORD)) {
+                        test_user.setPassword(sharedpreferences.getString(MyAppConfig.Preferences.HTTP_X_REST_PASSWORD, ""));
+                    }
+                }
+                if( !test_user.getPassword().equals("") && !test_user.getLogin().equals("")){
+                    doLogin(test_user);
+                }else{
+                    sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_FAIL);
+                }
+
             }
-            if( !test_user.getPassword().equals("") && !test_user.getLogin().equals("")){
-                doLogin(test_user);
-            }else{
-                sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_FAIL, null,null, null);
-            }
-        }else{
-            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_DONE, AppController.getInstance().getOnlineUser(),null,null);
         }
+
     }
 
     public void doLogout(){
@@ -115,7 +123,7 @@ public class MyService extends Service {
         AppController.getInstance().setOnlineUser(null);
         SharedPreferences sharedpreferences = getSharedPreferences(MyAppConfig.Preferences.PREFERENCE_AUTO_LOGIN, Context.MODE_PRIVATE);
         sharedpreferences.edit().clear().commit();
-        sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOGOUT_DONE, null, null, null);
+        sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOGOUT_DONE);
     }
 
 
@@ -148,7 +156,8 @@ public class MyService extends Service {
                                 AppController.getInstance().getOnlineUser().setPassword(user.getPassword());
                                 getUPIfromWebservice();
                             }else{
-                                sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_FAIL, null,null, null);
+                                sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_FAIL);
+
                             }
                         }
                     }
@@ -156,14 +165,14 @@ public class MyService extends Service {
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_FAIL, null,null, null);
+                            sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_FAIL);
                         }
                     }
 
             );
             AppController.getInstance().addToRequestQueue(stringRequest, MyAppConfig.VOLLEY_TAG.LOGIN);
         }else{
-            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_FAIL, null,null, null);
+            sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_FAIL);
         }
 
     }
@@ -198,9 +207,10 @@ public class MyService extends Service {
                         PostUpiResponse output = gsonResult.fromJson( response, PostUpiResponse.class);
                         if( output.isSuccess() && output.getData().getTotalCount() == 1   ) {
                             UPI savedUpi = output.getData().getuPI();
-                            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_SUCCESS, AppController.getInstance().getOnlineUser(), null, savedUpi);
+                            sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_SUCCESS,savedUpi);
                         }else{
-                            sendEventBusMessage( MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL, AppController.getInstance().getOnlineUser(),null, null);
+                            sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL);
+
                         }
                     }
                 }
@@ -208,7 +218,9 @@ public class MyService extends Service {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL, AppController.getInstance().getOnlineUser(), null, null);
+                        Log.e(MyAppConfig.LOG.Service,MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL+":"+error.getMessage());
+                        sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL);
+
                     }
                 }
         );
@@ -233,9 +245,9 @@ public class MyService extends Service {
 
                         if( output.isSuccess() && output.getData().getTotalCount() == 1   ) {
                             UPI savedUpi = output.getData().getuPI();
-                            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_SUCCESS, AppController.getInstance().getOnlineUser(), null, savedUpi);
+                            sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_SUCCESS,  savedUpi);
                         }else{
-                            sendEventBusMessage( MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL, AppController.getInstance().getOnlineUser(),null, null);
+                            sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL);
                         }
                     }
                 }
@@ -243,7 +255,8 @@ public class MyService extends Service {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL, AppController.getInstance().getOnlineUser(), null, null);
+                        Log.e(MyAppConfig.LOG.Service,MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL+":"+error.getMessage());
+                        sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL);
                     }
                 }
         );
@@ -273,24 +286,24 @@ public class MyService extends Service {
                                         i = AppController.getInstance().getOnlineUser().getUpis().size();
                                     }
                                 }
-
-                                sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_SUCCESS, AppController.getInstance().getOnlineUser(), null, deletedUpi);
+                                sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_SUCCESS,deletedUpi);
                             }else{
-                                sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL, AppController.getInstance().getOnlineUser(), null, null);
+                                sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL);
                             }
                         }
                     },
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL, AppController.getInstance().getOnlineUser(), null, null);
+                            Log.e(MyAppConfig.LOG.Service,MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL+":"+error.getMessage());
+                            sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL);
                         }
                     }
             );
             AppController.getInstance().addToRequestQueue(stringRequest, MyAppConfig.VOLLEY_TAG.MANIPULATE_UPI);
 
         }else{
-            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL, AppController.getInstance().getOnlineUser(), null, upi);
+            sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL);
         }
     }
 
@@ -299,7 +312,9 @@ public class MyService extends Service {
     private void getUPIfromWebservice(){
         if( !isUpiReloading) {
             isUpiReloading = true;
-            User user = AppController.getInstance().getOnlineUser();
+            Log.i(MyAppConfig.LOG.Service,"getUPIfromWebservice()");
+
+            final User user = AppController.getInstance().getOnlineUser();
             String request_url = MyAppConfig.getInstance().prepareWebService("UPI", "[{\"property\": \"user\", \"value\" : \"" + user.getId() + "\", \"operator\": \"=\"}]");
             StringRequest stringRequest = new MyStringRequestV2(
                     StringRequest.Method.GET,
@@ -315,39 +330,47 @@ public class MyService extends Service {
                             GetUPIResponse output = gsonResult.fromJson(response, GetUPIResponse.class);
 
                             if (output.isSuccess() && output.getData().getTotalCount() > 0) {
+
+
+
                                 Map<Integer, UPI> map = new HashMap<Integer, UPI>();
                                 List<UPI> upis = output.getData().getuPI();
                                 for (UPI upi : upis) {
                                     map.put(upi.getId(), upi);
                                 }
                                 //Atualiza as UPIS do Usuário
-                                List<UPI> userUpi = AppController.getInstance().getOnlineUser().getUpis();
-                                for (int i = 0, upiSize = userUpi.size(); i < upiSize; i++) {
-                                    UPI upi = map.get(AppController.getInstance().getOnlineUser().getUpis().get(i).getId());
-                                    AppController.getInstance().getOnlineUser().getUpis().set(i, upi);
-
+                                List<UPI> userUpis = AppController.getInstance().getOnlineUser().getUpis();
+                                if( userUpis == null ){
+                                    userUpis = new ArrayList<>();
                                 }
+                                for (int i = 0, upiSize = userUpis.size(); i < upiSize; i++) {
+                                    UPI upi = map.get(AppController.getInstance().getOnlineUser().getUpis().get(i).getId());
+                                    upi.setUser(AppController.getInstance().getOnlineUser());
+                                    userUpis.set(i, upi);
+                                }
+                                AppController.getInstance().getOnlineUser().setUpis(userUpis);
 
                             }
-                            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED_SUCCESS, null, null, null);
-                            Log.d(MyAppConfig.LOG.Service, MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED_SUCCESS);
+
+                            sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED_SUCCESS);
                             isUpiReloading = false;
                         }
                     },
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED_FAIL, null, null, null);
-                            isUpiReloading = false;
                             Log.e(MyAppConfig.LOG.Service, MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED_FAIL+":"+error.getMessage());
+                            sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED_FAIL);
+                            isUpiReloading = false;
                         }
                     }
             );
             AppController.getInstance().addToRequestQueue(stringRequest, MyAppConfig.VOLLEY_TAG.MANIPULATE_UPI);
 
         }
-        sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_DONE, AppController.getInstance().getOnlineUser(), null, null);
+        sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_DONE);
     }
+
 
 
 
@@ -355,21 +378,6 @@ public class MyService extends Service {
     //  EventBus Mensages
     /////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void sendEventBusMessage(String strMessage, User user, List<VComComposite> composites, UPI upi){
-
-        MyMessage message = new MyMessage(MyService.class.getSimpleName(),strMessage);
-        if( user != null ){
-            message.setUser(user);
-        }
-        if( composites != null ){
-            message.setComposites(composites);
-        }
-        if( upi != null ){
-            message.setUpi(upi);
-        }
-        Log.i(MyAppConfig.LOG.Service,MyService.class.getSimpleName()+"->sendEventBusMessage(String "+strMessage+")");
-        EventBus.getDefault().post(message);
-    }
 
 
 
@@ -405,6 +413,50 @@ public class MyService extends Service {
             if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.DELETE_UPI)){
                 deleteUpi(message.getUpi());
             }
+        }
+    }
+
+
+    public void sendEventBusMessage(String strMessage, User user, List<VComComposite> composites, UPI upi){
+        MyMessage message = new MyMessage(MyService.class.getSimpleName(),strMessage);
+        if( user != null ){
+            message.setUser(user);
+        }
+        if( composites != null ){
+            message.setComposites(composites);
+        }
+        if( upi != null ){
+            message.setUpi(upi);
+        }
+        Log.i(MyAppConfig.LOG.Service,"sendEventBusMessage(String "+strMessage+")");
+        EventBus.getDefault().post(message);
+    }
+
+    private void sendMessage(String strMessage,UPI upi) {
+        if( strMessage.equals(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_SUCCESS)) {
+            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_SUCCESS, AppController.getInstance().getOnlineUser(), null, upi);
+        }
+
+    }
+
+    private void sendMessage(String strMessage) {
+        if( strMessage.equals(MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED_SUCCESS)) {
+            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED_SUCCESS, null, null, null);
+        }
+        if( strMessage.equals(MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED_FAIL) ) {
+            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED_FAIL, null, null, null);
+        }
+        if(strMessage.equals(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_DONE) ) {
+            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_DONE, AppController.getInstance().getOnlineUser(), null, null);
+        }
+        if(strMessage.equals(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_FAIL) ) {
+            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOGIN_FAIL, null,null, null);
+        }
+        if(strMessage.equals(MyAppConfig.EVENT_BUS_MESSAGE.LOGOUT_DONE) ) {
+            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.LOGOUT_DONE, null, null, null);
+        }
+        if(strMessage.equals(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL) ) {
+            sendEventBusMessage(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL, AppController.getInstance().getOnlineUser(), null, null);
         }
     }
 

@@ -94,8 +94,8 @@ public class MyLocationService extends Service implements
 
     private void initLocationRequest(){
         mLocationRequest  = new LocationRequest();
-        mLocationRequest.setInterval(300000);
-        mLocationRequest.setFastestInterval(120000);
+        mLocationRequest.setInterval(120000);
+        mLocationRequest.setFastestInterval(60000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
     }
 
@@ -112,7 +112,7 @@ public class MyLocationService extends Service implements
     // LISTENER
         @Override
         public void onConnected(Bundle bundle) {
-            Log.i(MyAppConfig.LOG.Service, "onConnected(Bundle bundle)" + bundle);
+            Log.i(MyAppConfig.LOG.ServiceLocation, "onConnected(Bundle bundle)" + bundle);
             Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if( lastLocation != null ){
                 Log.i(MyAppConfig.LOG.ServiceLocation, " Latitude: " + lastLocation.getLatitude() + " Longitude: " + lastLocation.getLongitude());
@@ -209,9 +209,9 @@ public class MyLocationService extends Service implements
                             Gson gsonResult = builderResult.create();
                             PostVComUPIPublicationResponse output= gsonResult.fromJson( response, PostVComUPIPublicationResponse.class);
                             if( output.isSuccess() && output.getData().getTotalCount() == 1   ) {
-                                Log.i(MyAppConfig.LOG.Service,MyAppConfig.VOLLEY_TAG.SAVE_POSITION + " SUCCESS  ");
+                                Log.i(MyAppConfig.LOG.ServiceLocation,MyAppConfig.VOLLEY_TAG.SAVE_POSITION + " SUCCESS  ");
                             }else{
-                                Log.i(MyAppConfig.LOG.Service,MyAppConfig.VOLLEY_TAG.SAVE_POSITION + " FAIL ");
+                                Log.i(MyAppConfig.LOG.ServiceLocation,MyAppConfig.VOLLEY_TAG.SAVE_POSITION + " FAIL ");
                             }
                         }
                     }
@@ -219,7 +219,7 @@ public class MyLocationService extends Service implements
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Log.i(MyAppConfig.LOG.Service,MyAppConfig.VOLLEY_TAG.SAVE_POSITION + " : "+error.getMessage() );
+                            Log.i(MyAppConfig.LOG.ServiceLocation,MyAppConfig.VOLLEY_TAG.SAVE_POSITION + " : "+error.getMessage() );
                         }
                     }
             );
