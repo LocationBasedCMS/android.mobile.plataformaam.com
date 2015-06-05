@@ -61,8 +61,7 @@ public class FragmentEditUpi extends Fragment {
 
     //CREATE UPI
     public static FragmentEditUpi newInstance(){
-        FragmentEditUpi fragment = new FragmentEditUpi();
-        return fragment;
+        return new FragmentEditUpi();
     }
 
     //UPI EDIT
@@ -245,13 +244,7 @@ public class FragmentEditUpi extends Fragment {
 
                 if( savedUpi != null && AppController.getInstance().getOnlineUser() != null ){
                     this.upi = savedUpi;
-                    if( AppController.getInstance().getOnlineUser().getUpis() != null ) {
-                        AppController.getInstance().getOnlineUser().getUpis().add(savedUpi);
-                    }else{
-                        List<UPI> upis = new ArrayList<>();
-                        upis.add(savedUpi);
-                        AppController.getInstance().getOnlineUser().setUpis(upis);
-                    }
+                    AppController.getInstance().getOnlineUser().addUpi(savedUpi);
                 }
                 goToUpiList();
 
