@@ -6,6 +6,7 @@
         <item name="pam_composite_border" type="color">#DDFF3333</item>
         <item name="pam_base_background" type="color">#66AAFFFF</item>
         <item name="pam_base_border" type="color">#DD33FFFF</item>
+        <item name="pam_background" type="color">#FF000066</item>
 
     <!-- VCOM-->
         <item name="pam_bg_vcom_list_row_signed" type="color">0x99DDDD99</item>

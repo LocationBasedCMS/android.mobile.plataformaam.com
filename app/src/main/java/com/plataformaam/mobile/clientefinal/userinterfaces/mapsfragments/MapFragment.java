@@ -75,8 +75,7 @@ public class MapFragment extends Fragment
 
 
     public static MapFragment newInstance() {
-        MapFragment fragment = new MapFragment();
-        return fragment;
+        return new MapFragment();
     }
 
 
@@ -198,7 +197,7 @@ public class MapFragment extends Fragment
     public void drawPublication(List<VComUPIPublication> publications){
         //Limpa os marcadores
         if( publicationMarkers == null ){
-            publicationMarkers = new ArrayList<Marker>();
+            publicationMarkers = new ArrayList<>();
         }else{
             for(Marker marker : publicationMarkers){
                 marker.remove();
@@ -266,7 +265,6 @@ public class MapFragment extends Fragment
                 loadVComBaseFail = true;
                 sendMessage(MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_BASE);
                 Log.i(MyAppConfig.LOG.Activity, "drawVComBase(VComBase base) fail ->" + base.getName());
-                return;
             } else {
                 PolygonOptions rectOptions = base.getVirtualSpace()
                         .getPolygonOptionsGoogleMapsV2()
@@ -275,10 +273,8 @@ public class MapFragment extends Fragment
                         .strokeWidth(1)
                         ;
                 Polygon polyline = mMap.addPolygon(rectOptions);
-
             }
         }
-
     }
 
 
@@ -395,6 +391,19 @@ public class MapFragment extends Fragment
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     //TODO - Mensagem de erro quando a publicação falah
     //TODO Botão para visualização de detalhes da publicação
     //TODO Botão para fechar a visualização da publicação
@@ -403,24 +412,10 @@ public class MapFragment extends Fragment
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     ////////////////////////////////////////////////////////////////////////////////////////////
     //  Event Bus : Dispara os Metodos
     ////////////////////////////////////////////////////////////////////////////////////////
     public void onEvent(MyMessage message){
-        return;
     }
 
     public void onEvent(MyPositionMessage message){
@@ -472,7 +467,6 @@ public class MapFragment extends Fragment
             MyMessage message = new MyMessage(MapFragment.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.RELOAD_BASE);
             EventBus.getDefault().post(message);
         }
-        return;
     }
 
     private void sendPublishMessage(LatLng position, VComBase base, UPIAggregationRuleStart publishRule, UPI upi, VComUPIPublication publication) {

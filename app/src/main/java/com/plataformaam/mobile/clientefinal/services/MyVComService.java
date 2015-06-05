@@ -47,13 +47,6 @@ import de.greenrobot.event.EventBus;
 
 public class MyVComService extends Service {
 
-
-    public synchronized boolean setIfFalsePublicationReloading() {
-        if( !this.isPublicationReloading  )
-            this.isPublicationReloading = true;
-        return this.isPublicationReloading;
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -66,9 +59,6 @@ public class MyVComService extends Service {
         super.onDestroy();
         EventBus.getDefault().unregister(MyVComService.this);
     }
-
-
-
 
     public MyVComService() {
     }
@@ -149,7 +139,8 @@ public class MyVComService extends Service {
     public void detectUserComposite(){
         AppController app = AppController.getInstance();
         if( app != null ){
-            Map<Integer,VComComposite> myComposites =new HashMap<Integer,VComComposite>();
+            //Map<Integer,VComComposite> myComposites =new HashMap<Integer,VComComposite>();
+            Map<Integer,VComComposite> myComposites =new HashMap<>();
             List<VComComposite> composites = app.getAllComposites();
 
             User u = app.getOnlineUser();
@@ -196,7 +187,7 @@ public class MyVComService extends Service {
                             Gson gsonResult = builderResult.create();
                             GetVComBaseResponse output = gsonResult.fromJson(response, GetVComBaseResponse.class);
                             if( output.isSuccess() && output.getData() != null && output.getData().getTotalCount() > 0  ) {
-                                Map<Integer,VComBase> mapBases = new HashMap<Integer,VComBase>();
+                                Map<Integer,VComBase> mapBases = new HashMap<>();
                                 for( VComBase base: output.getData().getvComBase() ){
                                     mapBases.put(base.getId(),base);
                                 }
@@ -255,11 +246,12 @@ public class MyVComService extends Service {
                             AppController.getInstance().getOnlineUser().getPublications().add(savedPublication);
                             //TODO - implementar saída
                             Log.i(MyAppConfig.LOG.VComService, "createPublication: Sucesso -> " + savedPublication.toString());
+                            sendEventBusMessage( MyAppConfig.EVENT_BUS_MESSAGE.PUBLISH_UPI_SUCCESS);
                             reloadPublication();
                         }else{
                             //TODO - implementar saída de erro
                             Log.i(MyAppConfig.LOG.VComService,"createPublication: Falha ");
-                            sendEventBusMessage( MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_FAIL);
+                            sendEventBusMessage( MyAppConfig.EVENT_BUS_MESSAGE.PUBLISH_UPI_FAIL);
                         }
 
                     }
@@ -332,7 +324,7 @@ public class MyVComService extends Service {
                                     publications = output.getData().getvComUPIPublication();
                                 }
 
-                                sendPublishMessage(publications);
+                                sendPublishMessage(MyAppConfig.EVENT_BUS_MESSAGE.PUBLICATIONS_RELOADED, publications);
                                 isPublicationReloading = false;
                             }
 
@@ -497,11 +489,15 @@ public class MyVComService extends Service {
         EventBus.getDefault().post(message);
     }
 
-    private void sendPublishMessage(List<VComUPIPublication> publications) {
-        Log.i(MyAppConfig.LOG.VComService, MyAppConfig.EVENT_BUS_MESSAGE.PUBLICATIONS_RELOADED);
-        MyPublishMessage message = new MyPublishMessage(MyVComService.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.PUBLICATIONS_RELOADED);
-        message.setPublications(publications);
-        EventBus.getDefault().post(message);
+    private void sendPublishMessage(String strMessage, List<VComUPIPublication> publications) {
+
+        Log.i(MyAppConfig.LOG.VComService,strMessage);
+
+        if( strMessage.equals(MyAppConfig.EVENT_BUS_MESSAGE.PUBLICATIONS_RELOADED)) {
+            MyPublishMessage message = new MyPublishMessage(MyVComService.class.getSimpleName(), MyAppConfig.EVENT_BUS_MESSAGE.PUBLICATIONS_RELOADED);
+            message.setPublications(publications);
+            EventBus.getDefault().post(message);
+        }
     }
 
 
