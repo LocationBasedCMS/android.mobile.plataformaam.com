@@ -52,8 +52,7 @@ public class FragmentUpiList extends Fragment implements AbsListView.OnItemClick
 
 
     public static FragmentUpiList newInstance() {
-        FragmentUpiList fragment = new FragmentUpiList();
-        return fragment;
+        return new FragmentUpiList();
     }
 
     /**
@@ -78,12 +77,12 @@ public class FragmentUpiList extends Fragment implements AbsListView.OnItemClick
     @Override
     public void onResume() {
         super.onResume();
-        User user = AppController.getInstance().getOnlineUser();
-        List<UPI> upis=null;
-        if( user != null ){
+        List<UPI> upis = null;
+        if( AppController.getInstance() != null && AppController.getInstance().getOnlineUser() != null ) {
+            User user = AppController.getInstance().getOnlineUser();
             upis = user.getUpis();
         }
-        if( upis == null ){
+        if (upis == null) {
             upis = new ArrayList<UPI>();
         }
         buildList(upis);
@@ -184,8 +183,8 @@ public class FragmentUpiList extends Fragment implements AbsListView.OnItemClick
 
     //REFRESH LIST VIEW
     void refreshUpiList( List<UPI> upis){
-        mAdapter.clear();
-        mAdapter.addAll(upis);
+        //mAdapter.clear();
+        //mAdapter.addAll(upis);
         mAdapter.notifyDataSetChanged();
     }
 
@@ -247,10 +246,11 @@ public class FragmentUpiList extends Fragment implements AbsListView.OnItemClick
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     public void onEvent(MyMessage message){
-        if( message.getSender().equals(MyService.class.getSimpleName())){
-            if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED_SUCCESS)){
+        if( message.getSender().equals(MyService.class.getSimpleName()) && message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.UPI_RELOADED_SUCCESS)   ){
+            AppController app = AppController.getInstance();
+            if( app != null && app.getOnlineUser() != null ) {
                 List<UPI> upis = AppController.getInstance().getOnlineUser().getUpis();
-                if( upis != null ) {
+                if (upis != null) {
                     refreshUpiList(upis);
                 }
             }

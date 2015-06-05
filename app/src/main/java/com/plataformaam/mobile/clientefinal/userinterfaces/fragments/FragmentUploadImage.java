@@ -290,8 +290,8 @@ public class FragmentUploadImage extends Fragment {
             if( message.getMessage().equals(MyAppConfig.EVENT_BUS_MESSAGE.UPI_OPERATION_SUCCESS)){
                 Toast.makeText(getActivity(), getString(R.string.operation_upi_save_success), Toast.LENGTH_LONG).show();
                 UPI savedUpi = message.getUpi();
-                if( savedUpi != null ){
-                    AppController.getInstance().getOnlineUser().getUpis().add(savedUpi);
+                if( savedUpi != null && AppController.getInstance().getOnlineUser() != null ){
+                    AppController.getInstance().getOnlineUser().addUpi(savedUpi);
                 }
                 goToUpiList();
 

@@ -333,7 +333,7 @@ public class MyService extends Service {
 
 
 
-                                Map<Integer, UPI> map = new HashMap<Integer, UPI>();
+                                Map<Integer, UPI> map = new HashMap<>();
                                 List<UPI> upis = output.getData().getuPI();
                                 for (UPI upi : upis) {
                                     map.put(upi.getId(), upi);
